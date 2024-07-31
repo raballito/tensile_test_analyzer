@@ -8,6 +8,17 @@ Le projet est basé sur le plugin CustomTkInter : https://github.com/TomSchimans
 
 Projet en français réalisé par Quentin Raball
 
+## Fonctionnalités
+Le programme actuel est capable de :
+- Importations de fichiers dans le programme
+- Traiter les fichiers csv obtenus par les machines Shimadzu 20kN, W+B 100kN et W+B 400kN
+- Traiter les fichiers en modes "Traction", "Flexion 3pts" et "Flexion 4pts"
+- Paramétrer individuellement les échantillons avant leur analyse
+- Générer les graphiques suivants dans l'interface: "Force-Déplacement", "Force-Temps", "Contrainte-Déformation" et "Contrainte-Déplacement"
+- Déterminer les valeurs intéressante telles que Re, Rm, A%, E, etc...
+- Exporter sous forme graphique et sous forme de tableau les résultats obtenus
+- Bien d'autre à découvrir
+
 
 ## Installation de python sur windows
 Pour installer python:
