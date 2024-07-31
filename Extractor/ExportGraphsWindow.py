@@ -2,6 +2,14 @@
 """
 Created on Mon Jul 15 12:37:41 2024
 
+Graphics Export Window
+- Selection of the desired Graphics
+- Availablility depends on the analysis of the sample
+- Export in Output directory
+
+Version: 1.0
+Last Update: 01.08.24
+
 @author: quentin.raball
 """
 
