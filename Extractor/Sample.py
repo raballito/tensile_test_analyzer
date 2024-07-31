@@ -6,13 +6,13 @@ Sample related Class
 
 Saving all informations about current sample.
 Available functions:
-    -show_var()
-    -import_data()
-    -export_preview()
-    -analyze() (Not yet)
+-show_var()
+-import_data() to import datas from the file to the structure
+-export_preview() to export graphics and tables
+-analyze() to analyze the samples with mode and geometry
 
 Version: 1.0
-Last Update: 15.05.24
+Last Update: 01.08.24
 
 @author: quentin.raball
 """
