@@ -1,6 +1,7 @@
 # Tensile Test Analyzer
 
-Ce programme a été créer pour le département COMATEC de l'école d'ingénieurie et de gestion HEIG-VD, afin de traiter les résultats des machines de tractions.
+Ce programme a été créer pour le département COMATEC de la Haute Ecole d'Ingénierie et de Gestion du Canton de Vaud (HEIG-VD)
+Il permet de traiter les résultats obtenus par les machines de tractions à disposition du département.
 
 https://heig-vd.ch/recherche/instituts/comatec/
 
@@ -9,17 +10,23 @@ Le projet est basé sur le plugin CustomTkInter : https://github.com/TomSchimans
 Projet en français réalisé par Quentin Raball
 
 ## Fonctionnalités
-Le programme actuel est capable de :
-- Importations de fichiers dans le programme
-- Traiter les fichiers csv obtenus par les machines Shimadzu 20kN, W+B 100kN et W+B 400kN
-- Traiter les fichiers en modes "Traction", "Flexion 3pts" et "Flexion 4pts"
-- Paramétrer individuellement les échantillons avant leur analyse
-- Générer les graphiques suivants dans l'interface: "Force-Déplacement", "Force-Temps", "Contrainte-Déformation" et "Contrainte-Déplacement"
-- Déterminer les valeurs intéressante telles que Re, Rm, A%, E, etc...
-- Exporter sous forme graphique et sous forme de tableau les résultats obtenus
-- Bien d'autre à découvrir
+- Gestion des fichiers dans le programme.
+- Traitement des fichiers csv obtenus par les machines de traction.
+- Traitement de fichiers comprenant plusieurs échantillons en un seul fichier.
+- Traitement des fichiers selon les 3 modes suivants : "Traction/Compression", "Flexion 3pts" et "Flexion 4pts".
+- Traitement des échantillons selon deux géométries possibles : "Ronde" et "Rectangulaires".
+- Paramétrage individuels des échantillons avant leur analyse.
+- Générer les graphiques suivants: "Force-Déplacement", "Force-Temps", "Contrainte-Déformation" et "Contrainte-Déplacement", groupés et individuels.
+- Optention des valeurs intéressante d'une courbe de traction telles que Re, Rm, A%, E, etc...
+- Exportation des résultats obtenus sous forme graphique et sous forme de tableau.
+- Bien d'autre à découvrir !
+- Bien d'autre à venir (Voir plus loin) !
 
-
+## Machine Utilisées
+Le département COMATEC utilise actuellement les machines suivantes:
+- Shimadzu - 20 [kN] maximum - Sans Extensomètre
+- Walter & Bai - 100 [kN] maximum - Avec et sans extensomètres
+- Walter & Bai - 400 [kN] maximum - Sans extensomètre
 
 ## Installation de python sur windows
 Pour installer python:
@@ -34,6 +41,12 @@ Pour installer python:
 Si tout a été installé correctement, il suffit de lancer le programme principal en double-cliquant sur le fichier "MainWindow.py". Le programme devrait s'exécuter normalement.
 
 
+## A venir (Work in Progress)
+- Ajout de l'analyse en mode "Module de Young". Extensomètre obligatoire. Pour traitement des courbes de tractions Force-Temps sinusoïdales et obention du module de Young moyen sur plusieurs cycles de forces.
+- Gestion des thèmes
+- Exportation dans un fichier Excel + Rapport type/Compte rendu
+- Meilleure gestion du Dark Mode
+- Sauvegarde + Chargements programme
 
 
 ## F.A.Q
