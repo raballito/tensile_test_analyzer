@@ -1,8 +1,12 @@
 # Tensile Test Analyzer
 
-Ce programme a été créer pour l'école HEIG-VD, afin de traiter les résultats des machines de tractions.
+Ce programme a été créer pour le département COMATEC de l'école d'ingénieurie et de gestion HEIG-VD, afin de traiter les résultats des machines de tractions.
+
+https://heig-vd.ch/recherche/instituts/comatec/
 
 Le projet est basé sur le plugin CustomTkInter : https://github.com/TomSchimansky/CustomTkinter
+
+Projet réalisé par Quentin Raball
 
 
 ## Installation de python sur windows
