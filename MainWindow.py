@@ -2,11 +2,11 @@
 """
 Created on Fri Apr 19 09:59:06 2024
 
-Data Analyzer
+Data Analyzer - Main Window
 
-New version.
-- Updated GUI
+- Easy and updated GUI
 - Updated Events and Events Handling
+- List all files available
 - Separate sample configuration
 - Separate files for classes
 - Multisampling handling
