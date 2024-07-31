@@ -6,14 +6,14 @@ Data Analyzer
 
 New version.
 - Updated GUI
-- Updated Events and Handleing
-- Separate sample config
+- Updated Events and Events Handling
+- Separate sample configuration
 - Separate files for classes
 - Multisampling handling
 - Export graphics and sample summary
 
 Version: 1.0
-Last Update: 15.05.24
+Last Update: 01.08.24
 
 @author: quentin.raball
 """
