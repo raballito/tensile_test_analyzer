@@ -6,7 +6,7 @@ https://heig-vd.ch/recherche/instituts/comatec/
 
 Le projet est basé sur le plugin CustomTkInter : https://github.com/TomSchimansky/CustomTkinter
 
-Projet réalisé par Quentin Raball
+Projet en français réalisé par Quentin Raball
 
 
 ## Installation de python sur windows
