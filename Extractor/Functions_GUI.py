@@ -144,6 +144,8 @@ class InterfaceFunctions:
             
     def change_theme_event(self, new_theme: str):
         print(f"Changement de theme: {new_theme}")
+        theme_path = os.path.join("themes", f"{new_theme}")
+        customtkinter.set_default_color_theme(theme_path)
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
@@ -377,7 +379,6 @@ class InterfaceFunctions:
             self.analysisWindow = AnalysisSummaryWindow(sample_list)
             self.analysisWindow.attributes("-topmost", True)
         print(message)
-        #◘messagebox.showinfo("Analyse terminée", message)
         last_selected_element = self.master.scrollable_label_button_frame.selected_sample
         if last_selected_element is not None:
             self.preview_file(last_selected_element)      
@@ -399,7 +400,13 @@ class InterfaceFunctions:
                 # Si le fichier est déjà en ".csv", ajouter à la liste
                 csv_files.append(filepath)
         print("Nombre de fichiers détectés dans dossier", csv_folder, ": ", len(csv_files))
-        return csv_files    
+        return csv_files
+    
+    def list_themes(self):
+        themes_folder = "themes"
+        theme_files = [f for f in os.listdir(themes_folder) if os.path.isfile(os.path.join(themes_folder, f))]
+        print(f"Liste des themes présents: {theme_files}")
+        return theme_files
     
     def create_short_list(self, long_list):
         short_list = []
