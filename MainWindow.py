@@ -47,8 +47,6 @@ class MainWindow(customtkinter.CTk):
         self.interface_functions.pop_message_init()
         folder_ask = self.interface_functions.ask_directory()
         list_csv = self.interface_functions.list_csv(folder_ask)
-        
-        list_themes = self.interface_functions.list_themes()
 
         # Configuration  de la grille principale
         self.grid_columnconfigure(1, weight=1)
@@ -77,11 +75,6 @@ class MainWindow(customtkinter.CTk):
         #self.sidebar_button_4.grid(row=5, column=0, padx=20, pady=10)
         self.sidebar_button_5 = customtkinter.CTkButton(self.sidebar_frame, text="Aide", command=self.interface_functions.open_help_window_event)
         self.sidebar_button_5.grid(row=6, column=0, padx=20, pady=10)
-        self.theme_label = customtkinter.CTkLabel(self.sidebar_frame, text="Couleur Theme :", anchor="w")
-        self.theme_label.grid(row=8, column=0, padx=20, pady=(10, 0))
-        self.theme_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=list_themes,
-                                                                       command=self.interface_functions.change_theme_event)
-        self.theme_optionemenu.grid(row=9, column=0, padx=20, pady=(10, 10))
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Mode d'apparence :", anchor="w")
         self.appearance_mode_label.grid(row=10, column=0, padx=20, pady=(10, 0))
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark"],

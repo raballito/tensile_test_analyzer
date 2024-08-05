@@ -141,11 +141,6 @@ class InterfaceFunctions:
             self.master.figure_force_time.set_facecolor("white")
             self.update_preview()
             print("Changing appearence to Light")
-            
-    def change_theme_event(self, new_theme: str):
-        print(f"Changement de theme: {new_theme}")
-        theme_path = os.path.join("themes", f"{new_theme}")
-        customtkinter.set_default_color_theme(theme_path)
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
@@ -401,12 +396,6 @@ class InterfaceFunctions:
                 csv_files.append(filepath)
         print("Nombre de fichiers détectés dans dossier", csv_folder, ": ", len(csv_files))
         return csv_files
-    
-    def list_themes(self):
-        themes_folder = "themes"
-        theme_files = [f for f in os.listdir(themes_folder) if os.path.isfile(os.path.join(themes_folder, f))]
-        print(f"Liste des themes présents: {theme_files}")
-        return theme_files
     
     def create_short_list(self, long_list):
         short_list = []
