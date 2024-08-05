@@ -3,13 +3,14 @@
 Created on Mon Apr 22 11:15:29 2024
 
 - Scrollable File List + Checkbox + Buttons structure
+- Highlighting correct line in the list on click
 - Sync with Sample structure
 - Add/remove file functions
-- Get selected checkbox and sample vars functions
+- Get selected checkbox and sample vars functions from mainwindow
 - Get Export Options functions
 
 Version: 1.0
-Last Update: 15.05.24
+Last Update: 01.08.24
 
 @author: quentin.raball
 

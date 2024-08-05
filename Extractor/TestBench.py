@@ -7,12 +7,12 @@ Test Bench related Class
 Saving all informations about current sample's Testbench.
 
 Available functions:
-    -identify_test_bench(file_path)
-    -identify_file(file_path)
+    -identify_test_bench(file_path) for identify the test machine with headers of the csv
+    -identify_file(file_path) to config the sample with the correct columns number in the csv
 
 
 Version: 1.0
-Last Update: 15.05.24
+Last Update: 01.08.24
 
 @author: quentin.raball
 """

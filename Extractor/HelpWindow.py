@@ -1,3 +1,17 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Apr 19 09:59:06 2024
+
+Help window
+- Print images in the window
+- One menu for each mode of analysis
+
+Version: 1.0
+Last Update: 01.08.24
+
+@author: quentin.raball
+"""
+
 import customtkinter
 import os
 from PIL import Image

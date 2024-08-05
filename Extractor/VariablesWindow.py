@@ -2,8 +2,13 @@
 """
 Created on Fri Apr 19 09:18:49 2024
 
+Variables window
+Used to get main values from the sample structure
+
+Print tables with all values. Export possible
+
 Version: 1.0
-Last Update: 15.05.24
+Last Update: 01.08.24
 
 @author: quentin.raball
 """

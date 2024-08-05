@@ -5,9 +5,11 @@ Created on Fri Apr 19 09:59:06 2024
 GUI Related Functions
 - Buttons Events Handeling,
 - Gui Functions 
+- Basically everythings related of the main window's functions
+- Events throughs files managed by this file mainly
 
 Version: 1.0
-Last Update: 15.05.24
+Last Update: 01.08.24
 
 @author: quentin.raball
 """

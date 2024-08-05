@@ -4,12 +4,16 @@ Created on Fri Apr 19 09:18:49 2024
 
 Configuration Window
 
-- Handling the pre-analyze configuration for sample
+- Handling the individual configuration for sample
+- Geometry configuration
+- Analysis mode configuration
+- Changing the name of the sample
 - Configuration of sample class through GUI
-- Saving logic
+
 
 Version: 1.0
-Last Update: 15.05.24
+Last Update: 01.08.24
+
 
 @author: quentin.raball
 """

@@ -2,6 +2,13 @@
 """
 Created on Tue Jul 16 08:42:48 2024
 
+End of analysis window. Print a summary of the analysis with table and graphics.
+- 3 types of graphics
+- Summary table with average and standard deviation
+
+Version: 1.0
+Last Update: 01.08.24
+
 @author: quentin.raball
 """
 
