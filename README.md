@@ -20,7 +20,6 @@ Le programme actuel est capable de :
 - Bien d'autre à découvrir
 
 
-
 ## Installation de python sur windows
 Pour installer python:
 
