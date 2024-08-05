@@ -9,6 +9,8 @@ Le projet est basé sur le plugin CustomTkInter : https://github.com/TomSchimans
 
 Projet en français réalisé par Quentin Raball
 
+N° Version : Beta 1
+
 ## Fonctionnalités
 - Gestion des fichiers dans le programme.
 - Traitement des fichiers csv obtenus par les machines de traction.
