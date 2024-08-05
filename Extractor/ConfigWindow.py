@@ -41,6 +41,9 @@ class ConfigWindow(customtkinter.CTkToplevel):
         if not hasattr(self.sample, 'last_mode_chosen'):
             self.sample.last_mode_chosen = 0
             
+        if not hasattr(self.sample, 'last_geometry_chosen'):
+            self.sample.last_geometry_chosen = "Section Ronde"
+            
         sample_name = self.sample.sample_name
         file_path = self.sample.file_path
         test_bench = self.sample.test_bench
@@ -154,6 +157,9 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.option_long_l1_rect.grid(row=11, column=1, padx=10, pady=(0, 10))
         self.label_long_l1_rect.grid_remove()
         self.option_long_l1_rect.grid_remove()
+        
+        # Sélectionner l'onglet correct à l'ouverture de la fenêtre
+        self.tabview.set(self.sample.last_geometry_chosen)
 
         # Options de fichiers et d'analyse (Tab1)
         self.tabview_options = customtkinter.CTkTabview(self)
@@ -342,6 +348,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
     
     def get_geometry(self, test_mode):
         geometry = self.tabview.get()
+        self.sample.last_geometry_chosen = geometry
         if geometry == "Section Ronde":
             D0 = self.option_diam_init_rond.get()
             L0 = self.option_long_init_rond.get()

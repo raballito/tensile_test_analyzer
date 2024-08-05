@@ -81,6 +81,7 @@ class Sample:
         self.show_rp02 = self.master.get_option_show_rp()
         self.analyzed_sample = False
         self.last_mode_chosen = 0
+        self.last_geometry_chosen = "Section Ronde"
         
       
     def show_var(self):
