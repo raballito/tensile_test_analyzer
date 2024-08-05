@@ -12,7 +12,7 @@ Data Analyzer - Main Window
 - Multisampling handling
 - Export graphics and sample summary
 
-Version: 1.0
+Version: Beta 1.0
 Last Update: 01.08.24
 
 @author: quentin.raball

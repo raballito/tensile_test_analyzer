@@ -11,8 +11,8 @@ Available functions:
     -identify_file(file_path) to config the sample with the correct columns number in the csv
 
 
-Version: 1.0
-Last Update: 01.08.24
+Version: Beta 1.0
+Last Update: 05.08.24
 
 @author: quentin.raball
 """
