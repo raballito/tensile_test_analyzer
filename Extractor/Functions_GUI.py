@@ -141,6 +141,9 @@ class InterfaceFunctions:
             self.master.figure_force_time.set_facecolor("white")
             self.update_preview()
             print("Changing appearence to Light")
+            
+    def change_theme_event(self, new_theme: str):
+        print(f"Changement de theme: {new_theme}")
 
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100

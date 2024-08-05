@@ -10,7 +10,7 @@ Created on Mon Apr 22 11:15:29 2024
 - Get Export Options functions
 
 Version: Beta 1.0
-Last Update: 01.08.24
+Last Update: 05.08.24
 
 @author: quentin.raball
 
