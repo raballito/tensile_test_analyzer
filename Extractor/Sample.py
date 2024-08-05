@@ -448,10 +448,13 @@ class Sample:
     
     def calculate_youngs_modulus(self):
         force_min = self.lin_range[0]
+        force_max = self.lin_range[1]
+        if force_min > force_max : 
+            force_min, force_max = force_max, force_min
+            
         differences_inf = [abs(force - force_min) for force in self.force_values]
         debut_range = differences_inf.index(min(differences_inf))
     
-        force_max = self.lin_range[1]
         differences_sup = [abs(force - force_max) for force in self.force_values]
         fin_range = differences_sup.index(min(differences_sup))
     
