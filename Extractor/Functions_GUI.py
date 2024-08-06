@@ -347,14 +347,24 @@ class InterfaceFunctions:
         self.master.canvas4.get_tk_widget().grid_columnconfigure(0, weight=1)
         
         # Récupérer les données
-        disp = sample.displacement_values
+        #disp = sample.displacement_values
         stress = sample.stress_values
         
-        self.master.ax4.set_xlim(0, 1.2 * max(disp))
-        self.master.ax4.set_ylim(0, 1.3 * max(stress))
+        # Trouver l'index où la déformation est la plus proche de zéro
+        zero_deformation_index = min(range(len(sample.deformation_values)), key=lambda i: abs(sample.deformation_values[i]))
+        offset_displacement = sample.displacement_values[zero_deformation_index]
+        
+        # Ajuster les valeurs de déplacement pour cet échantillon
+        adjusted_displacement_values = [disp - offset_displacement for disp in sample.displacement_values]
+        
+        max_stress = max(sample.stress_values)
+        max_displacement = max(adjusted_displacement_values)
+        
+        self.master.ax4.set_xlim(0, 1.2 * max_displacement)
+        self.master.ax4.set_ylim(0, 1.3 * max_stress)
         
         # Tracer les graphiques de base
-        self.master.ax4.plot(disp, stress, label=sample.sample_name)
+        self.master.ax4.plot(adjusted_displacement_values, stress, label=sample.sample_name)
         
         # Configuration des axes et légendes
         self.master.ax4.set_xlabel("Déplacement [mm]")
