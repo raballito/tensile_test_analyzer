@@ -8,7 +8,7 @@ Used to get main values from the sample structure
 Print tables with all values. Export possible
 
 Version: Beta 1.0
-Last Update: 05.08.24
+Last Update: 06.08.24
 
 @author: quentin.raball
 """
@@ -60,11 +60,11 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
 
         # Affichage des en-têtes du tableau
         headers = [
-            "Sample Name", "Test Bench", 
-            "Tested Mode", "Tested Geometry", 
-            "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Lin Range [N]", 
-            "Size of Data Values", "Max Force [N]", "Max Stroke [mm]",
-            "Rp [MPa]", "Rm [MPa]", "Max Deform [%]", "E [GPa]"
+            "Nom Sample", "Banc de Test", 
+            "Mode Testé", "Géométrie Testée", 
+            "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+            "Taille des données", "Max Force [N]", "Max Dépl. [mm]",
+            "Rp [MPa]", "Rm [MPa]", "Max Deform. [%]", "E [GPa]"
         ]
 
         for col, header in enumerate(headers):
@@ -96,11 +96,11 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
 
         # Affichage des en-têtes du tableau
         headers = [
-            "Sample Name", "Test Bench", 
-            "Tested Mode", "Tested Geometry", 
-            "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Lin Range [N]", 
-            "Size of Data Values", "Max Force [N]", "Max Stroke [mm]",
-            "Re [MPa]", "Rm [MPa]", "Max Deform [%]", "E [GPa]"
+            "Nom Sample", "Banc de Test", 
+            "Mode Testé", "Géométrie Testée", 
+            "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+            "Taille des données", "Max Force [N]", "Max Dépl. [mm]",
+            "Rp [MPa]", "Rm [MPa]", "Max Déform. [%]", "E [GPa]"
         ]
 
         for col, header in enumerate(headers):

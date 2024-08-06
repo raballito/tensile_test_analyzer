@@ -12,7 +12,7 @@ Available functions:
 -analyze() to analyze the samples with mode and geometry
 
 Version: Beta 1.0
-Last Update: 05.08.24
+Last Update: 06.08.24
 
 @author: quentin.raball
 """
@@ -379,7 +379,7 @@ class Sample:
                 else:
                     message = "Mode d'analyse invalide.\nVeuillez configurer le fichier premièrement."
                     print(message)
-                    messagebox.showinfo("Configuration du fichier absente", message)
+                    messagebox.showinfo("Configuration du fichier incorrecte", message)
                     break
             except ValueError:
                 print("Veuillez entrer une option valide.")
