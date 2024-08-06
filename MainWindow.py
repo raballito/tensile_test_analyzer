@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 
 
 customtkinter.set_appearance_mode("Light")  # Modes: "System" (standard), "Dark", "Light"
-customtkinter.set_default_color_theme("themes/red.json") # Themes: "blue", "green", "dark-blue", 
+customtkinter.set_default_color_theme("static/themes/red.json") # Themes: "blue", "green", "dark-blue", 
 
 
 class MainWindow(customtkinter.CTk):
