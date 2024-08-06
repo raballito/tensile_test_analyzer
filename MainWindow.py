@@ -137,7 +137,7 @@ class MainWindow(customtkinter.CTk):
         self.canvas2.get_tk_widget().grid_columnconfigure(0, weight=1)
 
         # Options de fichiers et d'analyse
-        self.tabview2 = customtkinter.CTkTabview(self)
+        self.tabview2 = customtkinter.CTkTabview(self, width=200)
         self.tabview2.grid(row=0, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.tabview2.add("Options d'analyse")
         self.tabview2.tab("Options d'analyse").grid_columnconfigure(0, weight=1)
@@ -161,7 +161,7 @@ class MainWindow(customtkinter.CTk):
         self.export_preview_button.grid(row=5, column=0, padx=20, pady=(20, 20))
 
         # Options d'exportations
-        self.checkbox_slider_frame = customtkinter.CTkScrollableFrame(self, label_text="Options d'exportation", width=200)
+        self.checkbox_slider_frame = customtkinter.CTkScrollableFrame(self, label_text="Options d'exportation")
         self.checkbox_slider_frame.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.checkbox_1 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Nom du sample")
         self.checkbox_1.grid(row=1, column=0, pady=(0, 0), padx=10, sticky="nw")
