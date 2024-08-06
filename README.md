@@ -1,7 +1,8 @@
 # Tensile Test Analyzer
 
-Ce programme a été créer pour le département COMATEC de la Haute Ecole d'Ingénierie et de Gestion du Canton de Vaud (HEIG-VD)
-Il permet de traiter les résultats obtenus par les machines de tractions à disposition du département.
+Ce programme a été créer pour le département COMATEC de la Haute Ecole d'Ingénierie et de Gestion du Canton de Vaud (HEIG-VD).
+
+Il permet de traiter les résultats de tests obtenus par les machines de tractions à disposition du département.
 
 https://heig-vd.ch/recherche/instituts/comatec/
 
