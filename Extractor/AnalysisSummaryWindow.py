@@ -93,12 +93,19 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         max_displacement = 0
         
         for sample in self.sample_list:
+            # Trouver l'index où la déformation est la plus proche de zéro
+            zero_deformation_index = min(range(len(sample.deformation_values)), key=lambda i: abs(sample.deformation_values[i]))
+            offset_displacement = sample.displacement_values[zero_deformation_index]
+            
+            # Ajuster les valeurs de déplacement pour cet échantillon
+            adjusted_displacement_values = [disp - offset_displacement for disp in sample.displacement_values]
+            
             max_force = max(max_force, max(sample.force_values))
-            max_displacement = max(max_displacement, max(sample.displacement_values))
+            max_displacement = max(max_displacement, max(adjusted_displacement_values))
             
             # Plot only positive values
             positive_force_values = [max(0, force) for force in sample.force_values]
-            ax.plot(sample.displacement_values, positive_force_values, label=self.get_label(sample))
+            ax.plot(adjusted_displacement_values, positive_force_values, label=self.get_label(sample))
         
         # Adjust the plot limits based on the maximum positive values
         ax.set_xlim(0, 1.2 * max_displacement)
@@ -115,12 +122,20 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         max_displacement = 0
         
         for sample in self.sample_list:
+            # Trouver l'index où la déformation est la plus proche de zéro
+            zero_deformation_index = min(range(len(sample.deformation_values)), key=lambda i: abs(sample.deformation_values[i]))
+            offset_displacement = sample.displacement_values[zero_deformation_index]
+            
+            # Ajuster les valeurs de déplacement pour cet échantillon
+            adjusted_displacement_values = [disp - offset_displacement for disp in sample.displacement_values]
+            
             max_stress = max(max_stress, max(sample.stress_values))
-            max_displacement = max(max_displacement, max(sample.displacement_values))
+            max_displacement = max(max_displacement, max(adjusted_displacement_values))
             
             # Plot only positive values
             positive_stress_values = [max(0, stress) for stress in sample.stress_values]
-            ax.plot(sample.displacement_values, positive_stress_values, label=self.get_label(sample))
+            ax.plot(adjusted_displacement_values, positive_stress_values, label=self.get_label(sample))
+    
         
         # Adjust the plot limits based on the maximum positive values
         ax.set_xlim(0, 1.2 * max_displacement)

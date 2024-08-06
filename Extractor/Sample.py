@@ -534,7 +534,7 @@ class Sample:
             self.elastic_retreat = self.format_sign(self.elastic_retreat, self.round_val)
             
     def display_results(self):
-        print("\nDonnées Individuelles Extraites :\n\nForce Max = ", self.F_max, " [N]\nRm = ", self.Rm, " [MPa]\nRp0.2 = ", self.Re, " [MPa]\nE = ", self.E, " [GPa]\nAllongement max = ", self.Allong, " [mm]\nDéformation Max = ", self.Defo, " [%]\nRetour élastique: ", self.elastic_retreat, " [mm]\n")
+        print("\nDonnées Individuelles Extraites :\n\nForce Max = ", self.F_max, " [N]\nRm = ", self.Rm, " [MPa]\nRp0.2 = ", self.Re, " [MPa]\nE = ", self.E, " [GPa]\nAllongement max = ", self.Allong, " [mm]\nDéformation Max = ", self.Defo, " [%]\nRetour élastique: ", self.elastic_retreat, " [%]\n")
         
     def format_sign(self, num, sig_figs):
         if num == None:
