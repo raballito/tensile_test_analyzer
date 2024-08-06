@@ -328,7 +328,7 @@ class InterfaceFunctions:
         self.master.ax3.plot(defo, stress, label=sample.sample_name)
         show_rp02 = sample.master.get_option_show_rp()
         if show_rp02 == True and sample.Defo > sample.coef_rp:
-            self.master.ax3.plot([x_start, x_end], [y_start, y_end], label='Limite élastique', linestyle='--', color='red')
+            self.master.ax3.plot([x_start, x_end], [y_start, y_end], label='Limite élastique', linestyle='--', color='orange')
         
         # Configuration des axes et légendes
         self.master.ax3.set_xlabel("Déformation [%]")

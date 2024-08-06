@@ -281,25 +281,23 @@ class Sample:
         x_end = data_plot[x_label].max()
         y_end = E * (x_end - x_start)
         
-        plt.plot([x_start, x_end], [y_start, y_end], label='Limite élastique', linestyle='-', color='orange')
+        plt.plot([x_start, x_end], [y_start, y_end], label='Limite élastique', linestyle='--', color='orange')
         self.show_legend = self.master.get_option_show_legend()
         if self.show_legend :
             plt.legend()
     
     def add_table_to_plot(self, data_plot, x_label, y_label, max_x_label, max_y_label):
         if max_x_label == 'A_max':
-            max_x_value = (data_plot['Déplacement [mm]'].max() - data_plot['Déplacement [mm]'].iloc[1])
+            max_x_value = self.Allong
         elif max_x_label == 'ε_max':
-            max_x_value = data_plot['Déformation [%]'].max()
+            max_x_value = self.Defo
         elif max_x_label == 't_max':
-            max_x_value = data_plot['Time [s]'].max()
+            max_x_value = self.t_max
         
         if max_y_label == 'F_max':
-            max_y_value = data_plot['Force [N]'].max()
-            if self.master.get_option_scale_kN():
-                max_y_value /= 1000
+            max_y_value = self.F_max
         elif max_y_label == 'σ_max':
-            max_y_value = data_plot['Contrainte [MPa]'].max()
+            max_y_value = self.Rm
         
         if self.round_val != 0:
             max_y_value = self.format_sign(max_y_value, self.master.get_round_val())
