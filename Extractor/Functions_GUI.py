@@ -9,7 +9,7 @@ GUI Related Functions
 - Events throughs files managed by this file mainly
 
 Version: Beta 1.0
-Last Update: 05.08.24
+Last Update: 06.08.24
 
 @author: quentin.raball
 """
@@ -145,6 +145,11 @@ class InterfaceFunctions:
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
+        
+    def change_theme_event(self, new_theme: str):
+        print(f"Changement de theme: {new_theme}")
+        theme_path = os.path.join("static/themes", f"{new_theme}.json")
+        customtkinter.set_default_color_theme(theme_path)
 
     def directory_button_event(self):
         print("directory_button clicked")
@@ -396,6 +401,11 @@ class InterfaceFunctions:
                 csv_files.append(filepath)
         print("Nombre de fichiers détectés dans dossier", csv_folder, ": ", len(csv_files))
         return csv_files
+    
+    def list_themes_names(self):
+        theme_files = [f for f in os.listdir("static/themes") if f.endswith(".json")]
+        theme_names = [os.path.splitext(f)[0] for f in theme_files]
+        return theme_names
     
     def create_short_list(self, long_list):
         short_list = []
