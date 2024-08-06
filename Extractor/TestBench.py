@@ -11,8 +11,8 @@ Available functions:
     -identify_file(file_path) to config the sample with the correct columns number in the csv
 
 
-Version: Beta 1.0
-Last Update: 05.08.24
+Version: Beta 1.1
+Last Update: 06.08.24
 
 @author: quentin.raball
 """
@@ -113,14 +113,14 @@ class TestBench:
             self.time_channel = 1
             self.stroke_channel = 10
             self.force_unit = 1000 #Unité canal force en kN
-            self.repeat_every = 11
+            self.repeat_every = 10
             with open(file_path, 'r', encoding='latin-1') as file: 
                 first_line = file.readline().strip()
                 self.available_sample_names = ['Default W+B 100 kN']
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(first_line[1]) // 11
+                self.number_of_test = len(first_line[1]) // 10
                 self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
         
         else:

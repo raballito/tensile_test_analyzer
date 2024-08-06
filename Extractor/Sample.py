@@ -127,6 +127,9 @@ class Sample:
         # Convertir les lignes en une liste de listes en utilisant le séparateur
         data_list = [line.split(self.separator) for line in lines]
         raw_data = pd.DataFrame(data_list)
+        data_width = raw_data.shape[1]
+        if data_width < self.repeat_every:
+            return
         force_column = self.force_channel - 1
         displacement_column = self.stroke_channel - 1
         time_column = self.time_channel - 1
@@ -135,7 +138,7 @@ class Sample:
         time_data = pd.to_numeric(raw_data.iloc[:, time_column], errors='coerce')
         force_data = pd.to_numeric(raw_data.iloc[:, force_column], errors='coerce')
         displacement_data = pd.to_numeric(raw_data.iloc[:, displacement_column], errors='coerce')
-        data = pd.DataFrame({'Temps [s]':time_data, 'Force [N]': force_data, 'Déplacement [mm]': displacement_data})
+        data = pd.DataFrame({'Temps [s]': time_data, 'Force [N]': force_data, 'Déplacement [mm]': displacement_data})
         # Correction facteur force
         data['Force [N]'] = data['Force [N]'].apply(lambda x: x * self.force_unit)
         data.dropna(inplace=True)
