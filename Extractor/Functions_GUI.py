@@ -36,6 +36,7 @@ class InterfaceFunctions:
         self.test_bench = TestBench(self)
         self.help_window = None
         self.export_window = None
+        self.analysisWindow = None
     
     def pop_message_init(self):
         messagebox.showinfo("Initialisation du programme", "Bienvenu dans le programme CSV Data Analyser.\n\nVeuillez sélectionner un répertoire de données.\n\nCliquer sur annuler dans la prochaine fenêtre pour sélectionner le répertoire par défaut 'Data'")
@@ -123,8 +124,20 @@ class InterfaceFunctions:
             self.export_window.attributes("-topmost", False)
             self.export_window.focus()
             print("Retourne à la fenêtre d'exportation")
+            
+    def open_summary_window_event(self, sample_list):     
+        if self.analysisWindow is None or not self.analysisWindow.winfo_exists():
+            # Si aucune fenêtre d'exportation n'existe, ou si la fenêtre précédente a été détruite
+            self.analysisWindow = AnalysisSummaryWindow(sample_list)
+            self.current_sample_list = sample_list
+            self.analysisWindow.attributes("-topmost", True)
+            self.analysisWindow.focus()
+            print("Ouvre la fenêtre de résumé")
+        else:
+            self.analysisWindow.attributes("-topmost", False)
+            self.analysisWindow.focus()
+            print("Retourne à la fenêtre de résumé")
     
-        
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
         if new_appearance_mode == "Dark" :
@@ -376,8 +389,7 @@ class InterfaceFunctions:
         else:
             analysed_sample = [sample.sample_name for sample in sample_list]
             message = f'Analyse terminée pour les samples :  {analysed_sample}'
-            self.analysisWindow = AnalysisSummaryWindow(sample_list)
-            self.analysisWindow.attributes("-topmost", True)
+            self.open_summary_window_event(sample_list)
         print(message)
         last_selected_element = self.master.scrollable_label_button_frame.selected_sample
         if last_selected_element is not None:
