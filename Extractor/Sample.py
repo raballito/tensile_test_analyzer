@@ -79,6 +79,7 @@ class Sample:
         self.show_Fmax_Allong_value = self.master.get_option_show_force_stroke()
         self.defo_percent = self.master.get_option_defo_percent()
         self.show_rp02 = self.master.get_option_show_rp()
+        self.show_legend = self.master.get_option_show_legend()
         self.analyzed_sample = False
         self.last_mode_chosen = 0
         self.last_geometry_chosen = "Section Ronde"
@@ -185,7 +186,7 @@ class Sample:
             stress_deformation_path = self.export_graph(
                 'Contrainte-Déformation', 
                 'Déformation [%]', 
-                'σ [MPa]', 
+                'Contrainte [MPa]', 
                 self.deformation_values, 
                 self.stress_values, 
                 f"graphique_contrainte_deformation_{os.path.basename(self.file_path)} - {self.sample_name}.png",
@@ -197,7 +198,7 @@ class Sample:
             stress_displacement_path = self.export_graph(
                 'Contrainte-Déplacement', 
                 'Déplacement [mm]', 
-                'σ [MPa]', 
+                'Contrainte [MPa]', 
                 self.displacement_values, 
                 self.stress_values, 
                 f"graphique_contrainte_deplacement_{os.path.basename(self.file_path)} - {self.sample_name}.png",
@@ -253,8 +254,8 @@ class Sample:
         
         if y_label == 'Force [N]':
             plt.ylabel('Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]')
-        elif y_label == 'σ [MPa]':
-            plt.ylabel('σ [MPa]')
+        elif y_label == 'Contrainte [MPa]':
+            plt.ylabel('Contrainte [MPa]')
             
         if x_label == 'Déplacement [mm]':
             plt.xlabel('Déplacement [mm]')
@@ -270,7 +271,7 @@ class Sample:
         
         self.show_rp02 = self.master.get_option_show_rp()
         
-        if self.show_rp02 and y_label == 'σ [MPa]' and x_label == 'Déformation [%]' and float(self.Defo) > float(self.coef_rp):
+        if self.show_rp02 and y_label == 'Contrainte [MPa]' and x_label == 'Déformation [%]' and float(self.Defo) > float(self.coef_rp):
             self.add_elastic_limit_line(data_plot, x_label)
     
     def add_elastic_limit_line(self, data_plot, x_label):
@@ -280,8 +281,10 @@ class Sample:
         x_end = data_plot[x_label].max()
         y_end = E * (x_end - x_start)
         
-        plt.plot([x_start, x_end], [y_start, y_end], label='Limite élastique', linestyle='--', color='red')
-        plt.legend()
+        plt.plot([x_start, x_end], [y_start, y_end], label='Limite élastique', linestyle='-', color='orange')
+        self.show_legend = self.master.get_option_show_legend()
+        if self.show_legend :
+            plt.legend()
     
     def add_table_to_plot(self, data_plot, x_label, y_label, max_x_label, max_y_label):
         if max_x_label == 'A_max':
@@ -296,7 +299,7 @@ class Sample:
             if self.master.get_option_scale_kN():
                 max_y_value /= 1000
         elif max_y_label == 'σ_max':
-            max_y_value = data_plot['σ [MPa]'].max()
+            max_y_value = data_plot['Contrainte [MPa]'].max()
         
         if self.round_val != 0:
             max_y_value = self.format_sign(max_y_value, self.master.get_round_val())
@@ -304,7 +307,7 @@ class Sample:
         
         if y_label == 'Force [N]':
             force_label = 'Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]'
-        elif y_label == 'σ [MPa]':
+        elif y_label == 'Contrainte [MPa]':
             force_label = 'σ [MPa]'
         
         if max_x_label == 't_max':

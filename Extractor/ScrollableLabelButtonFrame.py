@@ -10,7 +10,7 @@ Created on Mon Apr 22 11:15:29 2024
 - Get Export Options functions
 
 Version: Beta 1.0
-Last Update: 05.08.24
+Last Update: 06.08.24
 
 @author: quentin.raball
 
@@ -208,3 +208,10 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             option_value_show_rp = True
         return option_value_show_rp
     
+    def get_option_show_legend(self):
+        value_show_legend = self.master.checkbox_3.get()
+        if value_show_legend == 0:
+            option_show_legend = False
+        elif value_show_legend == 1:
+            option_show_legend = True
+        return option_show_legend

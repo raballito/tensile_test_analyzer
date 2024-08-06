@@ -22,13 +22,21 @@ import numpy as np
 
 
 class AnalysisSummaryWindow(ctk.CTkToplevel):
-    def __init__(self, sample_list, *args, **kwargs):
+    def __init__(self, sample_list, option_list, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title("Résumé de l'Analyse")
         self.geometry("1280x800")
 
         self.sample_list = [sample for sample in sample_list if sample.analyzed_sample]
-
+        
+        print(f"Etat des options : {option_list}")
+        self.option_name = option_list[0]
+        self.option_path = option_list[1]
+        self.option_legend = option_list[2]
+        self.option_defo_percent = option_list[3]
+        self.option_elastic_line = option_list[4]
+        self.option_show_table = option_list[5]
+        
         self.create_tabs()
         self.create_summary_table()
         self.create_buttons()
@@ -67,7 +75,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             
             # Plot only positive values
             positive_stress_values = [max(0, stress) for stress in sample.stress_values]
-            ax.plot(sample.deformation_values, positive_stress_values, label=sample.sample_name)
+            ax.plot(sample.deformation_values, positive_stress_values, label=self.get_label(sample))
         
         # Adjust the plot limits based on the maximum positive values
         ax.set_xlim(0, 1.2 * max_deformation)
@@ -76,7 +84,8 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         ax.set_title('Contrainte-Déformation')
         ax.set_xlabel('Déformation [%]')
         ax.set_ylabel('σ [MPa]')
-        ax.legend()
+        if self.option_legend:
+            ax.legend()
 
     def plot_force_displacement(self, figure):
         ax = figure.add_subplot(111)
@@ -89,7 +98,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             
             # Plot only positive values
             positive_force_values = [max(0, force) for force in sample.force_values]
-            ax.plot(sample.displacement_values, positive_force_values, label=sample.sample_name)
+            ax.plot(sample.displacement_values, positive_force_values, label=self.get_label(sample))
         
         # Adjust the plot limits based on the maximum positive values
         ax.set_xlim(0, 1.2 * max_displacement)
@@ -97,7 +106,8 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         ax.set_title('Force-Déplacement')
         ax.set_xlabel('Déplacement [mm]')
         ax.set_ylabel('Force [N]')
-        ax.legend()
+        if self.option_legend:
+            ax.legend()
 
     def plot_stress_displacement(self, figure):
         ax = figure.add_subplot(111)
@@ -110,7 +120,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             
             # Plot only positive values
             positive_stress_values = [max(0, stress) for stress in sample.stress_values]
-            ax.plot(sample.displacement_values, positive_stress_values, label=sample.sample_name)
+            ax.plot(sample.displacement_values, positive_stress_values, label=self.get_label(sample))
         
         # Adjust the plot limits based on the maximum positive values
         ax.set_xlim(0, 1.2 * max_displacement)
@@ -118,7 +128,20 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         ax.set_title('Contrainte-Déplacement')
         ax.set_xlabel('Déplacement [mm]')
         ax.set_ylabel('σ [MPa]')
-        ax.legend()
+        if self.option_legend:
+            ax.legend()
+            
+            
+    def get_label(self, sample):
+        if self.option_name and self.option_path:
+            label = f'{sample.sample_name} - {os.path.relpath(sample.file_path)}'
+        elif self.option_name and not self.option_path:
+            label = f'{sample.sample_name}'
+        elif self.option_path and not self.option_name:
+            label = f'{os.path.relpath(sample.file_path)}'
+        else:
+            label = ''
+        return label
 
     def create_summary_table(self):
         frame = ctk.CTkFrame(self)

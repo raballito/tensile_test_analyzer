@@ -125,18 +125,29 @@ class InterfaceFunctions:
             self.export_window.focus()
             print("Retourne à la fenêtre d'exportation")
             
-    def open_summary_window_event(self, sample_list):     
+    def open_summary_window_event(self, sample_list):
         if self.analysisWindow is None or not self.analysisWindow.winfo_exists():
             # Si aucune fenêtre d'exportation n'existe, ou si la fenêtre précédente a été détruite
-            self.analysisWindow = AnalysisSummaryWindow(sample_list)
-            self.current_sample_list = sample_list
+            self.analysisWindow = AnalysisSummaryWindow(sample_list, self.get_options())
             self.analysisWindow.attributes("-topmost", True)
             self.analysisWindow.focus()
             print("Ouvre la fenêtre de résumé")
         else:
-            self.analysisWindow.attributes("-topmost", False)
+            self.analysisWindow.destroy()
+            self.analysisWindow = AnalysisSummaryWindow(sample_list, self.get_options())
+            self.analysisWindow.attributes("-topmost", True)
             self.analysisWindow.focus()
             print("Retourne à la fenêtre de résumé")
+            
+    def get_options(self):
+        option_name = bool(self.master.checkbox_1.get())
+        option_path = bool(self.master.checkbox_2.get())
+        option_legend = bool(self.master.checkbox_3.get())
+        option_defo_percent = bool(self.master.checkbox_4.get())
+        option_elastic_line = bool(self.master.checkbox_5.get())
+        option_show_table = bool(self.master.checkbox_6.get())
+        
+        return [option_name, option_path, option_legend, option_defo_percent, option_elastic_line, option_show_table]
     
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
