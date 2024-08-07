@@ -82,7 +82,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         ax.set_ylim(0, 1.3 * max_stress)
 
         ax.set_title('Contrainte-Déformation')
-        ax.set_xlabel('Déformation [%]')
+        ax.set_xlabel('Déformation [%]') if self.option_defo_percent else ax.set_xlabel('Déformation [-]')
         ax.set_ylabel('σ [MPa]')
         if self.option_legend:
             ax.legend()

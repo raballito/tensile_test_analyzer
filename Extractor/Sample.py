@@ -278,7 +278,10 @@ class Sample:
             self.add_elastic_limit_line(data_plot, x_label)
     
     def add_elastic_limit_line(self, data_plot, x_label):
-        E = self.E*10
+        if self.defo_percent:
+            E = self.E*10
+        else:
+            E = self.E*1000
         x_start = self.coef_rp
         y_start = 0
         x_end = data_plot[x_label].max()
@@ -314,7 +317,7 @@ class Sample:
         if max_x_label == 't_max':
             max_x_unit = '[s]'
         elif max_x_label == 'ε_max':
-            max_x_unit = '[%]'
+            max_x_unit = '[%]' if self.defo_percent else '[-]'
         else:
             max_x_unit = '[mm]'
         
@@ -351,7 +354,7 @@ class Sample:
     # Fonction d'analyse des valeurs en traction. Conversion vers contrainte-déformation
     def analyze(self):
         print("Début de l'analyse. Veuillez patienter...\n")
-    
+        self.defo_percent = self.master.get_option_defo_percent()
         self.choose_analysis_mode()
         self.convert_deformation()
         self.calculate_youngs_modulus()
@@ -448,7 +451,7 @@ class Sample:
     
     def convert_deformation(self):
         if not self.defo_percent:
-            self.deformation_values = [disp / 100 for disp in self.displacement_values]
+            self.deformation_values = [defo / 100 for defo in self.deformation_values]
     
     def calculate_youngs_modulus(self):
         force_min = self.lin_range[0]

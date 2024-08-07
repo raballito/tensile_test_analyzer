@@ -313,9 +313,13 @@ class InterfaceFunctions:
         self.master.canvas3.get_tk_widget().grid_columnconfigure(0, weight=1)
         
         # Récupérer les données
+        option_percent = bool(self.master.checkbox_4.get())
         defo = sample.deformation_values
         stress = sample.stress_values
-        E = 10*float(sample.E)
+        if option_percent == True:
+            E = 10*float(sample.E)
+        else: 
+            E=1000*float(sample.E)
         x_start = sample.coef_rp
         y_start = 0
         x_end = max(defo)
