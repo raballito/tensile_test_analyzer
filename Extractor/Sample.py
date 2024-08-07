@@ -443,11 +443,25 @@ class Sample:
             print("Veuillez entrer une option valide.")
             
     def mod_young_analysis(self, geometry_mode, disp_ini):
-        print("Fonction pas encore implémentée")
-        # Récupérer période et premier index
+        print("Fonction pas encore terminée")
+        try:
+            if geometry_mode == "Section Ronde":
+                self.S0 = np.pi * (self.D0**2) / 4
+                print("Traitement des données en mode Module de Young - Géométrie Ronde.")
+            elif geometry_mode == "Section Rectangulaire":
+                self.S0 = self.H0 * self.W0
+                print("Traitement des données en mode Module de Young - Géométrie Rectangulaire.")
+            else:
+                print("La géométrie choisie est incorrecte.")
+                return
+    
+            self.stress_values = [force / self.S0 for force in self.force_values]
+            self.deformation_values = [(disp - disp_ini) / self.L0 * 100 for disp in self.displacement_values]
+        # Récupérer les index de la courbe qui intersectent les lignes F-min et F-max et les mettres dans une liste
         # Séparer chaque partie dans une nouvelle classe Sample avec les même paramètres L0, D0, etc... sur une demi période
         # Pour chaque sample créé, analyser la contrainte
-        return
+        except ValueError:
+            print("Veuillez entrer une option valide.")
     
     def convert_deformation(self):
         if not self.defo_percent:

@@ -219,7 +219,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         
         # Comportement par défaut
         #self.radio_button_3.configure(state="disabled")
-        self.radio_button_4.configure(state="disabled")
+        
         relative_path = os.path.relpath(file_path)
         self.option_machine.set(test_bench)
         self.label_file_path.configure(text=relative_path)
@@ -229,6 +229,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
             self.option_machine.configure(state="disabled")
             self.option_canal.set("Canal Traverse")
             self.option_canal.configure(state="disabled")
+            self.radio_button_4.configure(state="disabled")
             
         elif test_bench == "WB100kN":
             self.option_machine.configure(state="disabled")
@@ -237,6 +238,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
             self.option_machine.set("WB100kN")
             self.option_canal.configure(state="enabled")
             self.option_machine.configure(state="enabled")
+            self.radio_button_4.configure(state="disabled")
             
             
         
@@ -258,6 +260,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
                                                 size=(100, 334))
             self.image_label_rond.configure(image=self.image_rond)
             self.image_label_rond.image = self.image_rond  # Update image reference
+            self.option_canal.configure(state="enable")
             
         elif mode_test == 1: # Test flexion 3pts
             image_rect_img_light = Image.open("static/image_flexion_3pts_rect.png")
@@ -275,6 +278,8 @@ class ConfigWindow(customtkinter.CTkToplevel):
                                                 size=(100, 334))
             self.image_label_rond.configure(image=self.image_rond)
             self.image_label_rond.image = self.image_rond  # Update image reference
+            self.option_canal.set("Canal Traverse")
+            self.option_canal.configure(state="disabled")
         
         elif mode_test == 2: # Test flexion 4pts
             image_rect_img_light = Image.open("static/image_flexion_4pts_rect.png")
@@ -292,8 +297,10 @@ class ConfigWindow(customtkinter.CTkToplevel):
                                                 size=(100, 334))
             self.image_label_rond.configure(image=self.image_rond)
             self.image_label_rond.image = self.image_rond  # Update image reference
+            self.option_canal.set("Canal Traverse")
+            self.option_canal.configure(state="disabled")
             
-        elif mode_test == 3: # Test flexion 4pts
+        elif mode_test == 3: # Test Module de Young
             image_rect_img_light = Image.open("static/image_mod_young_rect.png")
             image_rect_img_dark = Image.open("static/image_mod_young_rect_dark.png")
             self.image_rect = customtkinter.CTkImage(light_image=image_rect_img_light,
@@ -309,6 +316,8 @@ class ConfigWindow(customtkinter.CTkToplevel):
                                                 size=(100, 334))
             self.image_label_rond.configure(image=self.image_rond)
             self.image_label_rond.image = self.image_rond  # Update image reference
+            self.option_canal.set("Canal Extensomètre")
+            self.option_canal.configure(state="disabled")
             
         self.update_l1_visibility()
 
