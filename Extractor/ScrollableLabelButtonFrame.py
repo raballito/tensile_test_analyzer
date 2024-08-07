@@ -9,8 +9,8 @@ Created on Mon Apr 22 11:15:29 2024
 - Get selected checkbox and sample vars functions from mainwindow
 - Get Export Options functions
 
-Version: Beta 1.1
-Last Update: 06.08.24
+Version: Beta 1.2
+Last Update: 07.08.24
 
 @author: quentin.raball
 
@@ -80,7 +80,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             sample_struct.stroke_channel = stroke_channel
             imported = sample_struct.import_data()
             if imported == None:
-                print(f"Erreur d'importation du fichier {file_path_rel}. Fichier non-ajouté à la liste.\n")
+                print(f"Erreur d'importation du fichier {file_path_rel}.\nFichier ignoré.\n")
                 self.checkbox_variable_list.remove(checkbox_var)
                 break
             # Création des lignes du tableau

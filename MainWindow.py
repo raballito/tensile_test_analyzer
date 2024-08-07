@@ -12,8 +12,8 @@ Data Analyzer - Main Window
 - Multisampling handling
 - Export graphics and sample summary
 
-Version: Beta 1.1
-Last Update: 06.08.24
+Version: Beta 1.2
+Last Update: 07.08.24
 
 @author: quentin.raball
 """
@@ -41,7 +41,7 @@ class MainWindow(customtkinter.CTk):
 
         # Configuration de la fenêtre
         self.title("CSV Data Analyzer")
-        self.geometry(f"{1200}x{600}")
+        self.geometry(f"{1200}x{800}")
 
         # Initialisation du dossier de travail
         self.interface_functions.pop_message_init()

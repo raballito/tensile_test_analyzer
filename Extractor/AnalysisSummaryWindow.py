@@ -6,8 +6,8 @@ End of analysis window. Print a summary of the analysis with table and graphics.
 - 3 types of graphics
 - Summary table with average and standard deviation
 
-Version: Beta 1.1
-Last Update: 06.08.24
+Version: Beta 1.2
+Last Update: 07.08.24
 
 @author: quentin.raball
 """

@@ -11,8 +11,8 @@ Available functions:
 -export_preview() to export graphics and tables
 -analyze() to analyze the samples with mode and geometry
 
-Version: Beta 1.1
-Last Update: 06.08.24
+Version: Beta 1.2
+Last Update: 07.08.24
 
 @author: quentin.raball
 """
@@ -298,7 +298,7 @@ class Sample:
             max_x_value = self.t_max
         
         if max_y_label == 'F_max':
-            max_y_value = self.F_max
+            max_y_value = self.F_max /1000 if self.master.get_option_scale_kN() else self.F_max
         elif max_y_label == 'σ_max':
             max_y_value = self.Rm
         
