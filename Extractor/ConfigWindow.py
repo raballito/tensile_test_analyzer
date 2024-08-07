@@ -48,11 +48,27 @@ class ConfigWindow(customtkinter.CTkToplevel):
         file_path = self.sample.file_path
         test_bench = self.sample.test_bench
         
-        D0_default = tkinter.StringVar(self, 1)
-        L0_default = tkinter.StringVar(self, 100)
-        L1_default = tkinter.StringVar(self, 20)
-        W0_default = tkinter.StringVar(self, 3)
-        H0_default = tkinter.StringVar(self, 2)
+        # Valeurs de champs par défaut
+        if not self.sample.D0 == None:
+            D0_default = tkinter.StringVar(self, self.sample.D0)
+        else:
+            D0_default = tkinter.StringVar(self, 1)
+        if not self.sample.L0 == None:
+            L0_default = tkinter.StringVar(self, self.sample.L0)
+        else:
+            L0_default = tkinter.StringVar(self, 100)
+        if not self.sample.L1 == None:
+            L1_default = tkinter.StringVar(self, self.sample.L1)
+        else: 
+            L1_default = tkinter.StringVar(self, 20)
+        if not self.sample.W0 == None:
+            W0_default = tkinter.StringVar(self, self.sample.W0)
+        else:
+            W0_default = tkinter.StringVar(self, 3)
+        if not self.sample.H0 == None:
+            H0_default = tkinter.StringVar(self, self.sample.H0)
+        else:
+            H0_default = tkinter.StringVar(self, 2)
         
         F_min_default = tkinter.StringVar(self, self.sample.lin_range[0])
         F_max_default = tkinter.StringVar(self, self.sample.lin_range[1])
