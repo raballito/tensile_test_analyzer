@@ -6,11 +6,11 @@ Il permet de traiter les résultats de tests obtenus par les machines de tractio
 
 https://heig-vd.ch/recherche/instituts/comatec/
 
-Le projet est basé sur le plugin CustomTkInter : https://github.com/TomSchimansky/CustomTkinter
+Le projet est basé sur Python et sur le plugin CustomTkInter : https://github.com/TomSchimansky/CustomTkinter
 
 Projet en français réalisé par Quentin Raball
 
-N° Version : Beta 1
+N° Version : Beta 1.1
 
 ## Fonctionnalités
 - Gestion des fichiers dans le programme.
@@ -46,10 +46,9 @@ Si tout a été installé correctement, il suffit de lancer le programme princip
 
 ## A venir (Work in Progress)
 - Ajout de l'analyse en mode "Module de Young". Extensomètre obligatoire. Pour traitement des courbes de tractions Force-Temps sinusoïdales et obention du module de Young moyen sur plusieurs cycles de forces.
-- Gestion des thèmes
 - Exportation dans un fichier Excel + Rapport type/Compte rendu
-- Meilleure gestion du Dark Mode
-- Sauvegarde + Chargements programme
+- Meilleure gestion du Dark Mode etréglage des derniers problèmes avec le mode sombre.
+- Sauvegarde + Chargements sessions/résultats d'analyses. 
 
 
 ## F.A.Q
