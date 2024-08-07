@@ -40,7 +40,7 @@ class MainWindow(customtkinter.CTk):
         self.scrollable_label_button_frame = ScrollableLabelButtonFrame(self)
 
         # Configuration de la fenêtre
-        self.title("CSV Data Analyzer")
+        self.title("Tensile Test Analyzer")
         self.geometry(f"{1200}x{800}")
 
         # Initialisation du dossier de travail
@@ -64,7 +64,7 @@ class MainWindow(customtkinter.CTk):
         self.sidebar_frame.grid_rowconfigure(7, weight=1)
         self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, image=logo, text="")
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
-        self.title_label = customtkinter.CTkLabel(self.sidebar_frame, text="CSV Data Analyzer", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.title_label = customtkinter.CTkLabel(self.sidebar_frame, text="Tensile Test Analyzer", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.title_label.grid(row=1, column=0, padx=20, pady=(20, 10))
         self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Ajouter un fichier", command=lambda: self.on_button_add_file(folder_ask))
         self.sidebar_button_1.grid(row=2, column=0, padx=20, pady=10)
