@@ -444,63 +444,135 @@ class Sample:
             print("Veuillez entrer une option valide.")
             
     def mod_young_analysis(self, geometry_mode, disp_ini):
-        print("Fonction pas encore terminée")
-        try:
-            if geometry_mode == "Section Ronde":
-                self.S0 = np.pi * (self.D0**2) / 4
-                print("Traitement des données en mode Module de Young - Géométrie Ronde.")
-            elif geometry_mode == "Section Rectangulaire":
-                self.S0 = self.H0 * self.W0
-                print("Traitement des données en mode Module de Young - Géométrie Rectangulaire.")
-            else:
-                print("La géométrie choisie est incorrecte.")
-                return
+        print("Début de l'analyse pour le Module de Young.")
     
-            self.stress_values = [force / self.S0 for force in self.force_values]
-            self.deformation_values = [(disp - disp_ini) / self.L0 * 100 for disp in self.displacement_values]
-        # Récupérer les index de la courbe qui intersectent les lignes F-min et F-max et les mettres dans une liste
-        # Séparer chaque partie dans une nouvelle classe Sample avec les même paramètres L0, D0, etc... sur une demi période
-        # Pour chaque sample créé, analyser le module de young
-        except ValueError:
-            print("Veuillez entrer une option valide.")
+        if geometry_mode == "Section Ronde":
+            self.S0 = np.pi * (self.D0**2) / 4
+            print("Traitement des données en mode Module de Young - Géométrie Ronde.")
+        elif geometry_mode == "Section Rectangulaire":
+            self.S0 = self.H0 * self.W0
+            print("Traitement des données en mode Module de Young - Géométrie Rectangulaire.")
+        else:
+            print("La géométrie choisie est incorrecte.")
+            return
+    
+        # Conversion des valeurs de contrainte et déformation
+        self.stress_values = [force / self.S0 for force in self.force_values]
+        self.deformation_values = [(disp - disp_ini) / self.L0 * 100 for disp in self.displacement_values]
+    
+        # Détecter les intersections des lignes horizontales
+        intersections = self.find_intersections(self.stress_values, self.deformation_values)
+    
+        # Créer des sous-échantillons basés sur les intersections
+        subsamples = self.create_subsamples(intersections)
+    
+        # Ajouter les sous-échantillons aux valeurs de contrainte et de déformation
+        self.subsamples = subsamples
+    
+    def find_intersections(self, stress_values, deformation_values):
+        # Implémentez ici la logique pour détecter les intersections avec les lignes horizontales
+        intersections = []
+        # Supposons que vous avez les valeurs des lignes horizontales
+        line1, line2 = self.lin_range[0], self.lin_range[1]
+    
+        for i in range(len(stress_values) - 1):
+            if (stress_values[i] <= line1 <= stress_values[i + 1]) or (stress_values[i + 1] <= line1 <= stress_values[i]):
+                intersections.append(i)
+            if (stress_values[i] <= line2 <= stress_values[i + 1]) or (stress_values[i + 1] <= line2 <= stress_values[i]):
+                intersections.append(i)
+    
+        return intersections
+    
+    def create_subsamples(self, intersections):
+        subsamples = []
+        intersections = sorted(intersections)
+    
+        for i in range(1, len(intersections)):
+            start_idx = intersections[i - 1]
+            end_idx = intersections[i]
+            subsample = {
+                'stress': self.stress_values[start_idx:end_idx + 1],
+                'deformation': self.deformation_values[start_idx:end_idx + 1]
+            }
+            subsamples.append(subsample)
+    
+        return subsamples
+
     
     def convert_deformation(self):
         if not self.defo_percent:
             self.deformation_values = [defo / 100 for defo in self.deformation_values]
     
     def calculate_youngs_modulus(self):
-        force_min = self.lin_range[0]
-        force_max = self.lin_range[1]
-        if force_min > force_max : 
-            force_min, force_max = force_max, force_min
+        if self.tested_mode == "Module Young":
+            # Trouver les indices de début et de fin
+            debut_range, fin_range = self.find_intersections(self.stress_values, self.deformation_values)
             
-        differences_inf = [abs(force - force_min) for force in self.force_values]
-        debut_range = differences_inf.index(min(differences_inf))
+            if debut_range is None or fin_range is None:
+                print("Pas assez d'intersections trouvées pour calculer le module de Young.")
+                return
     
-        differences_sup = [abs(force - force_max) for force in self.force_values]
-        fin_range = differences_sup.index(min(differences_sup))
-    
-        x = self.deformation_values[debut_range:fin_range]
-        y = self.stress_values[debut_range:fin_range]
+            # Créer des sous-échantillons basés sur ces indices
+            subsamples = []
+            subsample = {
+                'deformation': self.deformation_values[debut_range:fin_range + 1],
+                'stress': self.stress_values[debut_range:fin_range + 1]
+            }
+            subsamples.append(subsample)
+            
+            # Calculer le module de Young pour chaque sous-échantillon
+            young_modulus_values = []
+            for subsample in subsamples:
+                x = subsample['deformation']
+                y = subsample['stress']
         
-        self.coef_rp_unformatted = self.master.get_coef_rp()
-        self.coef_rp = float(self.coef_rp_unformatted.strip('%'))
+                if len(x) > 1:
+                    coefficients = np.polyfit(x, y, 1)
+                    young_modulus = coefficients[0]
+                    young_modulus_values.append(young_modulus)
         
-        coefficients = np.polyfit(x, y, 1)
-        if self.defo_percent:
-            self.E = coefficients[0] / 10
-            self.Y_Offset = coefficients[1]
+            if young_modulus_values:
+                self.E = np.mean(young_modulus_values)
+                print("Module de Young calculé pour chaque sous-échantillon :")
+                for idx, young_modulus in enumerate(young_modulus_values):
+                    print(f"Sous-échantillon {idx + 1}: {young_modulus:.2f} MPa")
+            else:
+                print("Aucun module de Young calculé.")
+        
         else:
-            self.E = coefficients[0] / 1000
-            self.Y_Offset = coefficients[1] / 100
-            self.coef_rp = self.coef_rp / 100
+            # Pour le mode de traction
+            force_min = self.lin_range[0]
+            force_max = self.lin_range[1]
+            if force_min > force_max:
+                force_min, force_max = force_max, force_min
     
-        print("Y_Offset =", self.Y_Offset)
-        self.X_Offset = -coefficients[1] / coefficients[0]
-        print("X_Offset =", self.X_Offset)
-        print("Coef_rp =", self.coef_rp)
+            differences_inf = [abs(force - force_min) for force in self.force_values]
+            debut_range = differences_inf.index(min(differences_inf))
     
-        self.deformation_values = [deformation - self.X_Offset for deformation in self.deformation_values]
+            differences_sup = [abs(force - force_max) for force in self.force_values]
+            fin_range = differences_sup.index(min(differences_sup))
+    
+            x = self.deformation_values[debut_range:fin_range]
+            y = self.stress_values[debut_range:fin_range]
+    
+            self.coef_rp_unformatted = self.master.get_coef_rp()
+            self.coef_rp = float(self.coef_rp_unformatted.strip('%'))
+    
+            coefficients = np.polyfit(x, y, 1)
+            if self.defo_percent:
+                self.E = coefficients[0] / 10
+                self.Y_Offset = coefficients[1]
+            else:
+                self.E = coefficients[0] / 1000
+                self.Y_Offset = coefficients[1] / 100
+                self.coef_rp = self.coef_rp / 100
+    
+            print("Y_Offset =", self.Y_Offset)
+            self.X_Offset = -coefficients[1] / coefficients[0]
+            print("X_Offset =", self.X_Offset)
+            print("Coef_rp =", self.coef_rp)
+    
+            self.deformation_values = [deformation - self.X_Offset for deformation in self.deformation_values]
         
     def calculate_interesting_values(self):
         if self.defo_percent:
