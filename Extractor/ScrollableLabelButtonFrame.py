@@ -60,9 +60,9 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         file_path_rel = self.interface_functions.create_short_list([file_path])[0]
         # Identification du fichier
         test_bench = TestBench.identify_test_bench(file_path)
-
+    
         for available_sample_name, time_channel, force_channel, stroke_channel in zip(*sample_and_channel):
-            sample_struct = Sample(self)
+            sample_struct = Sample(self)  # Crée l'échantillon avec un identifiant unique
             checkbox_var = customtkinter.IntVar()
             self.checkbox_variable_list.append(checkbox_var)
             # Assignation des valeurs
@@ -88,6 +88,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             frame.configure(fg_color=("gray85", "gray25"))
             
             switch = customtkinter.CTkCheckBox(frame, text=f"{sample_struct.sample_name}", variable=checkbox_var)
+            switch.sample_id = sample_struct.sample_id 
             label = customtkinter.CTkLabel(frame, text=f"{file_path_rel}")
             frame.bind("<Button-1>", lambda event, frame=frame, sample=sample_struct: self.highlight_row(event, frame, sample))
             label.bind("<Button-1>", lambda event, frame=frame, sample=sample_struct: self.highlight_row(event, frame, sample))
@@ -104,7 +105,6 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             self.button_list.append(button)
             self.sample_list.append(sample_struct)
             self.frame_list.append(frame)
-                
 
     def remove_item(self, item):
         for switch, button, check, frame, sample in zip(self.switch_list, self.button_list, self.checkbox_variable_list, self.frame_list, self.sample_list):
@@ -132,15 +132,15 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         selected_checkboxes = []
         for checkbox_var, switch in zip(self.checkbox_variable_list, self.switch_list):
             if checkbox_var.get() == 1:
-                selected_checkboxes.append(switch.cget("text"))
-        print("Element sélectionné:", selected_checkboxes)
+                selected_checkboxes.append(switch.sample_id)  # Utilisez l'ID unique plutôt que le texte
+        print("Éléments sélectionnés:", selected_checkboxes)
         return selected_checkboxes
-
+    
     def get_sample_var(self, selected_elements):
         sample_var_list = []
         for selected_element in selected_elements:
             for sample in self.sample_list:
-                if f"{sample.sample_name}" == selected_element:
+                if sample.sample_id == selected_element:  # Correspondance via l'ID unique
                     sample_var_list.append(sample)
                     break
         return sample_var_list

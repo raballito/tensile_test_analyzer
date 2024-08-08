@@ -18,6 +18,7 @@ Last Update: 07.08.24
 """
 
 # Importation des modules
+import uuid
 import os
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -83,6 +84,7 @@ class Sample:
         self.analyzed_sample = False
         self.last_mode_chosen = 0
         self.last_geometry_chosen = "Section Ronde"
+        self.sample_id = uuid.uuid4()
         
       
     def show_var(self):
@@ -370,6 +372,7 @@ class Sample:
         while True:
             analysis_mode = self.tested_mode
             geometry_mode = self.tested_geometry
+            print(analysis_mode)
             try:
                 if analysis_mode == "Traction":
                     self.traction_analysis(geometry_mode, disp_ini)
@@ -383,13 +386,11 @@ class Sample:
                 elif analysis_mode == "Module Young":
                     self.mod_young_analysis(geometry_mode, disp_ini)
                     break
-                else:
-                    message = "Mode d'analyse invalide.\nVeuillez configurer le fichier premièrement."
-                    print(message)
-                    messagebox.showinfo("Configuration du fichier incorrecte", message)
-                    break
+                
             except ValueError:
-                print("Veuillez entrer une option valide.")
+                message = "Mode d'analyse invalide.\nVeuillez configurer le fichier premièrement."
+                print(message)
+                messagebox.showinfo("Configuration du fichier incorrecte", message)
                 
     def traction_analysis(self, geometry_mode, disp_ini):
         try:
@@ -459,7 +460,7 @@ class Sample:
             self.deformation_values = [(disp - disp_ini) / self.L0 * 100 for disp in self.displacement_values]
         # Récupérer les index de la courbe qui intersectent les lignes F-min et F-max et les mettres dans une liste
         # Séparer chaque partie dans une nouvelle classe Sample avec les même paramètres L0, D0, etc... sur une demi période
-        # Pour chaque sample créé, analyser la contrainte
+        # Pour chaque sample créé, analyser le module de young
         except ValueError:
             print("Veuillez entrer une option valide.")
     

@@ -355,6 +355,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         }
         test_mode = test_modes.get(test_number, "Inconnu")
         self.sample.last_mode_chosen = int(test_number)
+        print(f'Mode de test dans get_test_mode: {test_mode}')
         return test_mode
     
     def get_canal(self):
@@ -413,7 +414,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
     
         self.sample.tested_mode = test_mode
         self.sample.tested_geometry = geometry
-        
+        print(f'Mode de test dans get_updated_data: {test_mode}')
         return [test_mode, geometry]
     
     def save_config(self):
