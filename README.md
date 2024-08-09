@@ -10,13 +10,13 @@ Le projet est basé sur Python et sur le plugin CustomTkInter : https://github.c
 
 Projet en français réalisé par Quentin Raball
 
-N° Version : Beta 1.1
+N° Version : Beta 1.3
 
 ## Fonctionnalités
 - Gestion des fichiers dans le programme.
 - Traitement des fichiers csv obtenus par les machines de traction.
 - Traitement de fichiers comprenant plusieurs échantillons en un seul fichier.
-- Traitement des fichiers selon les 3 modes suivants : "Traction/Compression", "Flexion 3pts" et "Flexion 4pts".
+- Traitement des fichiers selon les 4 modes suivants : "Traction/Compression", "Flexion 3pts", "Flexion 4pts" et "Module de Young".
 - Traitement des échantillons selon deux géométries possibles : "Ronde" et "Rectangulaires".
 - Paramétrage individuels des échantillons avant leur analyse.
 - Générer les graphiques suivants: "Force-Déplacement", "Force-Temps", "Contrainte-Déformation" et "Contrainte-Déplacement", groupés et individuels.
@@ -45,7 +45,6 @@ Si tout a été installé correctement, il suffit de lancer le programme princip
 
 
 ## A venir (Work in Progress)
-- Ajout de l'analyse en mode "Module de Young". Extensomètre obligatoire. Pour traitement des courbes de tractions Force-Temps sinusoïdales et obention du module de Young moyen sur plusieurs cycles de forces.
 - Exportation dans un fichier Excel + Rapport type/Compte rendu
 - Meilleure gestion du Dark Mode etréglage des derniers problèmes avec le mode sombre.
 - Sauvegarde + Chargements sessions/résultats d'analyses. 
