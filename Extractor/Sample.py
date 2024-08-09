@@ -465,6 +465,9 @@ class Sample:
 
         # Créer des sous-échantillons basés sur les montées en force
         subsamples = self.create_subsamples(indices_min, indices_max)
+        
+        if len(subsamples) > 1:
+            subsamples = subsamples[1:]
     
         # Ajouter les sous-échantillons aux valeurs de contrainte et de déformation
         self.subsamples = subsamples
@@ -504,9 +507,9 @@ class Sample:
     
                 # Créer un sous-échantillon basé sur ces indices
                 subsample = {
-                    'force': self.force_values[start_idx:end_idx+1],
-                    'deformation': self.deformation_values[start_idx:end_idx+1],
-                    'stress': self.stress_values[start_idx:end_idx+1],
+                    'force': self.force_values[start_idx:end_idx],
+                    'deformation': self.deformation_values[start_idx:end_idx],
+                    'stress': self.stress_values[start_idx:end_idx],
                 }
                 subsamples.append(subsample)
         else:
