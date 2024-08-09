@@ -546,6 +546,7 @@ class Sample:
             print("Module de Young calculé pour chaque sous-échantillon :")
             for idx, young_modulus in enumerate(young_modulus_values):
                 print(f"Sous-échantillon {idx + 1}: {young_modulus:.2f} [GPa]")
+            print(f'Moyenne des {len(young_modulus_values)} échantillons : {self.E} [GPa]')
     
         else:
             # Mode alternatif de calcul du module de Young
