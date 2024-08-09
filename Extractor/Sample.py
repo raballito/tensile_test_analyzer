@@ -500,7 +500,9 @@ class Sample:
         subsamples = []
     
         # Assurez-vous que les deux listes ont la même longueur et sont bien ordonnées
-        if len(indices_min) == len(indices_max):
+        if len(indices_min) == len(indices_max) or len(indices_min) == len(indices_max)+1 :
+            if len(indices_min) == len(indices_max)+1:
+                indices_min.pop()
             for i in range(len(indices_min)):
                 start_idx = indices_min[i]
                 end_idx = indices_max[i]
@@ -511,7 +513,7 @@ class Sample:
                     'deformation': self.deformation_values[start_idx:end_idx],
                     'stress': self.stress_values[start_idx:end_idx],
                 }
-                subsamples.append(subsample)
+                subsamples.append(subsample)            
         else:
             print("Les indices de début et de fin ne correspondent pas. Vérifiez vos données.")
     
