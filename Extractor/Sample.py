@@ -539,6 +539,8 @@ class Sample:
     
             # Calculer la moyenne des modules de Young pour chaque sous-échantillon
             self.E = np.mean(young_modulus_values)
+            self.X_Offset = -coefficients[1] / coefficients[0]
+            self.deformation_values = [deformation - self.X_Offset for deformation in self.deformation_values]
             print("Module de Young calculé pour chaque sous-échantillon :")
             for idx, young_modulus in enumerate(young_modulus_values):
                 print(f"Sous-échantillon {idx + 1}: {young_modulus:.2f} [GPa]")
