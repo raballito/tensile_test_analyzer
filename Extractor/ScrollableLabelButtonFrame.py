@@ -37,22 +37,22 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         self.selected_frame = None
         self.selected_sample = None
         
-        """
+        
         self.bind_all("<MouseWheel>", self.on_mouse_wheel)
         self.bind_all("<Button-4>", self.on_mouse_wheel)
-        self.bind_all("<Button-5>", self.on_mouse_wheel)"""
+        self.bind_all("<Button-5>", self.on_mouse_wheel)
+    
+    def on_mouse_wheel(self, event):
+        if event.num == 4 or event.delta > 0:
+            self._parent_canvas.yview_scroll(-10, "units")
+        elif event.num == 5 or event.delta < 0:
+            self._parent_canvas.yview_scroll(10, "units")
     
     def check_empty_list(self):
         if len(self.sample_list) != 0:
             self.master.hide_instruction_message()
         else:
             self.master.show_instruction_message()
-            
-    def on_mouse_wheel(self, event):
-        if event.num == 4 or event.delta > 0:
-            self.yview_scroll(-1, "units")
-        elif event.num == 5 or event.delta < 0:
-            self.yview_scroll(1, "units")
 
     def add_item(self, file_path):
         test_bench_struct = TestBench(self)  # Créer une instance de TestBench pour chaque échantillon
