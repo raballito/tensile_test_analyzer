@@ -197,6 +197,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.radio_button_3.grid(row=3, column=2, pady=10, padx=20, sticky="w")
         self.radio_button_4 = customtkinter.CTkRadioButton(master=self.radiobutton_frame, text="Module de Young", variable=self.radio_var, value=3,command=lambda:self.radio_test_mode_event())
         self.radio_button_4.grid(row=4, column=2, pady=10, padx=20, sticky="w")
+            
         # Options de fichiers et d'analyse (Tab2)
         self.label_option_machine = customtkinter.CTkLabel(self.tabview_options.tab("Options fichiers"), text="Machine de test utilisée :")
         self.label_option_machine.grid(row=0, column=0, padx=20, pady=(10,0))
@@ -239,7 +240,15 @@ class ConfigWindow(customtkinter.CTkToplevel):
             self.option_canal.configure(state="enabled")
             self.option_machine.configure(state="enabled")
             self.radio_button_4.configure(state="disabled")
-            
+         
+        if self.sample.last_mode_chosen == 0:
+            self.radio_button_1.invoke()
+        elif self.sample.last_mode_chosen == 1:
+            self.radio_button_2.invoke()
+        elif self.sample.last_mode_chosen == 2:
+            self.radio_button_3.invoke()
+        elif self.sample.last_mode_chosen == 3:
+            self.radio_button_4.invoke()    
             
         
     def radio_test_mode_event(self):

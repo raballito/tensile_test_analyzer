@@ -411,6 +411,7 @@ class InterfaceFunctions:
     def end_analyze(self, sample_list):
         if len(sample_list) == 0:
             message = 'Analyse annulée. Aucun échantillon sélectionné.'
+            messagebox.showinfo("Analyse Annulée", message)
         else:
             analysed_sample = [sample.sample_name for sample in sample_list]
             message = f'Analyse terminée pour les samples :  {analysed_sample}'
