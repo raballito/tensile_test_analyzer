@@ -12,7 +12,7 @@ Configuration Window
 
 
 Version: Beta 1.3
-Last Update: 09.08.24
+Last Update: 12.08.24
 
 
 @author: quentin.raball

@@ -510,6 +510,7 @@ class Sample:
                 # Créer un sous-échantillon basé sur ces indices
                 subsample = {
                     'force': self.force_values[start_idx:end_idx],
+                    'displacement': self.displacement_values[start_idx:end_idx],
                     'deformation': self.deformation_values[start_idx:end_idx],
                     'stress': self.stress_values[start_idx:end_idx],
                 }
@@ -529,15 +530,15 @@ class Sample:
                 y = subsample['stress']
     
                 # On effectue la régression linéaire sur les valeurs du sous-échantillon
-                if len(x) > 1:
-                    coefficients = np.polyfit(x, y, 1)
-                    if self.defo_percent:
-                        young_modulus = coefficients[0] / 10
-                        self.Y_Offset = coefficients[1]
-                    else:
-                        young_modulus = coefficients[0] / 1000
-                        self.Y_Offset = coefficients[1] / 100
-                    young_modulus_values.append(young_modulus)
+
+                coefficients = np.polyfit(x, y, 1)
+                if self.defo_percent:
+                    young_modulus = coefficients[0] / 10
+                    self.Y_Offset = coefficients[1]
+                else:
+                    young_modulus = coefficients[0] / 1000
+                    self.Y_Offset = coefficients[1] / 100
+                young_modulus_values.append(young_modulus)
     
             # Calculer la moyenne des modules de Young pour chaque sous-échantillon
             self.E = np.mean(young_modulus_values)
