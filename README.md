@@ -2,9 +2,9 @@
 
 Ce programme a été créer pour le département COMATEC de la Haute Ecole d'Ingénierie et de Gestion du Canton de Vaud (HEIG-VD).
 
-Il permet de traiter les résultats de tests obtenus par les machines de tractions à disposition du département.
-
 https://heig-vd.ch/recherche/instituts/comatec/
+
+Il permet de traiter les résultats de tests obtenus par les machines de tractions à disposition du département.
 
 Le projet est basé sur Python et sur le plugin CustomTkInter : https://github.com/TomSchimansky/CustomTkinter
 
@@ -22,6 +22,7 @@ N° Version : Beta 1.3
 - Générer les graphiques suivants: "Force-Déplacement", "Force-Temps", "Contrainte-Déformation" et "Contrainte-Déplacement", groupés et individuels.
 - Optention des valeurs intéressante d'une courbe de traction telles que Re, Rm, A%, E, etc...
 - Exportation des résultats obtenus sous forme graphique et sous forme de tableau.
+- Exportation de tous les samples et leurs valeurs dans un fichier Excel.
 - Bien d'autre à découvrir !
 - Bien d'autre à venir (Voir plus loin) !
 

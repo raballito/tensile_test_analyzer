@@ -131,99 +131,119 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
 
     def export_samples_to_excel(self, sample_list, include_graphics, include_analysis, include_summary, include_stress_values, include_deformation_values):
         if len(sample_list) == 0:
-            message = "Exportation annulée: aucun échantillon sélectionné.\nVeuillez sélectionner un échantillon et recommencer."
-            messagebox.showinfo("Exportation annulée", message)
-        else:
-            # Définir le chemin d'exportation
-            name = 'export_samples.xlsx'
-            export_path = os.path.join('output', 'Excel')
-            if not os.path.exists(export_path):
-                os.makedirs(export_path)
-            file_path = os.path.join(export_path, name)
-            
-            # Créer un fichier Excel
-            writer = pd.ExcelWriter(file_path, engine='openpyxl')
-        
-            # Résumé
-            if include_summary:
-                # Insérer le résumé sur la première page
-                summary_sheet = writer.book.create_sheet(title="Résumé")
-                
-                # Ajout des graphiques (si sélectionnés)
-                if include_graphics:
-                    self.generate_and_add_graphics(summary_sheet)
+            messagebox.showinfo("Exportation annulée", "Aucun échantillon sélectionné.\nVeuillez sélectionner un échantillon et recommencer.")
+            return
     
-                # Ajouter le résumé des valeurs
-                summary_data = {
-                    "File Name": [],
-                    "Sample Name": [],
-                    "F_max": [],
-                    "Allong": [],
-                    "Re": [],
-                    "Rm": [],
-                    "Déformation": [],
-                    "E": []
-                }
-                
-                for sample in sample_list:
-                    summary_data["File Name"].append(sample.file_name)
-                    summary_data["Sample Name"].append(sample.sample_name)
-                    summary_data["F_max"].append(sample.F_max)
-                    summary_data["Allong"].append(sample.Allong)
-                    summary_data["Re"].append(sample.Re)
-                    summary_data["Rm"].append(sample.Rm)
-                    summary_data["Déformation"].append(sample.Defo)
-                    summary_data["E"].append(sample.E)
+        # Définir le chemin d'exportation
+        file_path = self.prepare_export_path('export_samples.xlsx')
+        
+        # Créer un fichier Excel
+        writer = pd.ExcelWriter(file_path, engine='openpyxl')
     
-                # Création du DataFrame et insertion dans Excel
-                df_summary = pd.DataFrame(summary_data)
-                df_summary.to_excel(writer, sheet_name="Résumé", startrow=1, index=False)
-        
-                # Calcul des moyennes et écart-types si plusieurs échantillons
-                if len(sample_list) > 2:
-                    numeric_data = df_summary.iloc[:, 2:].astype(float)  # Sélectionner les colonnes numériques
-                    averages = numeric_data.mean(axis=0).tolist()
-                    stdevs = numeric_data.std(axis=0).tolist()
+        # Ajouter le résumé
+        if include_summary:
+            self.add_summary_sheet(writer, sample_list, include_graphics)
     
-                    # Ajouter les moyennes et écart-types à la feuille Excel
-                    writer.sheets["Résumé"].append(['Moyenne', ''] + averages)
-                    writer.sheets["Résumé"].append(['Écart-type', ''] + stdevs)
+        # Exporter chaque échantillon
+        for sample in sample_list:
+            self.export_sample(writer, sample, include_graphics, include_analysis, include_stress_values, include_deformation_values)
     
-            # Exporter chaque échantillon dans une nouvelle feuille
-            for sample in sample_list:
-                sheet_name = f'Echantillon {sample.sample_name}'
-                sample_df = pd.DataFrame()
-                
-                # Ajout des données de bases
-                sample_df["Temps [s]"] = sample.time_values
-                sample_df["Déplacement [mm]"] = sample.displacement_values
-                force_unit = "Force [kN]" if self.option_kn else "Force [N]"
-                sample_df[force_unit] = sample.force_values
-                
-                # Ajouter les données choisies selon les options
-                if include_analysis:
-                    if include_stress_values:
-                        sample_df["Contrainte [MPa]"] = sample.stress_values
-                    if include_deformation_values:
-                        sample_df["Déformation [%]"] = sample.deformation_values if self.option_defo_percent else "Déformation [-]"
-        
-                sample_df.to_excel(writer, sheet_name=sheet_name, index=False)
-        
-                # Ajouter les graphiques si option cochée
-                if include_graphics:
-                    fig, ax = plt.subplots()
-                    ax.plot(sample.displacement_values, sample.force_values)  # Graphique exemple
-                    plt.savefig('temp_graph.png')
-                    img = openpyxl.drawing.image.Image('temp_graph.png')
-                    writer.sheets[sheet_name].add_image(img, 'G1')
-        
-            # Sauvegarder le fichier
-            writer._save()
-            sample_names = ", ".join([str(sample.sample_name) for sample in sample_list])
-            end_message = f'Exportation des échantillons [{sample_names}] terminée.'
-            print(end_message)
-            messagebox.showinfo("Exportation terminée", end_message)
-            writer.close()
+        # Sauvegarder le fichier
+        self.finalize_export(writer, sample_list)
+    
+    
+    def prepare_export_path(self, filename):
+        #Prépare le chemin de sauvegarde pour le fichier Excel.
+        export_path = os.path.join('output', 'Excel')
+        if not os.path.exists(export_path):
+            os.makedirs(export_path)
+        return os.path.join(export_path, filename)
+    
+    
+    def add_summary_sheet(self, writer, sample_list, include_graphics):
+        #Ajoute une feuille de résumé avec les données des échantillons et éventuellement des graphiques.
+        summary_sheet = writer.book.create_sheet(title="Résumé")
+    
+        # Ajout des graphiques (si sélectionnés)
+        if include_graphics:
+            self.generate_and_add_graphics(summary_sheet)
+    
+        # Collecte des données pour le résumé
+        summary_data = {
+            "File Name": [sample.file_name for sample in sample_list],
+            "Sample Name": [sample.sample_name for sample in sample_list],
+            "F_max [N]": [sample.F_max for sample in sample_list],
+            "Allong [mm]": [sample.Allong for sample in sample_list],
+            "Re [MPa]": [sample.Re for sample in sample_list],
+            "Rm [MPa]": [sample.Rm for sample in sample_list],
+            "Déformation [%]": [sample.Defo for sample in sample_list],
+            "E [GPa]": [sample.E for sample in sample_list]
+        }
+    
+        # Création du DataFrame et insertion dans Excel
+        df_summary = pd.DataFrame(summary_data)
+        df_summary.to_excel(writer, sheet_name="Résumé", startrow=1, index=False)
+    
+        # Calcul des moyennes et écart-types si plusieurs échantillons
+        if len(sample_list) > 2:
+            self.add_summary_statistics(writer, df_summary)
+    
+    
+    def add_summary_statistics(self, writer, df_summary):
+        #Ajoute les moyennes et écart-types au résumé.
+        numeric_data = df_summary.iloc[:, 2:].astype(float)  # Colonnes numériques
+        averages = numeric_data.mean(axis=0).tolist()
+        stdevs = numeric_data.std(axis=0).tolist()
+    
+        # Ajouter les moyennes et écart-types à la feuille Excel
+        summary_sheet = writer.sheets["Résumé"]
+        summary_sheet.append(['Moyenne', ''] + averages)
+        summary_sheet.append(['Écart-type', ''] + stdevs)
+    
+    
+    def export_sample(self, writer, sample, include_graphics, include_analysis, include_stress_values, include_deformation_values):
+        #Exporte les données d'un échantillon dans une nouvelle feuille du fichier Excel.
+        sheet_name = f'Echantillon {sample.sample_name}'
+        sample_df = pd.DataFrame()
+    
+        # Ajout des données de bases
+        sample_df["Temps [s]"] = sample.time_values
+        sample_df["Déplacement [mm]"] = sample.displacement_values
+        force_unit = "Force [kN]" if self.option_kn else "Force [N]"
+        sample_df[force_unit] = sample.force_values
+    
+        # Ajouter les données d'analyse si sélectionnées
+        if include_analysis:
+            if include_stress_values:
+                sample_df["Contrainte [MPa]"] = sample.stress_values
+            if include_deformation_values:
+                sample_df["Déformation [%]"] = sample.deformation_values if self.option_defo_percent else sample.deformation_values
+    
+        # Écrire les données de l'échantillon dans le fichier Excel
+        sample_df.to_excel(writer, sheet_name=sheet_name, index=False)
+    
+        # Ajouter les graphiques si option cochée
+        if include_graphics:
+            self.add_sample_graph(writer, sample)
+    
+    
+    def add_sample_graph(self, writer, sample):
+        #Ajoute un graphique des données de l'échantillon à la feuille correspondante.
+        fig, ax = plt.subplots()
+        ax.plot(sample.displacement_values, sample.force_values)  # Graphique exemple
+        plt.savefig('temp_graph.png')
+        img = openpyxl.drawing.image.Image('temp_graph.png')
+        writer.sheets[f'Echantillon {sample.sample_name}'].add_image(img, 'G1')
+    
+    
+    def finalize_export(self, writer, sample_list):
+        #Sauvegarde et ferme le fichier Excel.
+        writer._save()
+        sample_names = ", ".join([str(sample.sample_name) for sample in sample_list])
+        end_message = f'Exportation des échantillons [{sample_names}] terminée.'
+        print(end_message)
+        messagebox.showinfo("Exportation terminée", end_message)
+        writer.close()
             
     def generate_and_add_graphics(self, summary_sheet):
         # Graphique 1: Contrainte-Déformation
