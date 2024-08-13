@@ -26,14 +26,12 @@ N° Version : Beta 1.3
 - Bien d'autre à découvrir !
 - Bien d'autre à venir (Voir plus loin) !
 
+
 ## Machine Utilisées
 Le département COMATEC utilise actuellement les machines suivantes:
 - Shimadzu - 20 [kN] maximum - Sans Extensomètre
 - Walter & Bai - 100 [kN] maximum - Avec et sans extensomètres
 - Walter & Bai - 400 [kN] maximum - Sans extensomètre
-
-## Installation de python sur windows
-
 
 
 ## A venir (Work in Progress)
