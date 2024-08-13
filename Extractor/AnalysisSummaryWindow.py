@@ -6,8 +6,8 @@ End of analysis window. Print a summary of the analysis with table and graphics.
 - 3 types of graphics
 - Summary table with average and standard deviation
 
-Version: Beta 1.2
-Last Update: 07.08.24
+Version: Beta 1.3
+Last Update: 13.08.24
 
 @author: quentin.raball
 """
@@ -36,6 +36,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         self.option_defo_percent = option_list[3]
         self.option_elastic_line = option_list[4]
         self.option_show_table = option_list[5]
+        self.option_kn = option_list[6]
         
         self.create_tabs()
         self.create_summary_table()
@@ -112,7 +113,10 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         ax.set_ylim(0, 1.3 * max_force)
         ax.set_title('Force-Déplacement')
         ax.set_xlabel('Déplacement [mm]')
-        ax.set_ylabel('Force [N]')
+        if self.option_kn == False:
+            ax.set_ylabel('Force [N]')
+        else :
+            ax.set_ylabel('Force [kN]')
         if self.option_legend:
             ax.legend()
 
@@ -161,12 +165,16 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
     def create_summary_table(self):
         frame = ctk.CTkFrame(self)
         frame.pack(expand=True, fill='both', padx=20, pady=20)
-
-        headers = [
-            'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
-            'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
-        ]
-
+        if self.option_kn == False:
+            headers = [
+                'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
+                'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
+            ]
+        else : 
+            headers = [
+                'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
+                'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
+            ]
         # Ajouter une configuration pour les colonnes
         for col, header in enumerate(headers):
             header_label = ctk.CTkLabel(frame, text=header, font=("Arial", 13, "bold"))
@@ -264,12 +272,17 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             
         with open(csv_filepath, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            
-            # Écrire les en-têtes
-            headers = [
-                'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
-                'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
-            ]
+            if self.option_kn == False: 
+                # Écrire les en-têtes
+                headers = [
+                    'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
+                    'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
+                ]
+            else :
+                headers = [
+                    'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
+                    'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
+                ]
             writer.writerow(headers)
             
             # Écrire les données

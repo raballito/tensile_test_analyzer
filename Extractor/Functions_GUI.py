@@ -22,6 +22,7 @@ from Extractor.ConfigWindow import ConfigWindow
 from Extractor.TestBench import TestBench
 from Extractor.ExportGraphsWindow import ExportGraphsWindow
 from Extractor.AnalysisSummaryWindow import AnalysisSummaryWindow
+from Extractor.ExportExcelWindow import ExportExcelWindow
 from tkinter import messagebox
 from tkinter import filedialog
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -37,6 +38,7 @@ class InterfaceFunctions:
         self.help_window = None
         self.export_window = None
         self.analysisWindow = None
+        self.excel_export_window = None
     
     def pop_message_init(self):
         messagebox.showinfo("Initialisation du programme", "Bienvenu dans le programme CSV Data Analyser.\n\nVeuillez sélectionner un répertoire de données.\n\nCliquer sur annuler dans la prochaine fenêtre pour sélectionner le répertoire par défaut 'Data'")
@@ -138,6 +140,20 @@ class InterfaceFunctions:
             self.analysisWindow.attributes("-topmost", True)
             self.analysisWindow.focus()
             print("Retourne à la fenêtre de résumé")
+    
+    def open_excel_export_window_event(self, sample_list):
+        if self.excel_export_window is None or not self.excel_export_window.winfo_exists():
+            # Si aucune fenêtre d'exportation n'existe, ou si la fenêtre précédente a été détruite
+            self.excel_export_window = ExportExcelWindow(sample_list, self.get_options())
+            self.excel_export_window.attributes("-topmost", True)
+            self.excel_export_window.focus()
+            print("Ouvre la fenêtre de résumé")
+        else:
+            self.excel_export_window.destroy()
+            self.excel_export_window = ExportExcelWindow(sample_list, self.get_options())
+            self.excel_export_window.attributes("-topmost", True)
+            self.excel_export_window.focus()
+            print("Retourne à la fenêtre de résumé")
             
     def get_options(self):
         option_name = bool(self.master.checkbox_1.get())
@@ -146,8 +162,9 @@ class InterfaceFunctions:
         option_defo_percent = bool(self.master.checkbox_4.get())
         option_elastic_line = bool(self.master.checkbox_5.get())
         option_show_table = bool(self.master.checkbox_6.get())
+        option_kn = bool(self.master.checkbox_7.get())
         
-        return [option_name, option_path, option_legend, option_defo_percent, option_elastic_line, option_show_table]
+        return [option_name, option_path, option_legend, option_defo_percent, option_elastic_line, option_show_table, option_kn]
     
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
@@ -413,9 +430,14 @@ class InterfaceFunctions:
             message = 'Analyse annulée. Aucun échantillon sélectionné.'
             messagebox.showinfo("Analyse Annulée", message)
         else:
-            analysed_sample = [sample.sample_name for sample in sample_list]
-            message = f'Analyse terminée pour les samples :  {analysed_sample}'
-            self.open_summary_window_event(sample_list)
+            all_configured = all(sample.configured for sample in sample_list)
+            if not all_configured:
+                message = "Les échantillons n'ont pas été correctement configurés.\n Veuillez premièrement configurer l'échantillon."
+                messagebox.showinfo("Analyse annulée", message)
+            else:
+                analysed_sample = [sample.sample_name for sample in sample_list]
+                message = f'Analyse terminée pour les samples :  {analysed_sample}'
+                self.open_summary_window_event(sample_list)
         print(message)
         last_selected_element = self.master.scrollable_label_button_frame.selected_sample
         if last_selected_element is not None:

@@ -82,6 +82,7 @@ class Sample:
         self.show_rp02 = self.master.get_option_show_rp()
         self.show_legend = self.master.get_option_show_legend()
         self.analyzed_sample = False
+        self.configured = False
         self.last_mode_chosen = 0
         self.last_geometry_chosen = "Section Ronde"
         self.sample_id = uuid.uuid4()

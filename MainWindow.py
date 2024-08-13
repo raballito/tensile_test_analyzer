@@ -153,12 +153,15 @@ class MainWindow(customtkinter.CTk):
                                                     values=["0.1%", "0.2%", "0.3%", "0.4%", "0.5%"])
         self.option_lim_elast.grid(row=3, column=0, padx=20)
         
-        self.file_name_button = customtkinter.CTkButton(self.tabview2.tab("Options d'analyse"), text="Afficher données des fichiers",
+        self.file_var_button = customtkinter.CTkButton(self.tabview2.tab("Options d'analyse"), text="Afficher données des fichiers",
                                               command=lambda: self.on_var_button_clicked())
-        self.file_name_button.grid(row=4, column=0, padx=20, pady=(40, 20))
-        self.export_preview_button = customtkinter.CTkButton(self.tabview2.tab("Options d'analyse"), text="Exportation des graphiques",
-                                              command=lambda: self.on_export_button_clicked())
-        self.export_preview_button.grid(row=5, column=0, padx=20, pady=(20, 20))
+        self.file_var_button.grid(row=4, column=0, padx=20, pady=(40, 20))
+        self.export_graphics_button = customtkinter.CTkButton(self.tabview2.tab("Options d'analyse"), text="Exportation des graphiques",
+                                              command=lambda: self.on_export_graphics_button_clicked())
+        self.export_graphics_button.grid(row=5, column=0, padx=20, pady=(20, 20))
+        self.export_excel_button = customtkinter.CTkButton(self.tabview2.tab("Options d'analyse"), text="Exportation sous Excel",
+                                              command=lambda: self.on_export_excel_button_clicked())
+        self.export_excel_button.grid(row=6, column=0, padx=20, pady=(20, 20))
 
         # Options d'exportations
         self.checkbox_slider_frame = customtkinter.CTkScrollableFrame(self, label_text="Options d'exportation")
@@ -235,7 +238,7 @@ class MainWindow(customtkinter.CTk):
         sample_list = self.scrollable_label_button_frame.get_sample_var(selected_checkboxes)
         self.interface_functions.open_var_window_event(sample_list)
         
-    def on_export_button_clicked(self):
+    def on_export_graphics_button_clicked(self):
         selected_checkboxes = self.scrollable_label_button_frame.get_selected_checkboxes()    
         sample_list = self.scrollable_label_button_frame.get_sample_var(selected_checkboxes)
         self.interface_functions.open_export_window_event(sample_list)
@@ -249,9 +252,17 @@ class MainWindow(customtkinter.CTk):
     def on_analyse_button_clicked(self):
         selected_checkboxes = self.scrollable_label_button_frame.get_selected_checkboxes()
         sample_list = self.scrollable_label_button_frame.get_sample_var(selected_checkboxes)
-        for sample in sample_list:
-            sample.analyze()
+        if not len(sample_list) == 0:
+            all_configured = all(sample.configured for sample in sample_list)
+            if all_configured:
+                for sample in sample_list:
+                    sample.analyze()
         self.interface_functions.end_analyze(sample_list)
+        
+    def on_export_excel_button_clicked(self):
+        selected_checkboxes = self.scrollable_label_button_frame.get_selected_checkboxes()
+        sample_list = self.scrollable_label_button_frame.get_sample_var(selected_checkboxes)
+        self.interface_functions.open_excel_export_window_event(sample_list)
         
     def on_button_add_file(self, folder):
         self.interface_functions.add_button_event(folder)
