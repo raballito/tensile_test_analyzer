@@ -430,7 +430,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         # Assignation des valeurs à la classe Sample
         [test_mode, geometry] = self.get_updated_data()
         rel_file_path = os.path.relpath(self.sample.file_path)
-        self.sample.configured = True
+        self.sample.configured_sample = True
         
         print(f"Configuration du fichier {rel_file_path} sauvegardée en mode {test_mode}.")
         

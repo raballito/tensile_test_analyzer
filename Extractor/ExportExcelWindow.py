@@ -154,7 +154,8 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         # Exporter chaque échantillon
         for sample in sample_list:
             self.export_sample(writer, sample, include_graphics, include_analysis, include_stress_values, include_deformation_values)
-    
+            self.add_sample_details_table(writer, sample)
+            
         # Sauvegarder le fichier
         self.finalize_export(writer, sample_list)
     
@@ -246,46 +247,63 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         # Ajouter l'image au fichier Excel
         img1 = openpyxl.drawing.image.Image(graph1_filename)
         writer.sheets[f'Echantillon {sample.sample_name}'].add_image(img1, 'G1')
-        
-        # Graphique contrainte-déformation
-        fig2, ax2 = plt.subplots()
-        self.plot_stress_deformation(ax2, [sample])
-        
-        # Utiliser un nom unique pour chaque fichier d'image
-        graph2_filename = os.path.join(self.temp_dir, f'sample_graph2_{sample.sample_name}.png')
-        plt.savefig(graph2_filename)
-        
-        # Ajouter l'image au fichier Excel
-        img2 = openpyxl.drawing.image.Image(graph2_filename)
-        writer.sheets[f'Echantillon {sample.sample_name}'].add_image(img2, 'N1')
-        
-        # Fermer les figures pour libérer de la mémoire
         plt.close(fig1)
-        plt.close(fig2)
         
+        if sample.analyzed_sample:
+            # Graphique contrainte-déformation
+            fig2, ax2 = plt.subplots()
+            self.plot_stress_deformation(ax2, [sample], True)
+            
+            # Utiliser un nom unique pour chaque fichier d'image
+            graph2_filename = os.path.join(self.temp_dir, f'sample_graph2_{sample.sample_name}.png')
+            plt.savefig(graph2_filename)
+            
+            # Ajouter l'image au fichier Excel
+            img2 = openpyxl.drawing.image.Image(graph2_filename)
+            writer.sheets[f'Echantillon {sample.sample_name}'].add_image(img2, 'N1')
+            plt.close(fig2)
     
-    def finalize_export(self, writer, sample_list):
-        #Sauvegarde et ferme le fichier Excel.
-        writer._save()
-        sample_names = ", ".join([str(sample.sample_name) for sample in sample_list])
-        end_message = f'Exportation des échantillons [{sample_names}] terminée.'
-        print(end_message)
-        messagebox.showinfo("Exportation terminée", end_message)
-        writer.close()
-        shutil.rmtree(self.temp_dir)
+    def add_sample_details_table(self, writer, sample):        
+        # Extraire les données géométriques en fonction de la forme de l'échantillon
+        if sample.tested_geometry == "Section Ronde" and sample.tested_geometry is not None :
+            details_data = {
+                "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                "Valeur": [sample.D0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+            }
+        elif sample.tested_geometry == "Section Rectangulaire" and sample.tested_geometry is not None :
+            details_data = {
+                "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+            }
+        else:
+            # Ajouter d'autres formes si nécessaire
+            details_data = {
+                "Caractéristique": ["Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                "Valeur": ["Non défini", "Non défini", "Non défini", "Non défini"]
+            }
+        
+        # Créer un DataFrame pour la table
+        df_details = pd.DataFrame(details_data)
+        
+        # Trouver la feuille associée à l'échantillon
+        sheet_name = f'Echantillon {sample.sample_name}'
+        
+        # Insérer la table à l'indice G16
+        df_details.to_excel(writer, sheet_name=sheet_name, startrow=15, startcol=6, index=False)
             
     def generate_and_add_graphics(self, summary_sheet, sample_list):
-        # Graphique 1: Contrainte-Déformation
+        # Graphique 1: Force-Déplacement
         fig1, ax1 = plt.subplots()
-        self.plot_stress_deformation(ax1, sample_list)
+        self.plot_force_displacement(ax1, sample_list)
         graph1_filename = os.path.join(self.temp_dir, 'summary_graph1.png')
         plt.savefig(graph1_filename)
         img1 = Image(graph1_filename)
         summary_sheet.add_image(img1, 'I1')
 
-        # Graphique 2: Force-Déplacement
+        # Graphique 2: Contrainte Déformation
         fig2, ax2 = plt.subplots()
-        self.plot_force_displacement(ax2, sample_list)
+        option_elastic_line = False
+        self.plot_stress_deformation(ax2, sample_list, option_elastic_line)
         graph2_filename = os.path.join(self.temp_dir, 'summary_graph2.png')
         plt.savefig(graph2_filename)
         img2 = Image(graph2_filename)
@@ -302,10 +320,8 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         plt.close(fig1)
         plt.close(fig2)
         plt.close(fig3)
-        
-        
 
-    def plot_stress_deformation(self, ax, sample_list):
+    def plot_stress_deformation(self, ax, sample_list, option_elastic_line):
         max_stress = 0
         max_deformation = 0
         
@@ -316,6 +332,12 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
             # Plot only positive values
             positive_stress_values = [max(0, stress) for stress in sample.stress_values]
             ax.plot(sample.deformation_values, positive_stress_values, label=self.get_label(sample))
+            
+            if len(sample_list) == 1 and self.option_elastic_line and option_elastic_line:
+                data_plot = pd.DataFrame({'Déformation': sample.deformation_values, 'Contrainte': sample.stress_values})
+                x_label = 'Déformation'
+                self.add_elastic_limit_line(data_plot, x_label, sample.E, sample.coef_rp)
+            
         
         # Adjust the plot limits based on the maximum positive values
         ax.set_xlim(0, 1.2 * max_deformation)
@@ -364,7 +386,30 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         ax.set_ylabel('σ [MPa]')
         if self.option_legend:
             ax.legend()
+            
+    def add_elastic_limit_line(self, data_plot, x_label, mod_young, coef_rp):
+        if self.option_defo_percent:
+            E = mod_young*10
+        else:
+            E = mod_young*1000
+        x_start = coef_rp
+        y_start = 0
+        x_end = data_plot[x_label].max()
+        y_end = E * (x_end - x_start)
+        
+        plt.plot([x_start, x_end], [y_start, y_end], label='Limite élastique', linestyle='--', color='orange')
+        
 
     def get_label(self, sample):
         # Retourner l'étiquette appropriée pour un échantillon
         return f"Échantillon {sample.sample_name}"
+    
+    def finalize_export(self, writer, sample_list):
+        #Sauvegarde et ferme le fichier Excel.
+        writer._save()
+        sample_names = ", ".join([str(sample.sample_name) for sample in sample_list])
+        end_message = f'Exportation des échantillons [{sample_names}] terminée.'
+        print(end_message)
+        messagebox.showinfo("Exportation terminée", end_message)
+        writer.close()
+        shutil.rmtree(self.temp_dir)

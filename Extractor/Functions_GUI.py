@@ -430,7 +430,7 @@ class InterfaceFunctions:
             message = 'Analyse annulée. Aucun échantillon sélectionné.'
             messagebox.showinfo("Analyse Annulée", message)
         else:
-            all_configured = all(sample.configured for sample in sample_list)
+            all_configured = all(sample.configured_sample for sample in sample_list)
             if not all_configured:
                 message = "Les échantillons n'ont pas été correctement configurés.\n Veuillez premièrement configurer l'échantillon."
                 messagebox.showinfo("Analyse annulée", message)

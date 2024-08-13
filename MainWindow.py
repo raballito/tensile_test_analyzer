@@ -253,7 +253,7 @@ class MainWindow(customtkinter.CTk):
         selected_checkboxes = self.scrollable_label_button_frame.get_selected_checkboxes()
         sample_list = self.scrollable_label_button_frame.get_sample_var(selected_checkboxes)
         if not len(sample_list) == 0:
-            all_configured = all(sample.configured for sample in sample_list)
+            all_configured = all(sample.configured_sample for sample in sample_list)
             if all_configured:
                 for sample in sample_list:
                     sample.analyze()
