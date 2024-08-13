@@ -33,20 +33,10 @@ Le département COMATEC utilise actuellement les machines suivantes:
 - Walter & Bai - 400 [kN] maximum - Sans extensomètre
 
 ## Installation de python sur windows
-Pour installer python:
 
-- Start+S
-- Taper "CMD" et executer (il faut peut-être les accès administrateurs)
-- Taper "python --version" et vérifier la version (min 3.11). Si python n'est pas installé, une fenêtre Windows Store devrait s'ouvrir permettant son installation.
-- Taper la commande "pip3 install customtkinter" dans l'invite de commande.
-- Installer le plugin en acceptant l'installation (appuyer sur la touche "Y" pour valider) des autres plugins.
-- Si besoins (erreur ou autre), il faut probablement installer les plugins matplotlib, numpy, pandas et PIL
-
-Si tout a été installé correctement, il suffit de lancer le programme principal en double-cliquant sur le fichier "MainWindow.py". Le programme devrait s'exécuter normalement.
 
 
 ## A venir (Work in Progress)
-- Exportation dans un fichier Excel + Rapport type/Compte rendu
 - Meilleure gestion du Dark Mode etréglage des derniers problèmes avec le mode sombre.
 - Sauvegarde + Chargements sessions/résultats d'analyses. 
 
@@ -64,3 +54,16 @@ Pour résoudre ces problèmes (notamment si lors de l'execution du programme, ce
 - Trouver le fichier MainWindow.py et l'executer dans le nouvel environnement.
 
 S'il manque des autres plugins, utiliser la commande : conda install -n <env-name> <package> avec <package> le nom du package voulu. Ils sont disponibles ici : https://anaconda.org/
+
+2) Problèmes d'installation de Python
+
+Pour installer python:
+
+- Start+S
+- Taper "CMD" et executer (il faut peut-être les accès administrateurs)
+- Taper "python --version" et vérifier la version (min 3.11). Si python n'est pas installé, une fenêtre Windows Store devrait s'ouvrir permettant son installation.
+- Taper la commande "pip3 install customtkinter" dans l'invite de commande.
+- Installer le plugin en acceptant l'installation (appuyer sur la touche "Y" pour valider) des autres plugins.
+- Si besoins (erreur ou autre), il faut probablement installer les plugins matplotlib, numpy, pandas et PIL
+
+Si tout a été installé correctement, il suffit de lancer le programme principal en double-cliquant sur le fichier "MainWindow.py". Le programme devrait s'exécuter normalement.
