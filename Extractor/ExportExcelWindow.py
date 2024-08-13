@@ -8,7 +8,7 @@ Excel Export Window
 - Export in Output directory
 - Export everything in Excel file
 
-Version: Beta 1.3
+Version: Beta 1.4
 Last Update: 13.08.24
 
 @author: quentin.raball

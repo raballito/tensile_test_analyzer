@@ -10,7 +10,7 @@ Le projet est basé sur Python et sur le plugin CustomTkInter : https://github.c
 
 Projet en français réalisé par Quentin Raball
 
-N° Version : Beta 1.3
+N° Version : Beta 1.4
 
 ## Fonctionnalités
 - Gestion des fichiers dans le programme.

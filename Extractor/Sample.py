@@ -11,8 +11,8 @@ Available functions:
 -export_preview() to export graphics and tables
 -analyze() to analyze the samples with mode and geometry
 
-Version: Beta 1.3
-Last Update: 09.08.24
+Version: Beta 1.4
+Last Update: 13.08.24
 
 @author: quentin.raball
 """
