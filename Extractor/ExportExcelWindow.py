@@ -246,7 +246,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         
         # Ajouter l'image au fichier Excel
         img1 = openpyxl.drawing.image.Image(graph1_filename)
-        writer.sheets[f'Echantillon {sample.sample_name}'].add_image(img1, 'G1')
+        writer.sheets[f'Echantillon {sample.sample_name}'].add_image(img1, 'J1')
         plt.close(fig1)
         
         if sample.analyzed_sample:
@@ -260,7 +260,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
             
             # Ajouter l'image au fichier Excel
             img2 = openpyxl.drawing.image.Image(graph2_filename)
-            writer.sheets[f'Echantillon {sample.sample_name}'].add_image(img2, 'N1')
+            writer.sheets[f'Echantillon {sample.sample_name}'].add_image(img2, 'Q1')
             plt.close(fig2)
     
     def add_sample_details_table(self, writer, sample):        
@@ -289,7 +289,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         sheet_name = f'Echantillon {sample.sample_name}'
         
         # Insérer la table à l'indice G16
-        df_details.to_excel(writer, sheet_name=sheet_name, startrow=15, startcol=6, index=False)
+        df_details.to_excel(writer, sheet_name=sheet_name, startrow=1, startcol=6, index=False)
             
     def generate_and_add_graphics(self, summary_sheet, sample_list):
         # Graphique 1: Force-Déplacement
