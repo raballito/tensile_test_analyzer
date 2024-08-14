@@ -2,7 +2,7 @@
 """
 Created on Fri Apr 19 09:59:06 2024
 
-Data Analyzer - Main Window
+Tensile Test Analyzer - Main Window
 
 - Easy and updated GUI
 - Updated Events and Events Handling

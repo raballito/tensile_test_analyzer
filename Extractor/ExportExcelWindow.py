@@ -56,7 +56,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         
         # Section des options principales
         self.option_graphics = customtkinter.CTkCheckBox(self, text="Inclure les graphiques", variable=self.selected_options['graphics'])
-        self.option_analysis = customtkinter.CTkCheckBox(self, text="Inclure l'analyse", variable=self.selected_options['analysis'])
+        self.option_analysis = customtkinter.CTkCheckBox(self, text="Inclure l'analyse", variable=self.selected_options['analysis'], command=lambda:self.update_checkbox_state(sample_list))
         self.option_summary = customtkinter.CTkCheckBox(self, text="Inclure le résumé", variable=self.selected_options['summary'])
         self.option_stress_values = customtkinter.CTkCheckBox(self, text="Inclure les valeurs de contrainte", variable=self.selected_options['stress_values'])
         self.option_deformation_values = customtkinter.CTkCheckBox(self, text="Inclure les valeurs de déformation", variable=self.selected_options['deformation_values'])
@@ -122,8 +122,8 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
     def get_options(self):
         # Collecter les options sélectionnées
         include_graphics = self.selected_options['graphics'].get()
-        include_analysis = self.selected_options['analysis'].get()
         include_summary = self.selected_options['summary'].get()
+        include_analysis = self.selected_options['analysis'].get()        
         include_stress_values = self.selected_options['stress_values'].get()
         include_deformation_values = self.selected_options['deformation_values'].get()
 
@@ -149,12 +149,12 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
     
         # Ajouter le résumé
         if include_summary:
-            self.add_summary_sheet(writer, sample_list, include_graphics)
+            self.add_summary_sheet(writer, sample_list, include_graphics, include_analysis)
     
         # Exporter chaque échantillon
         for sample in sample_list:
             self.export_sample(writer, sample, include_graphics, include_analysis, include_stress_values, include_deformation_values)
-            self.add_sample_details_table(writer, sample)
+            self.add_sample_details_table(writer, sample, include_analysis)
             
         # Sauvegarder le fichier
         self.finalize_export(writer, sample_list)
@@ -168,32 +168,38 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         return os.path.join(export_path, filename)
     
     
-    def add_summary_sheet(self, writer, sample_list, include_graphics):
+    def add_summary_sheet(self, writer, sample_list, include_graphics, include_analysis):
         #Ajoute une feuille de résumé avec les données des échantillons et éventuellement des graphiques.
         summary_sheet = writer.book.create_sheet(title="Résumé")
     
         # Ajout des graphiques (si sélectionnés)
         if include_graphics:
             self.generate_and_add_graphics(summary_sheet, sample_list)
-    
-        # Collecte des données pour le résumé
-        summary_data = {
-            "File Name": [sample.file_name for sample in sample_list],
-            "Sample Name": [sample.sample_name for sample in sample_list],
-            "F_max [N]": [sample.F_max for sample in sample_list],
-            "Allong [mm]": [sample.Allong for sample in sample_list],
-            "Re [MPa]": [sample.Re for sample in sample_list],
-            "Rm [MPa]": [sample.Rm for sample in sample_list],
-            "Déformation [%]": [sample.Defo for sample in sample_list],
-            "E [GPa]": [sample.E for sample in sample_list]
-        }
+        if include_analysis:
+            # Collecte des données pour le résumé
+            summary_data = {
+                "File Name": [sample.file_name for sample in sample_list],
+                "Sample Name": [sample.sample_name for sample in sample_list],
+                "F_max [N]": [sample.F_max for sample in sample_list],
+                "Allong [mm]": [sample.Allong for sample in sample_list],
+                "Re [MPa]": [sample.Re for sample in sample_list],
+                "Rm [MPa]": [sample.Rm for sample in sample_list],
+                "Déformation [%]": [sample.Defo for sample in sample_list],
+                "E [GPa]": [sample.E for sample in sample_list]
+            }
+        else: 
+            # Collecte des données pour le résumé
+            summary_data = {
+                "File Name": [sample.file_name for sample in sample_list],
+                "Sample Name": [sample.sample_name for sample in sample_list],
+            }
     
         # Création du DataFrame et insertion dans Excel
         df_summary = pd.DataFrame(summary_data)
         df_summary.to_excel(writer, sheet_name="Résumé", startrow=1, index=False)
     
         # Calcul des moyennes et écart-types si plusieurs échantillons
-        if len(sample_list) > 2:
+        if len(sample_list) > 2 and include_analysis:
             self.add_summary_statistics(writer, df_summary)
     
     
@@ -263,18 +269,31 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
             writer.sheets[f'Echantillon {sample.sample_name}'].add_image(img2, 'Q1')
             plt.close(fig2)
     
-    def add_sample_details_table(self, writer, sample):        
+    def add_sample_details_table(self, writer, sample, include_analysis):        
         # Extraire les données géométriques en fonction de la forme de l'échantillon
-        if sample.tested_geometry == "Section Ronde" and sample.tested_geometry is not None :
-            details_data = {
-                "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                "Valeur": [sample.D0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
-            }
+        if sample.tested_geometry == "Section Ronde" and sample.tested_geometry is not None and include_analysis:
+            if include_analysis:
+                details_data = {
+                    "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.D0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                }
+            else: 
+                details_data = {
+                    "Caractéristique": ["D0 [mm]", "L0 [mm]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.D0, sample.L0, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                }
         elif sample.tested_geometry == "Section Rectangulaire" and sample.tested_geometry is not None :
-            details_data = {
-                "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
-            }
+            if include_analysis:
+                details_data = {
+                    "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                }
+            else:
+                details_data = {
+                    "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                }
+        
         else:
             # Ajouter d'autres formes si nécessaire
             details_data = {
