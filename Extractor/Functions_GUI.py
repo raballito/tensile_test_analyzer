@@ -202,10 +202,10 @@ class InterfaceFunctions:
         self.master.ax2.clear()
         self.master.canvas2.draw()
         for element in list_element:
-            self.master.scrollable_label_button_frame.remove_all_items()
-            
+            self.master.scrollable_label_button_frame.remove_all_items() 
         for i in range(len(list_csv)):
             self.master.scrollable_label_button_frame.add_item(list_csv[i])
+        self.master.scrollable_label_button_frame.check_empty_list()
             
     def add_button_event(self, folder):
         file_path = filedialog.askopenfilename(initialdir=folder, title="Sélectionner un fichier CSV", filetypes=[("CSV Files", "*.csv")])
