@@ -317,7 +317,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         graph1_filename = os.path.join(self.temp_dir, 'summary_graph1.png')
         plt.savefig(graph1_filename)
         img1 = Image(graph1_filename)
-        summary_sheet.add_image(img1, 'I1')
+        summary_sheet.add_image(img1, 'J1')
 
         # Graphique 2: Contrainte Déformation
         fig2, ax2 = plt.subplots()
@@ -326,7 +326,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         graph2_filename = os.path.join(self.temp_dir, 'summary_graph2.png')
         plt.savefig(graph2_filename)
         img2 = Image(graph2_filename)
-        summary_sheet.add_image(img2, 'P1')
+        summary_sheet.add_image(img2, 'Q1')
 
         # Graphique 3: Contrainte-Déplacement
         fig3, ax3 = plt.subplots()
@@ -334,7 +334,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         graph3_filename = os.path.join(self.temp_dir, 'summary_graph3.png')
         plt.savefig(graph3_filename)
         img3 = Image(graph3_filename)
-        summary_sheet.add_image(img3, 'W1')
+        summary_sheet.add_image(img3, 'X1')
 
         plt.close(fig1)
         plt.close(fig2)
