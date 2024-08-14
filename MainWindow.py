@@ -58,8 +58,8 @@ class MainWindow(customtkinter.CTk):
         logo_img = Image.open("static\\COMATEC_HEIG-VD_logotype_rouge-rvb.png")
         logo = customtkinter.CTkImage(light_image=logo_img,
                                   dark_image=logo_img,
-                                  size=(140,43))
-        self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
+                                  size=(160,49))
+        self.sidebar_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=7, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(7, weight=1)
         self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, image=logo, text="")
