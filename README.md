@@ -35,8 +35,12 @@ Le département COMATEC utilise actuellement les machines suivantes:
 
 
 ## A venir (Work in Progress)
-- Meilleure gestion du Dark Mode etréglage des derniers problèmes avec le mode sombre.
-- Sauvegarde + Chargements sessions/résultats d'analyses. 
+- Meilleure gestion du Dark Mode et réglage des derniers problèmes avec le mode sombre.
+- Sauvegarde + Chargements sessions/résultats d'analyses.
+- Nouveaux modes de test.
+- Nouvelles géométries d'échantillons.
+- Nouvelles machines supportées.
+- Gestion de l'extensomètre pour les machines Shimadzu 20kN et W+B 400kN.
 
 
 ## F.A.Q
