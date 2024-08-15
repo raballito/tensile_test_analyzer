@@ -31,14 +31,14 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         self.geometry("500x300")
         self.sample_list = sample_list
 
-        print(f"État des options : {option_list}")
-        self.option_name = option_list[0]
-        self.option_path = option_list[1]
-        self.option_legend = option_list[2]
-        self.option_defo_percent = option_list[3]
-        self.option_elastic_line = option_list[4]
-        self.option_show_table = option_list[5]
-        self.option_kn = option_list[6]
+        print(f"Etat des options : {option_list}")
+        self.option_name = option_list.get('option_name', False)
+        self.option_path = option_list.get('option_path', False)
+        self.option_legend = option_list.get('option_legend', False)
+        self.option_defo_percent = option_list.get('option_defo_percent', False)
+        self.option_elastic_line = option_list.get('option_elastic_line', False)
+        self.option_show_table = option_list.get('option_show_table', False)
+        self.option_kn = option_list.get('option_kn', False)
         
         # Variables pour suivre les choix des utilisateurs
         self.selected_options = {

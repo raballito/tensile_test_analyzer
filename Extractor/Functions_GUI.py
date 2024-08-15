@@ -156,15 +156,15 @@ class InterfaceFunctions:
             print("Retourne à la fenêtre de résumé")
             
     def get_options(self):
-        option_name = bool(self.master.checkbox_1.get())
-        option_path = bool(self.master.checkbox_2.get())
-        option_legend = bool(self.master.checkbox_3.get())
-        option_defo_percent = bool(self.master.checkbox_4.get())
-        option_elastic_line = bool(self.master.checkbox_5.get())
-        option_show_table = bool(self.master.checkbox_6.get())
-        option_kn = bool(self.master.checkbox_7.get())
-        
-        return [option_name, option_path, option_legend, option_defo_percent, option_elastic_line, option_show_table, option_kn]
+        return {
+            'option_name': bool(self.master.checkbox_1.get()),
+            'option_path': bool(self.master.checkbox_2.get()),
+            'option_legend': bool(self.master.checkbox_3.get()),
+            'option_defo_percent': bool(self.master.checkbox_4.get()),
+            'option_elastic_line': bool(self.master.checkbox_5.get()),
+            'option_show_table': bool(self.master.checkbox_6.get()),
+            'option_kn': bool(self.master.checkbox_7.get())
+        }
     
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
