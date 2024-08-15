@@ -358,6 +358,7 @@ class Sample:
     def analyze(self):
         print("Début de l'analyse. Veuillez patienter...\n")
         self.defo_percent = self.master.get_option_defo_percent()
+        self.scale_kN = self.master.get_option_scale_kN()
         self.choose_analysis_mode()
         self.convert_deformation()
         self.calculate_youngs_modulus()
@@ -591,7 +592,7 @@ class Sample:
     
         def_ini = self.displacement_values[1]
         self.Allong = max(self.displacement_values) - def_ini
-        self.F_max = max(self.force_values)
+        self.F_max = max(self.force_values) if not self.scale_kN else max(self.force_values) / 1000
     
         last_stress = self.stress_values[-1]
         if self.defo_percent:

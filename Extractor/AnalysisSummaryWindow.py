@@ -165,16 +165,27 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
     def create_summary_table(self):
         frame = ctk.CTkFrame(self)
         frame.pack(expand=True, fill='both', padx=20, pady=20)
-        if self.option_kn == False:
+        if self.option_kn == False and self.option_defo_percent:
             headers = [
                 'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
                 'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
             ]
-        else : 
+        elif self.option_kn and self.option_defo_percent : 
             headers = [
                 'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
                 'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
             ]
+        elif self.option_kn and self.option_defo_percent == False:
+            headers = [
+                'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
+                'Re [MPa]', 'Rm [MPa]', 'Déformation [-]', 'E [GPa]'
+            ]
+        else:
+            headers = [
+                'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
+                'Re [MPa]', 'Rm [MPa]', 'Déformation [-]', 'E [GPa]'
+            ]
+            
         # Ajouter une configuration pour les colonnes
         for col, header in enumerate(headers):
             header_label = ctk.CTkLabel(frame, text=header, font=("Arial", 13, "bold"))
@@ -272,16 +283,25 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             
         with open(csv_filepath, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
-            if self.option_kn == False: 
-                # Écrire les en-têtes
+            if self.option_kn == False and self.option_defo_percent:
                 headers = [
                     'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
                     'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
                 ]
-            else :
+            elif self.option_kn and self.option_defo_percent : 
                 headers = [
                     'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
                     'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
+                ]
+            elif self.option_kn and self.option_defo_percent == False:
+                headers = [
+                    'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
+                    'Re [MPa]', 'Rm [MPa]', 'Déformation [-]', 'E [GPa]'
+                ]
+            else:
+                headers = [
+                    'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
+                    'Re [MPa]', 'Rm [MPa]', 'Déformation [-]', 'E [GPa]'
                 ]
             writer.writerow(headers)
             
