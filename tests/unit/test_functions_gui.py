@@ -1,13 +1,10 @@
 import pytest
 import os
-import customtkinter as ctk
 import tkinter as tk
-from tkinter import ttk
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from Extractor.Functions_GUI import InterfaceFunctions
 from Extractor.VariablesWindow import VarToplevelWindow
-from Extractor.ConfigWindow import ConfigWindow
 from Extractor.HelpWindow import HelpWindow
 from Extractor.ExportGraphsWindow import ExportGraphsWindow
 from Extractor.AnalysisSummaryWindow import AnalysisSummaryWindow
@@ -108,3 +105,4 @@ def test_create_short_list(interface_functions):
 def test_format_sign(interface_functions):
     formatted_num = interface_functions.format_sign(1234.56789, 3)
     assert formatted_num == 1230.0
+

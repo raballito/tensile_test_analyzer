@@ -11,7 +11,7 @@ Configuration Window
 - Configuration of sample class through GUI
 
 
-Version: Beta 1.4
+Version: Beta 1.5
 Last Update: 13.08.24
 
 

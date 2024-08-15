@@ -12,7 +12,7 @@ Tensile Test Analyzer - Main Window
 - Multisampling handling
 - Export graphics and sample summary
 
-Version: Beta 1.4
+Version: Beta 1.5
 Last Update: 15.08.24
 
 @author: quentin.raball

@@ -8,7 +8,7 @@ GUI Related Functions
 - Basically everythings related of the main window's functions
 - Events throughs files managed by this file mainly
 
-Version: Beta 1.4
+Version: Beta 1.5
 Last Update: 15.08.24
 
 @author: quentin.raball
