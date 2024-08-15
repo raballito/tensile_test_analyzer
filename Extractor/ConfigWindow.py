@@ -226,7 +226,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.label_file_path.configure(text=relative_path)
         self.update_l1_visibility()
         
-        if test_bench == "Shimadzu" or test_bench == "WB400kN":
+        if test_bench == "Shimadzu" or test_bench == "WB400kN_1" or test_bench == "WB400kN_2":
             self.option_machine.configure(state="disabled")
             self.option_canal.set("Canal Traverse")
             self.option_canal.configure(state="disabled")

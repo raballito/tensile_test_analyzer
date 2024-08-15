@@ -42,7 +42,10 @@ class TestBench:
         if 'Temps' in first_lines[1] or 'Force' in first_lines[1] or 'Stroke' in first_lines[1] or 'Course_Traverse' in first_lines[1]:
             test_bench = 'Shimadzu'
         elif 'Déplacement [ mm ]' in first_lines[0] or 'Force [ kN ]' in first_lines[0]:
-            test_bench = 'WB400kN'  
+            if 'Force [ kN ]' in first_lines[0]:
+                test_bench = 'WB400kN_1'
+            elif 'Force [ N ]' in first_lines[0]:
+                test_bench = 'WB400kN_2'
         elif 'C_1_Temps[s]' in first_lines[0] or 'C_1_Force[kN]' in first_lines[0] or 'C_1_Déform1[mm]' in first_lines[0]:
             test_bench = 'WB100kN' 
         else:
@@ -89,7 +92,7 @@ class TestBench:
                 self.number_of_test = len(first_line[1]) // 3
                 self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
         
-        elif test_bench == 'WB400kN':
+        elif test_bench == 'WB400kN_1':
             self.separator = ','
             self.header_index = 1
             self.force_channel = 3
@@ -105,7 +108,24 @@ class TestBench:
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 self.number_of_test = len(first_line[1]) // 3
                 self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
-          
+        
+        elif test_bench == 'WB400kN_2':
+            self.separator = ','
+            self.header_index = 1
+            self.force_channel = 3
+            self.stroke_channel = 2
+            self.time_channel = 1
+            self.force_unit = 1 #Unités du canal force en kN
+            self.repeat_every = 3
+            with open(file_path, 'r', encoding='latin-1') as file: 
+                first_line = file.readline().strip()
+                self.available_sample_names = ['Default W+B 400 kN']
+                list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
+                list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
+                list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
+                self.number_of_test = len(first_line[1]) // 3
+                self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
+            
         elif test_bench == 'WB100kN':
             self.separator = ';'
             self.header_index = 1
