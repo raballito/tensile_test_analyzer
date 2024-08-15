@@ -9,7 +9,7 @@ Excel Export Window
 - Export everything in Excel file
 
 Version: Beta 1.4
-Last Update: 13.08.24
+Last Update: 15.08.24
 
 @author: quentin.raball
 """

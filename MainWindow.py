@@ -13,7 +13,7 @@ Tensile Test Analyzer - Main Window
 - Export graphics and sample summary
 
 Version: Beta 1.4
-Last Update: 13.08.24
+Last Update: 15.08.24
 
 @author: quentin.raball
 """

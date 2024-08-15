@@ -7,7 +7,7 @@ End of analysis window. Print a summary of the analysis with table and graphics.
 - Summary table with average and standard deviation
 
 Version: Beta 1.3
-Last Update: 13.08.24
+Last Update: 15.08.24
 
 @author: quentin.raball
 """
