@@ -53,7 +53,7 @@ class InterfaceFunctions:
     def open_var_window_event(self, selected_checkboxes):
         sample_names = []
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
-            self.toplevel_window = VarToplevelWindow(selected_checkboxes, self.master)  # Crée une nouvelle fenêtre si elle n'existe pas ou si elle a été détruite
+            self.toplevel_window = VarToplevelWindow(selected_checkboxes, self.get_options())  # Crée une nouvelle fenêtre si elle n'existe pas ou si elle a été détruite
             self.toplevel_window.attributes("-topmost", True)
             for sample in selected_checkboxes:
                 sample_names.append(sample.sample_name)

@@ -19,12 +19,20 @@ import customtkinter
 from tkinter import messagebox
 
 class VarToplevelWindow(customtkinter.CTkToplevel):
-    def __init__(self, sample_list, master, *args, **kwargs):
+    def __init__(self, sample_list, option_list,  *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title("Liste des variables des fichiers sélectionnés")
         self.geometry("900x400")  # Taille initiale de la fenêtre
-        self.master = master
-
+        
+        print(f"Etat des options : {option_list}")
+        self.option_name = option_list.get('option_name', False)
+        self.option_path = option_list.get('option_path', False)
+        self.option_legend = option_list.get('option_legend', False)
+        self.option_defo_percent = option_list.get('option_defo_percent', False)
+        self.option_elastic_line = option_list.get('option_elastic_line', False)
+        self.option_show_table = option_list.get('option_show_table', False)
+        self.option_kn = option_list.get('option_kn', False)
+        
         # Conteneur principal pour l'organisation verticale
         container = customtkinter.CTkFrame(self)
         container.pack(fill="both", expand=True)
@@ -59,13 +67,39 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
         self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
 
         # Affichage des en-têtes du tableau
-        headers = [
-            "Nom Sample", "Banc de Test", 
-            "Mode Testé", "Géométrie Testée", 
-            "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
-            "Taille des données", "Max Force [N]", "Max Dépl. [mm]",
-            "Rp [MPa]", "Rm [MPa]", "Max Deform. [%]", "E [GPa]"
-        ]
+        if self.option_defo_percent and self.option_kn == False:
+            headers = [
+                "Nom Sample", "Banc de Test", 
+                "Mode Testé", "Géométrie Testée", 
+                "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                "Taille des données", "Max Force [N]", "Max Dépl. [mm]",
+                "Rp [MPa]", "Rm [MPa]", "Max Deform. [%]", "E [GPa]"
+            ]
+        elif self.option_defo_percent and self.option_kn:
+            headers = [
+                "Nom Sample", "Banc de Test", 
+                "Mode Testé", "Géométrie Testée", 
+                "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                "Taille des données", "Max Force [kN]", "Max Dépl. [mm]",
+                "Rp [MPa]", "Rm [MPa]", "Max Deform. [%]", "E [GPa]"
+            ]
+        elif self.option_defo_percent == False and self.option_kn:
+            headers = [
+                "Nom Sample", "Banc de Test", 
+                "Mode Testé", "Géométrie Testée", 
+                "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                "Taille des données", "Max Force [kN]", "Max Dépl. [mm]",
+                "Rp [MPa]", "Rm [MPa]", "Max Deform. [-]", "E [GPa]"
+            ]
+        else:
+            headers = [
+                "Nom Sample", "Banc de Test", 
+                "Mode Testé", "Géométrie Testée", 
+                "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                "Taille des données", "Max Force [N]", "Max Dépl. [mm]",
+                "Rp [MPa]", "Rm [MPa]", "Max Deform. [-]", "E [GPa]"
+            ]
+            
 
         for col, header in enumerate(headers):
             header_label = customtkinter.CTkLabel(self.scrollable_frame, text=header, font=("Arial", 10, "bold"))
@@ -90,18 +124,42 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
 
     def display_sample_list(self):
         # Efface les éléments précédents
-        chiffres_sign = int(self.master.option_chiffre_sign.get())
         for widget in self.scrollable_frame.winfo_children():
             widget.destroy()
 
         # Affichage des en-têtes du tableau
-        headers = [
-            "Nom Sample", "Banc de Test", 
-            "Mode Testé", "Géométrie Testée", 
-            "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
-            "Taille des données", "Max Force [N]", "Max Dépl. [mm]",
-            "Rp [MPa]", "Rm [MPa]", "Max Déform. [%]", "E [GPa]"
-        ]
+        if self.option_defo_percent and self.option_kn == False:
+            headers = [
+                "Nom Sample", "Banc de Test", 
+                "Mode Testé", "Géométrie Testée", 
+                "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                "Taille des données", "Max Force [N]", "Max Dépl. [mm]",
+                "Rp [MPa]", "Rm [MPa]", "Max Deform. [%]", "E [GPa]"
+            ]
+        elif self.option_defo_percent and self.option_kn:
+            headers = [
+                "Nom Sample", "Banc de Test", 
+                "Mode Testé", "Géométrie Testée", 
+                "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                "Taille des données", "Max Force [kN]", "Max Dépl. [mm]",
+                "Rp [MPa]", "Rm [MPa]", "Max Deform. [%]", "E [GPa]"
+            ]
+        elif self.option_defo_percent == False and self.option_kn:
+            headers = [
+                "Nom Sample", "Banc de Test", 
+                "Mode Testé", "Géométrie Testée", 
+                "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                "Taille des données", "Max Force [kN]", "Max Dépl. [mm]",
+                "Rp [MPa]", "Rm [MPa]", "Max Deform. [-]", "E [GPa]"
+            ]
+        else:
+            headers = [
+                "Nom Sample", "Banc de Test", 
+                "Mode Testé", "Géométrie Testée", 
+                "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                "Taille des données", "Max Force [N]", "Max Dépl. [mm]",
+                "Rp [MPa]", "Rm [MPa]", "Max Deform. [-]", "E [GPa]"
+            ]
 
         for col, header in enumerate(headers):
             header_label = customtkinter.CTkLabel(self.scrollable_frame, text=header, font=("Arial", 10, "bold"))
@@ -113,9 +171,9 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
                 sample.sample_name, sample.test_bench,
                 sample.tested_mode, sample.tested_geometry, sample.L0, sample.L1, sample.D0, 
                 sample.W0, sample.H0, f"({sample.lin_range})", f"({len(sample.time_values)},3)", 
-                self.format_sign(sample.F_max, chiffres_sign), self.format_sign(sample.Allong, chiffres_sign), 
-                self.format_sign(sample.Re, chiffres_sign), self.format_sign(sample.Rm, chiffres_sign), 
-                self.format_sign(sample.Defo, chiffres_sign), self.format_sign(sample.E, chiffres_sign)
+                sample.F_max, sample.Allong, 
+                sample.Re, sample.Rm, 
+                sample.Defo, sample.E
             ]
 
             for col, value in enumerate(values):
@@ -133,7 +191,6 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
         csv_filename = "samples_summary.csv"
         output_dir = "output"
         csv_filepath = os.path.join(output_dir, csv_filename)
-        chiffres_sign = int(self.master.option_chiffre_sign.get())
         
         if not os.path.exists(output_dir):
             os.makedirs(output_dir, exist_ok=True)
@@ -142,22 +199,49 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
         with open(csv_filepath, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             # Écriture de l'en-tête
-            writer.writerow([
-                "Sample Name", "Test Bench", 
-                "Tested Mode", "Tested Geometry", 
-                "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Lin Range [N]", 
-                "Size of Data Values", "Max Force [N]", "Max Stroke [mm]",
-                "Re [MPa]", "Rm [MPa]", "Max Deform [%]", "E [GPa]"
-            ])
+            
+            if self.option_defo_percent and self.option_kn == False:
+                headers = [
+                    "Nom Sample", "Banc de Test", 
+                    "Mode Testé", "Géométrie Testée", 
+                    "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                    "Taille des données", "Max Force [N]", "Max Dépl. [mm]",
+                    "Rp [MPa]", "Rm [MPa]", "Max Deform. [%]", "E [GPa]"
+                ]
+            elif self.option_defo_percent and self.option_kn:
+                headers = [
+                    "Nom Sample", "Banc de Test", 
+                    "Mode Testé", "Géométrie Testée", 
+                    "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                    "Taille des données", "Max Force [kN]", "Max Dépl. [mm]",
+                    "Rp [MPa]", "Rm [MPa]", "Max Deform. [%]", "E [GPa]"
+                ]
+            elif self.option_defo_percent == False and self.option_kn:
+                headers = [
+                    "Nom Sample", "Banc de Test", 
+                    "Mode Testé", "Géométrie Testée", 
+                    "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                    "Taille des données", "Max Force [kN]", "Max Dépl. [mm]",
+                    "Rp [MPa]", "Rm [MPa]", "Max Deform. [-]", "E [GPa]"
+                ]
+            else:
+                headers = [
+                    "Nom Sample", "Banc de Test", 
+                    "Mode Testé", "Géométrie Testée", 
+                    "L0 [mm]", "L1 [mm]", "D0 [mm]", "W0 [mm]", "H0 [mm]", "Zone Lin. [N]", 
+                    "Taille des données", "Max Force [N]", "Max Dépl. [mm]",
+                    "Rp [MPa]", "Rm [MPa]", "Max Deform. [-]", "E [GPa]"
+                ]
+            writer.writerow(headers)
             # Écriture des lignes de données
             for sample in self.sample_list:
                 writer.writerow([
                     sample.sample_name, sample.test_bench,
                     sample.tested_mode, sample.tested_geometry, sample.L0, sample.L1, sample.D0, 
                     sample.W0, sample.H0, f"({sample.lin_range})", f"({len(sample.time_values)},3)", 
-                    self.format_sign(sample.F_max, chiffres_sign), self.format_sign(sample.Allong, chiffres_sign), 
-                    self.format_sign(sample.Re, chiffres_sign), self.format_sign(sample.Rm, chiffres_sign), 
-                    self.format_sign(sample.Defo, chiffres_sign), self.format_sign(sample.E, chiffres_sign)
+                    sample.F_max, sample.Allong, 
+                    sample.Re, sample.Rm, 
+                    sample.Defo, sample.E
                 ])
                 
         message = f"Données exportées vers : {csv_filepath}"
@@ -167,6 +251,9 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
         return
     
     def update_file_list(self, sample_list):
+        option_list = self.master.interface_functions.get_options()
+        self.option_defo_percent = option_list.get('option_defo_percent', False)
+        self.option_kn = option_list.get('option_kn', False)
         self.sample_list = sample_list
         self.display_sample_list()
         return
