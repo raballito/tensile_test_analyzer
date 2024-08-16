@@ -5,6 +5,7 @@ Ce programme a été créer pour le département COMATEC de la Haute Ecole d'Ing
 https://heig-vd.ch/recherche/instituts/comatec/
 
 Il permet de traiter les résultats de tests obtenus par les machines de tractions à disposition du département.
+Les fichiers analysés doivent être en format '.csv'. 
 
 Le projet est basé sur Python et sur le plugin CustomTkInter : https://github.com/TomSchimansky/CustomTkinter
 
