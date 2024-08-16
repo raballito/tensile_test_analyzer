@@ -27,6 +27,18 @@ def mock_master(mocker):
     # Mock customtkinter widgets
     master.checkbox_1 = mocker.MagicMock()
     master.checkbox_1.get.return_value = True  # Default value for tests
+    master.checkbox_2 = mocker.MagicMock()
+    master.checkbox_2.get.return_value = True
+    master.checkbox_3 = mocker.MagicMock()
+    master.checkbox_3.get.return_value = True
+    master.checkbox_4 = mocker.MagicMock()
+    master.checkbox_4.get.return_value = True
+    master.checkbox_5 = mocker.MagicMock()
+    master.checkbox_5.get.return_value = True
+    master.checkbox_6 = mocker.MagicMock()
+    master.checkbox_6.get.return_value = True
+    master.checkbox_7 = mocker.MagicMock()
+    master.checkbox_7.get.return_value = True
 
     master.tabview = mocker.MagicMock()
     master.tabview.tab.return_value = tk.Frame(master)

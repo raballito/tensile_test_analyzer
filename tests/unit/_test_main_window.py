@@ -10,7 +10,8 @@ import customtkinter
 from MainWindow import MainWindow
 from Extractor.Functions_GUI import InterfaceFunctions
 from Extractor.ScrollableLabelButtonFrame import ScrollableLabelButtonFrame
-from PIL import Image, ImageTk
+from PIL import Image
+from PIL import ImageTk
 
 
 @pytest.fixture
@@ -18,16 +19,16 @@ def app(mocker):
     # Mock des images pour éviter les erreurs liées aux images
     mock_image = mocker.MagicMock(spec=Image.Image)  # Utilisation de Image.Image pour la compatibilité
     mock_image_tk = mocker.MagicMock(spec=ImageTk.PhotoImage)
-    
+
     # Patch de PIL.Image.open pour retourner le mock_image
     mocker.patch('PIL.Image.open', return_value=mock_image)
-    
+
     # Patch de ImageTk.PhotoImage pour retourner le mock_image_tk
     mocker.patch('PIL.ImageTk.PhotoImage', return_value=mock_image_tk)
     
-    # Vous pourriez également avoir besoin de mocker d'autres parties de customtkinter si nécessaire
-    # Ex: mocker.patch('customtkinter.CTkImage', return_value=mocker.MagicMock())
-    
+    # Patch de customtkinter.CTkImage pour éviter les erreurs
+    mocker.patch('customtkinter.CTkImage', return_value=mock_image_tk)
+
     # Initialisation normale de l'application
     return MainWindow()
 
