@@ -229,7 +229,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
     
         # Création du DataFrame et insertion dans Excel
         df_summary = pd.DataFrame(summary_data)
-        df_summary.to_excel(writer, sheet_name="Résumé", startrow=1, index=False)
+        df_summary.to_excel(writer, sheet_name="Résumé", startrow=0, index=False)
     
         # Calcul des moyennes et écart-types si plusieurs échantillons
         if len(sample_list) > 2 and include_analysis:
@@ -372,7 +372,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         sheet_name = f'Echantillon {sample.sample_name}'
         
         # Insérer la table à l'indice G16
-        df_details.to_excel(writer, sheet_name=sheet_name, startrow=1, startcol=6, index=False)
+        df_details.to_excel(writer, sheet_name=sheet_name, startrow=0, startcol=6, index=False)
             
     def generate_and_add_graphics(self, summary_sheet, sample_list):
         # Graphique 1: Force-Déplacement
