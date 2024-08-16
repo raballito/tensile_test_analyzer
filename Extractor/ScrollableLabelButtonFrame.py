@@ -57,7 +57,12 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
     def add_item(self, file_path):
         test_bench_struct = TestBench(self)  # Créer une instance de TestBench pour chaque échantillon
         sample_and_channel = test_bench_struct.identify_file(file_path)
-        file_path_rel = self.interface_functions.create_short_list([file_path])[0]
+        try:
+            file_path_rel = self.interface_functions.create_short_list([file_path])[0]
+        except ValueError as e:
+            # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
+            print(f"Erreur lors de la création du chemin relatif pour {file_path}. Utilisation du chemin complet.\nErreur: {e}")
+            file_path_rel = file_path
         # Identification du fichier
         test_bench = TestBench.identify_test_bench(file_path)
     
@@ -69,7 +74,6 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             sample_struct.file_name = os.path.basename(file_path)
             sample_struct.file_path = file_path
             sample_struct.sample_name = available_sample_name
-            sample_struct.file_path_rel = file_path_rel
             sample_struct.test_bench = test_bench
             sample_struct.separator = test_bench_struct.separator
             sample_struct.header_index = test_bench_struct.header_index
