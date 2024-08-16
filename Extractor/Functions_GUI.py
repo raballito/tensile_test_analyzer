@@ -48,6 +48,25 @@ class InterfaceFunctions:
         if not folder_path:
             folder_path = "Data"
         return folder_path
+    
+    def list_csv(self, csv_folder):
+        if not os.path.exists(csv_folder):
+            os.makedirs(csv_folder)  # Créer le dossier si inexistant
+        csv_files = []
+        # Parcours des fichiers dans le dossier
+        for filename in os.listdir(csv_folder):
+            filepath = os.path.abspath(os.path.join(csv_folder, filename))
+                
+            if filename.endswith(".lia"):
+                # Si le fichier se termine par ".lia", renommer en ".csv" et ajouter à la liste
+                new_filepath = filepath[:-4] + ".csv"
+                os.rename(filepath, new_filepath)
+                csv_files.append(new_filepath)
+            elif filename.endswith(".csv"):
+                # Si le fichier est déjà en ".csv", ajouter à la liste
+                csv_files.append(filepath)
+        print("Nombre de fichiers détectés dans dossier", csv_folder, ": ", len(csv_files))
+        return csv_files
 
     # Fonctions supplémentaires GUI
     def open_var_window_event(self, selected_checkboxes):
@@ -443,24 +462,6 @@ class InterfaceFunctions:
         if last_selected_element is not None:
             self.preview_file(last_selected_element)      
 
-    def list_csv(self, csv_folder):
-        if not os.path.exists(csv_folder):
-            os.makedirs(csv_folder)  # Créer le dossier si inexistant
-        csv_files = []
-        # Parcours des fichiers dans le dossier
-        for filename in os.listdir(csv_folder):
-            filepath = os.path.abspath(os.path.join(csv_folder, filename))
-                
-            if filename.endswith(".lia"):
-                # Si le fichier se termine par ".lia", renommer en ".csv" et ajouter à la liste
-                new_filepath = filepath[:-4] + ".csv"
-                os.rename(filepath, new_filepath)
-                csv_files.append(new_filepath)
-            elif filename.endswith(".csv"):
-                # Si le fichier est déjà en ".csv", ajouter à la liste
-                csv_files.append(filepath)
-        print("Nombre de fichiers détectés dans dossier", csv_folder, ": ", len(csv_files))
-        return csv_files
     
     def list_themes_names(self):
         theme_files = [f for f in os.listdir("static/themes") if f.endswith(".json")]
