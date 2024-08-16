@@ -232,7 +232,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
             self.option_canal.configure(state="disabled")
             self.radio_button_4.configure(state="disabled")
             
-        elif test_bench == "WB100kN":
+        elif test_bench == "WB100kN_1" or "WB100kN_2":
             self.option_machine.configure(state="disabled")
             self.option_canal.configure(state="enabled")
         else:
@@ -370,7 +370,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
     def get_canal(self):
         canal = self.option_canal.get()
         machine = self.option_machine.get()
-        if machine == "WB100kN":
+        if machine == "WB100kN_1":
             if canal == "Canal Extensomètre":
                 if self.sample.stroke_channel != 4:
                     self.sample.stroke_channel = 4
@@ -378,6 +378,16 @@ class ConfigWindow(customtkinter.CTkToplevel):
             elif canal == "Canal Traverse":
                 if self.sample.stroke_channel != 10:
                     self.sample.stroke_channel = 10
+                    self.sample.selected_channel = "Canal Traverse"
+                    
+        if machine == "WB100kN_2":
+            if canal == "Canal Extensomètre":
+                if self.sample.stroke_channel != 4:
+                    self.sample.stroke_channel = 4
+                    self.sample.selected_channel = "Canal Extensomètre"
+            elif canal == "Canal Traverse":
+                if self.sample.stroke_channel != 5:
+                    self.sample.stroke_channel = 5
                     self.sample.selected_channel = "Canal Traverse"
         self.sample.import_data()
     
