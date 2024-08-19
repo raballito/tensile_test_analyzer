@@ -227,7 +227,7 @@ class InterfaceFunctions:
         self.master.scrollable_label_button_frame.check_empty_list()
             
     def add_button_event(self, folder):
-        file_path = filedialog.askopenfilename(initialdir=folder, title="Sélectionner un fichier CSV", filetypes=[("CSV Files", "*.csv")])
+        file_path = filedialog.askopenfilename(initialdir=folder, title="Sélectionner un fichier CSV", filetypes=[("CSV Files", "*.csv"), ("LIA Files", "*.lia")])
         try:
             short_path = os.path.relpath(file_path)
         except ValueError as e:
