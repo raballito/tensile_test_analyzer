@@ -202,7 +202,7 @@ class MainWindow(customtkinter.CTk):
         self.instruction_label = None
         for i in range(len(list_csv)):
             self.scrollable_label_button_frame.add_item(list_csv[i])
-        if len(list_csv) == 0:
+        if len(self.scrollable_label_button_frame.frame_list) == 0:
             self.show_instruction_message()
         self.focus()
     
@@ -232,6 +232,8 @@ class MainWindow(customtkinter.CTk):
     def add_item(self, file_path):
         self.hide_instruction_message()
         self.scrollable_label_button_frame.add_item(file_path)
+        if len(self.scrollable_label_button_frame.frame_list) == 0:
+            self.show_instruction_message()
         
     def on_var_button_clicked(self):
         selected_checkboxes = self.scrollable_label_button_frame.get_selected_checkboxes()    
