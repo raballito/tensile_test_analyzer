@@ -228,7 +228,13 @@ class InterfaceFunctions:
             
     def add_button_event(self, folder):
         file_path = filedialog.askopenfilename(initialdir=folder, title="Sélectionner un fichier CSV", filetypes=[("CSV Files", "*.csv")])
-        short_path = os.path.relpath(file_path)
+        try:
+            short_path = os.path.relpath(file_path)
+        except ValueError as e:
+            # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
+            print(f"Erreur lors de la création du chemin relatif pour {file_path}. Utilisation du chemin complet.\nErreur: {e}")
+            short_path = file_path
+        
         print("Ajout du fichier: ", short_path)
         self.master.add_item(short_path)
 
