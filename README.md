@@ -11,7 +11,7 @@ Le projet est basé sur Python et sur le plugin CustomTkInter : https://github.c
 
 Projet en français réalisé par Quentin Raball
 
-N° Version : Beta 1.6
+N° Version : Beta 1.8
 
 ## Fonctionnalités
 - Gestion des fichiers dans le programme.
@@ -50,13 +50,13 @@ Le département COMATEC utilise actuellement les machines suivantes:
 
 Pour résoudre ces problèmes (notamment si lors de l'execution du programme, celui-ci dit que le plugin est introuvable):
 - Installer Miniconda, un gestionnaire de packages pour python.
-- Ouvrir miniconda, et créer un nouvel environnement : "conda create -n <env-name>" avec <env-name>: le nom de l'environnement voulu/choisi
-- Activer le nouvel environnement python avec la commande : "conda activate <env-name>"
-- Installer le package customtkinter avec la commande suivante: "conda install -n <env-name> bioconda::customtkinter"
-- Toujours dans l'interface conda, aller dans le répertoire du projet. "cd ./<dir>" pour ce déplacer dans le dossier <dir>. cd .. pour revenir en arrière.
+- Ouvrir miniconda, et créer un nouvel environnement : "conda create -n [env-name]" avec [env-name]: le nom de l'environnement voulu/choisi
+- Activer le nouvel environnement python avec la commande : "conda activate [env-name]"
+- Installer le package customtkinter avec la commande suivante: "conda install -n [env-name] bioconda::customtkinter"
+- Toujours dans l'interface conda, aller dans le répertoire du projet. "cd ./[dir]" pour ce déplacer dans le dossier [dir]. cd .. pour revenir en arrière.
 - Trouver le fichier MainWindow.py et l'executer dans le nouvel environnement.
 
-S'il manque des autres plugins, utiliser la commande : "conda install -n <env-name> <package>" avec <package> le nom du package voulu. Ils sont disponibles ici : https://anaconda.org/
+S'il manque des autres plugins, utiliser la commande : "conda install -n [env-name] [package]" avec [package] le nom du package voulu. Ils sont disponibles ici : https://anaconda.org/
 
 2) Problèmes d'installation de Python
 
