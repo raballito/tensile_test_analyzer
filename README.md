@@ -65,8 +65,6 @@ Pour installer python:
 - Start+S
 - Taper "CMD" et executer (il faut peut-être les accès administrateurs)
 - Taper "python --version" et vérifier la version (min 3.11). Si python n'est pas installé, une fenêtre Windows Store devrait s'ouvrir permettant son installation.
-- Taper la commande "pip3 install customtkinter" dans l'invite de commande.
-- Installer le plugin en acceptant l'installation (appuyer sur la touche "Y" pour valider) des autres plugins.
 - Si besoins (erreur ou autre), il faut probablement installer les plugins matplotlib, numpy, pandas et PIL
 
 Si tout a été installé correctement, il suffit de lancer le programme principal en double-cliquant sur le fichier "MainWindow.py". Le programme devrait s'exécuter normalement.
