@@ -7,8 +7,8 @@ Graphics Export Window
 - Availablility depends on the analysis of the sample
 - Export in Output directory
 
-Version: Beta 1.0
-Last Update: 05.08.24
+Version: Beta 1.8
+Last Update: 21.08.24
 
 @author: quentin.raball
 """
@@ -77,6 +77,7 @@ class ExportGraphsWindow(ctk.CTkToplevel):
                 self.stress_displacement_cb.configure(state='normal')
 
     def export_selected(self, sample_list):
+        self.attributes("-topmost", False)
         selected_graphs = {
             'force_displacement': self.selected_options['force_displacement'].get(),
             'force_time': self.selected_options['force_time'].get(),
@@ -98,5 +99,6 @@ class ExportGraphsWindow(ctk.CTkToplevel):
         if selected_graphs['stress_displacement']:
             graphs_to_export.append('Contrainte-Déplacement')
         
-        self.master.interface_functions.export_preview_event(sample_list, graphs_to_export)
+        
+        self.master.interface_functions.export_graphics_event(sample_list, graphs_to_export)
         self.destroy()

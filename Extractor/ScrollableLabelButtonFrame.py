@@ -9,8 +9,8 @@ Created on Mon Apr 22 11:15:29 2024
 - Get selected checkbox and sample vars functions from mainwindow
 - Get Export Options functions
 
-Version: Beta 1.5
-Last Update: 13.08.24
+Version: Beta 1.8
+Last Update: 21.08.24
 
 @author: quentin.raball
 

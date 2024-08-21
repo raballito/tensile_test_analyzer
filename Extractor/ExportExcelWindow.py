@@ -8,21 +8,23 @@ Excel Export Window
 - Export in Output directory
 - Export everything in Excel file
 
-Version: Beta 1.5
-Last Update: 15.08.24
+Version: Beta 1.8
+Last Update: 21.08.24
 
 @author: quentin.raball
 """
 
 import customtkinter
 from tkinter import IntVar
+from tkinter import messagebox
+from tkinter import filedialog
 import pandas as pd
 import openpyxl
 from openpyxl.drawing.image import Image
 import matplotlib.pyplot as plt
 import os
 import shutil
-from tkinter import messagebox
+
 
 class ExportExcelWindow(customtkinter.CTkToplevel):
     def __init__(self, sample_list, option_list, *args, **kwargs):
@@ -135,9 +137,11 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         if len(sample_list) == 0:
             messagebox.showinfo("Exportation annulée", "Aucun échantillon sélectionné.\nVeuillez sélectionner un échantillon et recommencer.")
             return
-    
+        self.attributes("-topmost", False)
         # Définir le chemin d'exportation
-        file_path = self.prepare_export_path('export_samples.xlsx')
+        file_path = self.save_as(titre="Exporter les données Excel", defaultextension=".xlsx")
+        if not file_path:  # Si l'utilisateur annule la boîte de dialogue
+            return
         
         # Créer un fichier Excel
         writer = pd.ExcelWriter(file_path, engine='openpyxl')
@@ -159,14 +163,13 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         # Sauvegarder le fichier
         self.finalize_export(writer, sample_list)
     
-    
-    def prepare_export_path(self, filename):
-        #Prépare le chemin de sauvegarde pour le fichier Excel.
-        export_path = os.path.join('output', 'Excel')
-        if not os.path.exists(export_path):
-            os.makedirs(export_path)
-        return os.path.join(export_path, filename)
-    
+    def save_as(self, titre="Enregistrer sous", defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")]):
+        file_path = filedialog.asksaveasfilename(
+            title=titre,
+            defaultextension=defaultextension,
+            filetypes=filetypes
+        )
+        return file_path
     
     def add_summary_sheet(self, writer, sample_list, include_graphics, include_analysis):
         #Ajoute une feuille de résumé avec les données des échantillons et éventuellement des graphiques.

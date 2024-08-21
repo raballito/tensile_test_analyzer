@@ -11,8 +11,8 @@ Available functions:
 -export_preview() to export graphics and tables
 -analyze() to analyze the samples with mode and geometry
 
-Version: Beta 1.5
-Last Update: 13.08.24
+Version: Beta 1.8
+Last Update: 21.08.24
 
 @author: quentin.raball
 """
@@ -163,9 +163,10 @@ class Sample:
         return self.time_values, self.force_values, self.displacement_values
     
     
-    def export_preview(self, graph_type=None):
+    def export_preview(self, graph_type=None, directory='output/IMG'):
         if graph_type == 'Force-Déplacement':
             force_stroke_path = self.export_graph(
+                directory, 
                 'Force-Déplacement', 
                 'Déplacement [mm]', 
                 'Force [N]', 
@@ -178,6 +179,7 @@ class Sample:
     
         elif graph_type == 'Force-Temps':
             force_time_path = self.export_graph(
+                directory, 
                 'Force-Temps', 
                 'Time [s]', 
                 'Force [N]', 
@@ -190,6 +192,7 @@ class Sample:
     
         elif graph_type == 'Contrainte-Déformation':
             stress_deformation_path = self.export_graph(
+                directory, 
                 'Contrainte-Déformation', 
                 'Déformation [%]', 
                 'Contrainte [MPa]', 
@@ -202,6 +205,7 @@ class Sample:
     
         elif graph_type == 'Contrainte-Déplacement':
             stress_displacement_path = self.export_graph(
+                directory, 
                 'Contrainte-Déplacement', 
                 'Déplacement [mm]', 
                 'Contrainte [MPa]', 
@@ -216,33 +220,33 @@ class Sample:
             # Si aucun type de graphique n'est spécifié ou reconnu
             raise ValueError(f"Type de graphique non pris en charge : {graph_type}")
     
-    def export_graph(self, subfolder, x_label, y_label, x_values, y_values, file_name, max_x_label, max_y_label):
-        image_path = os.path.join('output', 'IMG', subfolder)
+    def export_graph(self, directory, subfolder, x_label, y_label, x_values, y_values, file_name, max_x_label, max_y_label):
+        image_path = os.path.join(directory, subfolder)
         if not os.path.exists(image_path):
             os.makedirs(image_path)
-        
+    
         print(f"Génération du graphique {y_label}-{x_label}.\n")
-        
+    
         plt.figure()
-        
+    
         if y_label == 'Force [N]':
             force_values_plot = [val / 1000 for val in y_values] if self.master.get_option_scale_kN() else y_values
         else:
             force_values_plot = y_values
-        
+    
         data_plot = pd.DataFrame({
             x_label: x_values,
             y_label: force_values_plot
         })
-        
+    
         self.update_plot_attributes(data_plot, x_label, y_label, max_x_label, max_y_label)
-        
+    
         graph_path = os.path.join(image_path, file_name)
         plt.savefig(graph_path, dpi=300)
         plt.close()
-        
+    
         print(f"Fin de l'exportation du graphique {y_label} - {x_label}.\n")
-        
+    
         return graph_path
     
     def update_plot_attributes(self, data_plot, x_label, y_label, max_x_label, max_y_label):

@@ -7,16 +7,16 @@ Used to get main values from the sample structure
 
 Print tables with all values. Export possible
 
-Version: Beta 1.0
-Last Update: 06.08.24
+Version: Beta 1.8
+Last Update: 21.08.24
 
 @author: quentin.raball
 """
 
-import os
 import csv
 import customtkinter
 from tkinter import messagebox
+from tkinter import filedialog
 
 class VarToplevelWindow(customtkinter.CTkToplevel):
     def __init__(self, sample_list, option_list,  *args, **kwargs):
@@ -180,6 +180,14 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
                 value_label = customtkinter.CTkLabel(self.scrollable_frame, text=value)
                 value_label.grid(row=row, column=col, padx=5, pady=5, sticky='w')
 
+    def save_as(self, titre="Enregistrer sous", defaultextension=".csv", filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]):
+        file_path = filedialog.asksaveasfilename(
+            title=titre,
+            defaultextension=defaultextension,
+            filetypes=filetypes
+        )
+        return file_path
+
     def export_to_csv(self):
         if not self.sample_list:
             message = "Aucun échantillon à exporter.\nVeuillez sélectionner un échantillon et recommencer."
@@ -187,13 +195,13 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
             messagebox.showinfo("Exportation annulée", message)
             self.destroy()
             return
-
-        csv_filename = "samples_summary.csv"
-        output_dir = "output"
-        csv_filepath = os.path.join(output_dir, csv_filename)
         
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir, exist_ok=True)
+        self.attributes("-topmost", False)
+        csv_filepath = self.save_as(titre="Exporter les données", defaultextension=".csv")
+        
+        if not csv_filepath:  # L'utilisateur a annulé la sauvegarde
+            return
+        
             
         # Écriture des données dans le fichier CSV
         with open(csv_filepath, mode='w', newline='', encoding='utf-8') as file:
@@ -249,6 +257,7 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
         messagebox.showinfo("Exportation terminée", message)
         self.destroy()
         return
+    
     
     def update_file_list(self, sample_list):
         option_list = self.master.interface_functions.get_options()

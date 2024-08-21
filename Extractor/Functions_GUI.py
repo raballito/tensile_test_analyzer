@@ -41,13 +41,21 @@ class InterfaceFunctions:
         self.excel_export_window = None
     
     def pop_message_init(self):
-        messagebox.showinfo("Initialisation du programme", "Bienvenu dans le programme CSV Data Analyser.\n\nVeuillez sélectionner un répertoire de données.")
+        messagebox.showinfo("Initialisation du programme", "Bienvenu dans le programme Tensile Test Analyser.\n\nVeuillez sélectionner un répertoire de données contenant des fichiers csv.")
     
     def ask_directory(self, folder):
         folder_path = filedialog.askdirectory(initialdir=folder, title="Choisissez un répertoire de données")
         if not folder_path:
             return None
         return folder_path
+    
+    def save_as(titre="Enregistrer sous", defaultextension=".csv", filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]):
+        file_path = filedialog.asksaveasfilename(
+            title=titre,
+            defaultextension=defaultextension,
+            filetypes=filetypes
+        )
+        return file_path
     
     def list_csv(self, csv_folder):
         csv_files = []
@@ -436,7 +444,7 @@ class InterfaceFunctions:
         self.master.canvas.draw()
         self.master.canvas2.draw()
     
-    def export_preview_event(self, sample_list, graphs_to_export):
+    def export_graphics_event(self, sample_list, graphs_to_export):
         exported_sample = []
         if len(sample_list) == 0:
             message = "Exportation annulée: aucun échantillon sélectionné.\nVeuillez sélectionner un échantillon et recommencer."
@@ -445,18 +453,21 @@ class InterfaceFunctions:
             message = "Exportation annulée: aucun graphique sélectionné.\nVeuillez sélectionner un graphique et recommencer."
             messagebox.showinfo("Exportation annulée", message)
         else:
+            # Demander à l'utilisateur de sélectionner un répertoire de destination
+            directory = filedialog.askdirectory(title="Sélectionnez un répertoire pour enregistrer les graphiques")
+        
+            # Si l'utilisateur annule la sélection du répertoire
+            if not directory:
+                message = "Exportation annulée: aucun répertoire sélectionné.\nVeuillez sélectionner un répertoire et recommencer."
+                messagebox.showinfo("Exportation annulée", message)
+                return
+            
+            # Exportation des graphiques
             for sample in sample_list:
-                # Vérifier chaque type de graphique à exporter
-                if 'Force-Déplacement' in graphs_to_export:
-                    sample.export_preview(graph_type='Force-Déplacement')
-                if 'Force-Temps' in graphs_to_export:
-                    sample.export_preview(graph_type='Force-Temps')
-                if 'Contrainte-Déformation' in graphs_to_export:
-                    sample.export_preview(graph_type='Contrainte-Déformation')
-                if 'Contrainte-Déplacement' in graphs_to_export:
-                    sample.export_preview(graph_type='Contrainte-Déplacement')
-                
+                for graph_type in graphs_to_export:
+                    sample.export_preview(graph_type=graph_type, directory=directory)
                 exported_sample.append(sample.sample_name)
+                
             message = f"Graphiques de {exported_sample} exportés sous output/IMG."
             print(message)
             messagebox.showinfo("Exportation terminée", message)

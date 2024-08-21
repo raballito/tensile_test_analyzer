@@ -6,8 +6,8 @@ End of analysis window. Print a summary of the analysis with table and graphics.
 - 3 types of graphics
 - Summary table with average and standard deviation
 
-Version: Beta 1.5
-Last Update: 15.08.24
+Version: Beta 1.8
+Last Update: 21.08.24
 
 @author: quentin.raball
 """
@@ -16,6 +16,7 @@ import os
 import csv
 import customtkinter as ctk
 from tkinter import messagebox
+from tkinter import filedialog
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
@@ -266,20 +267,30 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
     def export_data(self):
         # Exporter le tableau
         self.attributes("-topmost", False)
-        self.export_table_to_csv()
-
+        # Export tables
+        csv_filepath = self.export_table_to_csv()
+        if not csv_filepath:
+            messagebox.showinfo("Exportation annulée", "L'exportation a été annulée par l'utilisateur.")
+            return
         # Exporter les graphiques
-        self.export_graphs_to_png()
+        self.export_graphs_to_png(csv_filepath)
 
         # Afficher un message de confirmation
         messagebox.showinfo("Export Réussi", "Les données ont été exportées avec succès.")
+    
+    def save_as(self, titre="Enregistrer sous", defaultextension=".csv", filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]):
+        file_path = filedialog.asksaveasfilename(
+            title=titre,
+            defaultextension=defaultextension,
+            filetypes=filetypes
+        )
+        return file_path
 
     def export_table_to_csv(self):
-        output_dir = "output"
-        filename  = "table_export.csv"
-        csv_filepath = os.path.join(output_dir, filename)
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir, exist_ok=True)
+        
+        csv_filepath = self.save_as(titre="Exporter les données", defaultextension=".csv")
+        if not csv_filepath:  # L'utilisateur a annulé la sauvegarde
+            return
             
         with open(csv_filepath, 'w', newline='') as csvfile:
             writer = csv.writer(csvfile)
@@ -320,26 +331,31 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
                 
                 writer.writerow(['Moyenne', ''] + list(self.vectorized_format_sign(averages, 3)))
                 writer.writerow(['Écart-type', ''] + list(self.vectorized_format_sign(stdevs, 3)))
+                
+        return csv_filepath
 
-    def export_graphs_to_png(self):
+    def export_graphs_to_png(self, csv_filepath):
+        # Obtenir le répertoire du fichier CSV
+        directory = os.path.dirname(csv_filepath)
+        
         # Exporter le graphique Contrainte-Déformation
         figure_cd = plt.Figure(figsize=(10, 5))
         self.plot_stress_deformation(figure_cd)
-        filename_cd = "output/Contrainte-Déformation_export.png"
+        filename_cd = os.path.join(directory, "Contrainte-Déformation_export.png")
         figure_cd.savefig(filename_cd)
         plt.close(figure_cd)
-
+    
         # Exporter le graphique Force-Déplacement
         figure_fd = plt.Figure(figsize=(10, 5))
         self.plot_force_displacement(figure_fd)
-        filename_fd = "output/Force-Déplacement_export.png"
+        filename_fd = os.path.join(directory, "Force-Déplacement_export.png")
         figure_fd.savefig(filename_fd)
         plt.close(figure_fd)
-
+    
         # Exporter le graphique Contrainte-Déplacement
         figure_sd = plt.Figure(figsize=(10, 5))
         self.plot_stress_displacement(figure_sd)
-        filename_sd = "output/Contrainte-Déplacement_export.png"
+        filename_sd = os.path.join(directory, "Contrainte-Déplacement_export.png")
         figure_sd.savefig(filename_sd)
         plt.close(figure_sd)
 
