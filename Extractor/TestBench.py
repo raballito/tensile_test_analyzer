@@ -11,13 +11,13 @@ Available functions:
     -identify_file(file_path) to config the sample with the correct columns number in the csv
 
 
-Version: Beta 1.1
-Last Update: 06.08.24
+Version: Beta 1.8
+Last Update: 21.08.24
 
 @author: quentin.raball
 """
 
-
+import os
 import pandas as pd
 
 class TestBench:
@@ -78,6 +78,9 @@ class TestBench:
     #Fonction d'identification du banc de test
     def identify_file(self, file_path):
         test_bench = self.identify_test_bench(file_path)
+        file_name = os.path.splitext(os.path.basename(file_path))[0]
+        print(f"Nom de fichiers: {file_name}")
+        
         # Identifier la machine de traction en fonction des informations et configure les valeurs pour importation.
         if test_bench=="Shimadzu":
             self.separator = ','
@@ -107,7 +110,7 @@ class TestBench:
             self.repeat_every = 3
             with open(file_path, 'r', encoding='latin-1') as file: 
                 first_line = file.readline().strip()
-                self.available_sample_names = ['Default W+B 400 kN']
+                self.available_sample_names = [file_name]
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
@@ -124,7 +127,7 @@ class TestBench:
             self.repeat_every = 3
             with open(file_path, 'r', encoding='latin-1') as file: 
                 first_line = file.readline().strip()
-                self.available_sample_names = ['Default W+B 400 kN']
+                self.available_sample_names = [file_name]
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
@@ -141,7 +144,7 @@ class TestBench:
             self.repeat_every = 10
             with open(file_path, 'r', encoding='latin-1') as file: 
                 first_line = file.readline().strip()
-                self.available_sample_names = ['Default W+B 100 kN']
+                self.available_sample_names = [file_name]
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
@@ -158,7 +161,7 @@ class TestBench:
             self.repeat_every = 5
             with open(file_path, 'r', encoding='latin-1') as file: 
                 first_line = file.readline().strip()
-                self.available_sample_names = ['Default W+B 100 kN']
+                self.available_sample_names = [file_name]
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
@@ -173,6 +176,9 @@ class TestBench:
            self.time_channel = 1
            self.force_unit = 1000 #Unités du canal force en kN
            self.repeat_every = 3
+           self.available_sample_names = [file_name]
+           self.number_of_test = len(first_line[1]) // 5
+           self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
 
         self.default_sample_names = self.available_sample_names.copy()
         

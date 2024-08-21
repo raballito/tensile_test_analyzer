@@ -170,7 +170,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         return coef_rp
     
     def get_option_file_path(self):
-        value_file_path = self.master.checkbox_2.get()
+        value_file_path = self.master.checkbox_6.get()
         if value_file_path == 0:
             option_file_path = False
         elif value_file_path ==1:
@@ -194,7 +194,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         return option_scale_kN
     
     def get_option_show_force_stroke(self):
-        value_show_force_stroke = self.master.checkbox_6.get()
+        value_show_force_stroke = self.master.checkbox_5.get()
         if value_show_force_stroke == 0:
             option_show_force_stroke = False
         elif value_show_force_stroke ==1:
@@ -202,7 +202,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         return option_show_force_stroke
     
     def get_option_defo_percent(self):
-        value_defo_percent = self.master.checkbox_4.get()
+        value_defo_percent = self.master.checkbox_3.get()
         if value_defo_percent == 0:
             option_value_defo_percent = False
         elif value_defo_percent ==1:
@@ -210,7 +210,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         return option_value_defo_percent
     
     def get_option_show_rp(self):
-        value_show_rp = self.master.checkbox_5.get()
+        value_show_rp = self.master.checkbox_4.get()
         if value_show_rp == 0:
             option_value_show_rp = False
         elif value_show_rp ==1:
@@ -218,7 +218,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         return option_value_show_rp
     
     def get_option_show_legend(self):
-        value_show_legend = self.master.checkbox_3.get()
+        value_show_legend = self.master.checkbox_2.get()
         if value_show_legend == 0:
             option_show_legend = False
         elif value_show_legend == 1:

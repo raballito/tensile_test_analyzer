@@ -8,8 +8,8 @@ GUI Related Functions
 - Basically everythings related of the main window's functions
 - Events throughs files managed by this file mainly
 
-Version: Beta 1.5
-Last Update: 15.08.24
+Version: Beta 1.8
+Last Update: 21.08.24
 
 @author: quentin.raball
 """
@@ -175,11 +175,11 @@ class InterfaceFunctions:
     def get_options(self):
         return {
             'option_name': bool(self.master.checkbox_1.get()),
-            'option_path': bool(self.master.checkbox_2.get()),
-            'option_legend': bool(self.master.checkbox_3.get()),
-            'option_defo_percent': bool(self.master.checkbox_4.get()),
-            'option_elastic_line': bool(self.master.checkbox_5.get()),
-            'option_show_table': bool(self.master.checkbox_6.get()),
+            'option_legend': bool(self.master.checkbox_2.get()),
+            'option_defo_percent': bool(self.master.checkbox_3.get()),
+            'option_elastic_line': bool(self.master.checkbox_4.get()),
+            'option_show_table': bool(self.master.checkbox_5.get()),
+            'option_path': bool(self.master.checkbox_6.get()),
             'option_kn': bool(self.master.checkbox_7.get())
         }
     

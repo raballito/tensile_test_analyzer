@@ -11,8 +11,8 @@ Configuration Window
 - Configuration of sample class through GUI
 
 
-Version: Beta 1.5
-Last Update: 13.08.24
+Version: Beta 1.8
+Last Update: 21.08.24
 
 
 @author: quentin.raball
@@ -56,7 +56,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         if not self.sample.L0 == None:
             L0_default = tkinter.StringVar(self, self.sample.L0)
         else:
-            L0_default = tkinter.StringVar(self, 100)
+            L0_default = tkinter.StringVar(self, 50)
         if not self.sample.L1 == None:
             L1_default = tkinter.StringVar(self, self.sample.L1)
         else: 
@@ -64,11 +64,11 @@ class ConfigWindow(customtkinter.CTkToplevel):
         if not self.sample.W0 == None:
             W0_default = tkinter.StringVar(self, self.sample.W0)
         else:
-            W0_default = tkinter.StringVar(self, 3)
+            W0_default = tkinter.StringVar(self, 12)
         if not self.sample.H0 == None:
             H0_default = tkinter.StringVar(self, self.sample.H0)
         else:
-            H0_default = tkinter.StringVar(self, 2)
+            H0_default = tkinter.StringVar(self, 1.5)
         
         F_min_default = tkinter.StringVar(self, self.sample.lin_range[0])
         F_max_default = tkinter.StringVar(self, self.sample.lin_range[1])

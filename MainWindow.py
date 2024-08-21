@@ -12,8 +12,8 @@ Tensile Test Analyzer - Main Window
 - Multisampling handling
 - Export graphics and sample summary
 
-Version: Beta 1.5
-Last Update: 15.08.24
+Version: Beta 1.8
+Last Update: 21.08.24
 
 @author: quentin.raball
 """
@@ -168,15 +168,15 @@ class MainWindow(customtkinter.CTk):
         self.checkbox_slider_frame.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.checkbox_1 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Nom du sample")
         self.checkbox_1.grid(row=1, column=0, pady=(0, 0), padx=10, sticky="nw")
-        self.checkbox_2 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Nom du fichier")
+        self.checkbox_2 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Légendes")
         self.checkbox_2.grid(row=2, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_3 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Légendes")
+        self.checkbox_3 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Déformation en [%]")
         self.checkbox_3.grid(row=3, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_4 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Déformation en [%]")
+        self.checkbox_4 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Droite limite élastique")
         self.checkbox_4.grid(row=4, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_5 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Droite limite élastique")
+        self.checkbox_5 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Montrer résultats calculés")
         self.checkbox_5.grid(row=5, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_6 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Montrer résultats calculés")
+        self.checkbox_6 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Nom du fichier")
         self.checkbox_6.grid(row=6, column=0, pady=(20, 0), padx=10, sticky="nw")
         self.checkbox_7 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Utilisation des [kN]")
         self.checkbox_7.grid(row=7, column=0, pady=20, padx=10, sticky="nw")
@@ -187,7 +187,7 @@ class MainWindow(customtkinter.CTk):
         self.checkbox_3.select()
         self.checkbox_4.select()
         self.checkbox_5.select()
-        self.checkbox_6.select()
+        #self.checkbox_6.select()
         self.appearance_mode_optionemenu.set("Light")
         self.scaling_optionemenu.set("100%")
         self.option_chiffre_sign.set("3")
