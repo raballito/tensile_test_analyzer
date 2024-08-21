@@ -49,18 +49,31 @@ def test_identify_file_WB400kN_2(mocker):
     assert tb.force_unit == 1 #Unités du canal force en N
     assert tb.repeat_every == 3
 
-def test_identify_file_WB100kN(mocker):
+def test_identify_file_WB100kN_1(mocker):
     tb = TestBench('./Data/Exemple_WB100kN_Tract_L100_D2.csv')
     tb.test_bench = tb.identify_test_bench('./Data/Exemple_WB100kN_Tract_L100_D2.csv')
     result = tb.identify_file('./Data/Exemple_WB100kN_Tract_L100_D2.csv')
-    assert tb.test_bench == 'WB100kN'
+    assert tb.test_bench == 'WB100kN_1'
     assert tb.separator == ';'
     assert tb.header_index == 1
     assert tb.force_channel == 3
-    assert tb.time_channel == 1
+    assert tb.time_channel == 2
     assert tb.stroke_channel == 10
     assert tb.force_unit == 1000 #Unité canal force en kN
     assert tb.repeat_every == 10
+
+def test_identify_file_WB100kN_2(mocker):
+    tb = TestBench('./Data/Exemple_WB100kN_2_Tract_L100_D2.csv')
+    tb.test_bench = tb.identify_test_bench('./Data/Exemple_WB100kN_2_Tract_L100_D2.csv')
+    result = tb.identify_file('./Data/Exemple_WB100kN_2_Tract_L100_D2.csv')
+    assert tb.test_bench == 'WB100kN_2'
+    assert tb.separator == ';'
+    assert tb.header_index == 1
+    assert tb.force_channel == 3
+    assert tb.time_channel == 2
+    assert tb.stroke_channel == 5
+    assert tb.force_unit == 1000 #Unité canal force en kN
+    assert tb.repeat_every == 5
 
 def test_identify_test_bench_unknown(mocker):
     # Mock de pandas.read_csv

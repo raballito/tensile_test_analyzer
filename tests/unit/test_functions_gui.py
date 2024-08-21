@@ -86,7 +86,7 @@ def test_update_preview(interface_functions):
 def test_export_preview_event(interface_functions):
     sample_list = []
     graphs_to_export = ['Force-Déplacement']
-    interface_functions.export_preview_event(sample_list, graphs_to_export)
+    interface_functions.export_graphics_event(sample_list, graphs_to_export)
 
 def test_end_analyze(interface_functions):
     sample_list = []
