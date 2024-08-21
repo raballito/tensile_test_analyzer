@@ -18,6 +18,7 @@ Last Update: 15.08.24
 @author: quentin.raball
 """
 
+import os
 import customtkinter
 from Extractor.Functions_GUI import InterfaceFunctions
 from Extractor.ScrollableLabelButtonFrame import ScrollableLabelButtonFrame
@@ -35,6 +36,7 @@ class MainWindow(customtkinter.CTk):
     def __init__(self):
         super().__init__()
         self.protocol("WM_DELETE_WINDOW", self.on_close)
+        
         # Charger les fonctions supplémentaires du GUI
         self.interface_functions = InterfaceFunctions(self)
         self.scrollable_label_button_frame = ScrollableLabelButtonFrame(self)
@@ -45,9 +47,12 @@ class MainWindow(customtkinter.CTk):
 
         # Initialisation du dossier de travail
         self.interface_functions.pop_message_init()
-        folder_ask = self.interface_functions.ask_directory()
-        list_csv = self.interface_functions.list_csv(folder_ask)
-        theme_names = self.interface_functions.list_themes_names()
+        if not os.path.exists("Data"):
+            os.makedirs("Data")
+        self.folder_ask = self.interface_functions.ask_directory("Data")
+        if not self.folder_ask == None:
+            list_csv = self.interface_functions.list_csv(self.folder_ask)
+        else: list_csv = None
 
         # Configuration  de la grille principale
         self.grid_columnconfigure(1, weight=1)
@@ -66,7 +71,7 @@ class MainWindow(customtkinter.CTk):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
         self.title_label = customtkinter.CTkLabel(self.sidebar_frame, text="Tensile Test Analyzer", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.title_label.grid(row=1, column=0, padx=20, pady=(20, 10))
-        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Ajouter un fichier", command=lambda: self.on_button_add_file(folder_ask))
+        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Ajouter un fichier", command=lambda: self.on_button_add_file(self.folder_ask))
         self.sidebar_button_1.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Supprimer les fichiers", command=lambda: self.on_remove_button_event())
         self.sidebar_button_2.grid(row=3, column=0, padx=20, pady=10)
@@ -195,8 +200,9 @@ class MainWindow(customtkinter.CTk):
         self.scrollable_label_button_frame.grid_rowconfigure(0, weight=1) # A régler pour agrandir la zone vers le bas
         self.instruction_frame = None
         self.instruction_label = None
-        for i in range(len(list_csv)):
-            self.scrollable_label_button_frame.add_item(list_csv[i])
+        if not list_csv == None:
+            for i in range(len(list_csv)):
+                self.scrollable_label_button_frame.add_item(list_csv[i])
         if len(self.scrollable_label_button_frame.frame_list) == 0:
             self.show_instruction_message()
         self.focus()
@@ -269,7 +275,8 @@ class MainWindow(customtkinter.CTk):
         self.interface_functions.remove_button_event(selected_checkboxes)
         
     def on_change_directory_event(self):
-        self.interface_functions.directory_button_event()
+        new_folder = self.interface_functions.directory_button_event(self.folder_ask)
+        self.folder_ask = new_folder
         
     def on_close(self):
         print("Fermeture de la fenêtre principale.")

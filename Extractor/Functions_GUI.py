@@ -41,17 +41,15 @@ class InterfaceFunctions:
         self.excel_export_window = None
     
     def pop_message_init(self):
-        messagebox.showinfo("Initialisation du programme", "Bienvenu dans le programme CSV Data Analyser.\n\nVeuillez sélectionner un répertoire de données.\n\nCliquer sur annuler dans la prochaine fenêtre pour sélectionner le répertoire par défaut 'Data'")
+        messagebox.showinfo("Initialisation du programme", "Bienvenu dans le programme CSV Data Analyser.\n\nVeuillez sélectionner un répertoire de données.")
     
-    def ask_directory(self):
-        folder_path = filedialog.askdirectory(title="Choisissez un répertoire de données")
+    def ask_directory(self, folder):
+        folder_path = filedialog.askdirectory(initialdir=folder, title="Choisissez un répertoire de données")
         if not folder_path:
-            folder_path = "Data"
+            return None
         return folder_path
     
     def list_csv(self, csv_folder):
-        if not os.path.exists(csv_folder):
-            os.makedirs(csv_folder)  # Créer le dossier si inexistant
         csv_files = []
         # Parcours des fichiers dans le dossier
         for filename in os.listdir(csv_folder):
@@ -211,15 +209,19 @@ class InterfaceFunctions:
         theme_path = os.path.join("static/themes", f"{new_theme}.json")
         customtkinter.set_default_color_theme(theme_path)
 
-    def directory_button_event(self):
+    def directory_button_event(self, old_folder):
         print("directory_button clicked")
-        new_folder = self.ask_directory()
+        new_folder = self.ask_directory(old_folder)
+        if new_folder is None:  # Vérifiez si l'utilisateur a annulé la sélection
+            print("Opération annulée. Aucun répertoire sélectionné.")
+            return
         list_csv = self.list_csv(new_folder)
         self.clear_plot()
         self.master.scrollable_label_button_frame.remove_all_items() 
         for i in range(len(list_csv)):
             self.master.scrollable_label_button_frame.add_item(list_csv[i])
         self.master.scrollable_label_button_frame.check_empty_list()
+        return new_folder
             
     def add_button_event(self, folder):
         file_path = filedialog.askopenfilename(initialdir=folder, title="Sélectionner un fichier CSV", filetypes=[("CSV Files", "*.csv"), ("LIA Files", "*.lia")])
