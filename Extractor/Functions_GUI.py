@@ -215,26 +215,27 @@ class InterfaceFunctions:
         print("directory_button clicked")
         new_folder = self.ask_directory()
         list_csv = self.list_csv(new_folder)
-        list_element = self.master.scrollable_label_button_frame.frame_list
-        self.master.ax1.clear()
-        self.master.canvas.draw()
-        self.master.ax2.clear()
-        self.master.canvas2.draw()
-        for element in list_element:
-            self.master.scrollable_label_button_frame.remove_all_items() 
+        self.clear_plot()
+        self.master.scrollable_label_button_frame.remove_all_items() 
         for i in range(len(list_csv)):
             self.master.scrollable_label_button_frame.add_item(list_csv[i])
         self.master.scrollable_label_button_frame.check_empty_list()
             
     def add_button_event(self, folder):
         file_path = filedialog.askopenfilename(initialdir=folder, title="Sélectionner un fichier CSV", filetypes=[("CSV Files", "*.csv"), ("LIA Files", "*.lia")])
+    
+        # Vérification si l'utilisateur a cliqué sur "Annuler"
+        if not file_path:
+            print("Aucun fichier sélectionné.")
+            return  # Sort de la fonction si aucun fichier n'est sélectionné
+    
         try:
             short_path = os.path.relpath(file_path)
         except ValueError as e:
             # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
             print(f"Erreur lors de la création du chemin relatif pour {file_path}. Utilisation du chemin complet.\nErreur: {e}")
             short_path = file_path
-        
+    
         print("Ajout du fichier: ", short_path)
         self.master.add_item(short_path)
 

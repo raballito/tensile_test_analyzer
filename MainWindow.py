@@ -73,14 +73,9 @@ class MainWindow(customtkinter.CTk):
         self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text="Changer de répertoire", command=lambda: self.on_change_directory_event())
         self.sidebar_button_3.grid(row=4, column=0, padx=20, pady=10)
         #self.sidebar_button_4 = customtkinter.CTkButton(self.sidebar_frame, text="TestButton", command=lambda: self.on_test_button_clicked())
-        #self.sidebar_button_4.grid(row=5, column=0, padx=20, pady=10)
+        #self.sidebar_button_4.grid(row=5, column=0, padx=20, pady=10) # Bouton pour debug sample
         self.sidebar_button_5 = customtkinter.CTkButton(self.sidebar_frame, text="Aide", command=self.interface_functions.open_help_window_event)
         self.sidebar_button_5.grid(row=6, column=0, padx=20, pady=10)
-        #self.theme_label = customtkinter.CTkLabel(self.sidebar_frame, text="Couleur Theme :", anchor="w")
-        #self.theme_label.grid(row=8, column=0, padx=20, pady=(10, 0))
-        #self.theme_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=theme_names,
-        #                                                     command=self.interface_functions.change_theme_event)
-        #self.theme_optionemenu.grid(row=9, column=0, padx=20, pady=(10, 10))
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Mode d'apparence :", anchor="w")
         self.appearance_mode_label.grid(row=10, column=0, padx=20, pady=(10, 0))
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark"],
