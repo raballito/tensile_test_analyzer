@@ -112,7 +112,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
 
     def remove_item(self, item):
         for switch, button, check, frame, sample in zip(self.switch_list, self.button_list, self.checkbox_variable_list, self.frame_list, self.sample_list):
-            if switch.cget("text") == item:
+            if switch.sample_id == item:
                 button.destroy()
                 switch.destroy()
                 frame.destroy()

@@ -241,8 +241,16 @@ class InterfaceFunctions:
     def remove_button_event(self, item_list):
         for item in item_list:
             self.master.scrollable_label_button_frame.remove_item(item)
+        self.clear_plot()
         print("Elements supprimés :", item_list)
-        
+    
+    def clear_plot(self):
+       # Effacer le graphique
+       self.master.ax1.clear()
+       self.master.ax2.clear()
+       self.master.canvas.draw()
+       self.master.canvas2.draw()
+    
     def config_button_frame_event(self, sample, master, item):
         sample_name = sample.sample_name
         file_path = sample.file_path
