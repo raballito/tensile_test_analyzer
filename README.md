@@ -42,6 +42,7 @@ Le département COMATEC utilise actuellement les machines suivantes:
 - Nouvelles géométries d'échantillons.
 - Nouvelles machines supportées.
 - Gestion de l'extensomètre pour les machines Shimadzu 20kN et W+B 400kN.
+- Batch processing
 
 
 ## F.A.Q
