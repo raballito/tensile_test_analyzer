@@ -209,6 +209,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.option_canal = customtkinter.CTkOptionMenu(self.tabview_options.tab("Options fichiers"), dynamic_resizing=True,
                                                     values=["Canal Traverse", "Canal Extensomètre"])
         self.option_canal.grid(row=3, column=0, padx=20)
+        print(f"Canal utilisé : {self.sample.selected_channel}")
         self.option_canal.set(self.sample.selected_channel)
         self.name_input_button = customtkinter.CTkButton(self.tabview_options.tab("Options fichiers"), text="Changer nom du sample",
                                                            command= lambda: self.open_input_dialog_event(self.item))
@@ -218,29 +219,12 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.save_button = customtkinter.CTkButton(self, text="Sauvegarder", command=lambda: self.on_close(), font=customtkinter.CTkFont(size=15, weight="bold"))
         self.save_button.grid(row=7, column=0, pady=10, padx=20, sticky="nswe")
         
-        # Comportement par défaut
-        #self.radio_button_3.configure(state="disabled")
-        
+        # Comportement par défaut        
         relative_path = os.path.relpath(file_path)
-        self.option_machine.set(test_bench)
         self.label_file_path.configure(text=relative_path)
         self.update_l1_visibility()
+        self.update_menus(self.sample.test_bench, self.radio_var.get())
         
-        if test_bench == "Shimadzu" or test_bench == "WB400kN_1" or test_bench == "WB400kN_2":
-            self.option_machine.configure(state="disabled")
-            self.option_canal.set("Canal Traverse")
-            self.option_canal.configure(state="disabled")
-            self.radio_button_4.configure(state="disabled")
-            
-        elif test_bench == "WB100kN_1" or "WB100kN_2":
-            self.option_machine.configure(state="disabled")
-            self.option_canal.configure(state="enabled")
-        else:
-            self.option_machine.set("WB100kN")
-            self.option_canal.configure(state="enabled")
-            self.option_machine.configure(state="enabled")
-            self.radio_button_4.configure(state="disabled")
-         
         if self.sample.last_mode_chosen == 0:
             self.radio_button_1.invoke()
         elif self.sample.last_mode_chosen == 1:
@@ -249,7 +233,35 @@ class ConfigWindow(customtkinter.CTkToplevel):
             self.radio_button_3.invoke()
         elif self.sample.last_mode_chosen == 3:
             self.radio_button_4.invoke()    
-            
+        
+        
+    def update_menus(self, test_bench, test_mode):
+        if test_bench == "Shimadzu" or test_bench == "WB400kN_1" or test_bench == "WB400kN_2":
+            self.option_canal.set("Canal Traverse")
+            self.option_canal.configure(state="disabled")
+            self.radio_button_4.configure(state="disabled")
+            self.option_machine.configure(state="disabled")
+            if test_bench == "Shimadzu":
+                self.option_machine.set("Shimadzu 20kN")
+            else: 
+                self.option_machine.set("W+B 400kN")
+                
+        elif test_bench == "WB100kN_1" or "WB100kN_2":
+            if test_mode == 3:
+                self.option_machine.configure(state="disabled")
+                self.option_machine.set("W+B 100kN")
+                self.option_canal.set("Canal Extensomètre")
+                self.option_canal.configure(state="disabled")
+            else:
+                self.option_machine.configure(state="disabled")
+                self.option_machine.set("W+B 100kN")
+                self.option_canal.configure(state="enabled")
+        else:
+            self.option_machine.set("WB100kN")
+            self.option_canal.configure(state="enabled")
+            self.option_machine.configure(state="enabled")
+            self.radio_button_4.configure(state="disabled")
+    
         
     def radio_test_mode_event(self):
         mode_test = self.radio_var.get()
@@ -269,7 +281,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
                                                 size=(100, 334))
             self.image_label_rond.configure(image=self.image_rond)
             self.image_label_rond.image = self.image_rond  # Update image reference
-            self.option_canal.configure(state="enable")
+            self.update_menus(self.sample.test_bench, mode_test)
             
         elif mode_test == 1: # Test flexion 3pts
             image_rect_img_light = Image.open("static/image_flexion_3pts_rect.png")
@@ -287,8 +299,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
                                                 size=(100, 334))
             self.image_label_rond.configure(image=self.image_rond)
             self.image_label_rond.image = self.image_rond  # Update image reference
-            self.option_canal.set("Canal Traverse")
-            self.option_canal.configure(state="disabled")
+            self.update_menus(self.sample.test_bench, mode_test)
         
         elif mode_test == 2: # Test flexion 4pts
             image_rect_img_light = Image.open("static/image_flexion_4pts_rect.png")
@@ -306,8 +317,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
                                                 size=(100, 334))
             self.image_label_rond.configure(image=self.image_rond)
             self.image_label_rond.image = self.image_rond  # Update image reference
-            self.option_canal.set("Canal Traverse")
-            self.option_canal.configure(state="disabled")
+            self.update_menus(self.sample.test_bench, mode_test)
             
         elif mode_test == 3: # Test Module de Young
             image_rect_img_light = Image.open("static/image_mod_young_rect.png")
@@ -325,8 +335,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
                                                 size=(100, 334))
             self.image_label_rond.configure(image=self.image_rond)
             self.image_label_rond.image = self.image_rond  # Update image reference
-            self.option_canal.set("Canal Extensomètre")
-            self.option_canal.configure(state="disabled")
+            self.update_menus(self.sample.test_bench, mode_test)
             
         self.update_l1_visibility()
 
@@ -369,7 +378,9 @@ class ConfigWindow(customtkinter.CTkToplevel):
     
     def get_canal(self):
         canal = self.option_canal.get()
-        machine = self.option_machine.get()
+        print(f"Canal obtenu dans get_canal(): {canal}")
+        machine = self.sample.test_bench
+        print(f"Machine obtenue dans get_canal(): {machine}")
         if machine == "WB100kN_1":
             if canal == "Canal Extensomètre":
                 if self.sample.stroke_channel != 4:
@@ -390,6 +401,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
                     self.sample.stroke_channel = 5
                     self.sample.selected_channel = "Canal Traverse"
         self.sample.import_data()
+        print(f"Canal enregistré: {self.sample.selected_channel}")
     
     def get_geometry(self, test_mode):
         geometry = self.tabview.get()
