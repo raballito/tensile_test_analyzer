@@ -28,15 +28,14 @@ class HelpWindow(customtkinter.CTkToplevel):
         self.grid_columnconfigure(1, weight=1)
 
         # load images with light and dark mode image
-        image_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../static")
-        self.logo_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "COMATEC_HEIG-VD_logotype_rouge-rvb.png")), size=(120, 40))
-        self.image_icon_image = customtkinter.CTkImage(Image.open(os.path.join(image_path, "Logo_Traction.png")), size=(30, 30))
-        self.traction_image = customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "Logo_Traction.png")),
-                                                     dark_image=Image.open(os.path.join(image_path, "Logo_Traction.png")), size=(40, 30))
-        self.flex_3pts_image = customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "Logo_flex_3Pts.png")),
-                                                      dark_image=Image.open(os.path.join(image_path, "Logo_flex_3Pts.png")), size=(40, 30))
-        self.flex_4pts_image = customtkinter.CTkImage(light_image=Image.open(os.path.join(image_path, "Logo_flex_4Pts.png")),
-                                                      dark_image=Image.open(os.path.join(image_path, "Logo_flex_4Pts.png")), size=(40, 30))
+        self.logo_image = customtkinter.CTkImage(Image.open("static/COMATEC_HEIG-VD_logotype_rouge-rvb.png"), size=(120, 40))
+        self.image_icon_image = customtkinter.CTkImage(Image.open("static/Logo_Traction.png"), size=(30, 30))
+        self.traction_image = customtkinter.CTkImage(light_image=Image.open("static/Logo_Traction.png"),
+                                                     dark_image=Image.open("static/Logo_Traction.png"), size=(40, 30))
+        self.flex_3pts_image = customtkinter.CTkImage(light_image=Image.open("static/Logo_flex_3Pts.png"),
+                                                      dark_image=Image.open("static/Logo_flex_3Pts.png"), size=(40, 30))
+        self.flex_4pts_image = customtkinter.CTkImage(light_image=Image.open("static/Logo_flex_4Pts.png"),
+                                                      dark_image=Image.open("static/Logo_flex_4Pts.png"), size=(40, 30))
 
         # Store image references
         self.images = {
@@ -80,8 +79,8 @@ class HelpWindow(customtkinter.CTkToplevel):
         # create home frame
         self.traction_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.traction_frame.grid_columnconfigure(0, weight=1)
-        image_tract_light = Image.open(os.path.join(image_path, "Formule_Traction.png"))
-        image_tract_dark = Image.open(os.path.join(image_path, "Formule_Traction_dark.png"))
+        image_tract_light = Image.open("static/Formule_Traction.png")
+        image_tract_dark = Image.open("static/Formule_Traction_dark.png")
         self.traction_formula_image = customtkinter.CTkImage(light_image=image_tract_light,
                                             dark_image=image_tract_dark,
                                             size=(650, 450))
@@ -92,8 +91,8 @@ class HelpWindow(customtkinter.CTkToplevel):
         # create second frame
         self.flex_3pts_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.flex_3pts_frame.grid_columnconfigure(0, weight=1)
-        image_flex_3pts_light = Image.open(os.path.join(image_path, "Formule_Flex3pts.png"))
-        image_flex_3pts_dark = Image.open(os.path.join(image_path, "Formule_Flex3pts_dark.png"))
+        image_flex_3pts_light = Image.open("static/Formule_Flex3pts.png")
+        image_flex_3pts_dark = Image.open("static/Formule_Flex3pts_dark.png")
         self.flex_3pts_formula_image = customtkinter.CTkImage(light_image=image_flex_3pts_light,
                                             dark_image=image_flex_3pts_dark,
                                             size=(650, 450))
@@ -104,8 +103,8 @@ class HelpWindow(customtkinter.CTkToplevel):
         # create third frame
         self.flex_4pts_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.flex_4pts_frame.grid_columnconfigure(0, weight=1)
-        image_flex_4pts_light = Image.open(os.path.join(image_path, "Formule_Flex4pts.png"))
-        image_flex_4pts_dark = Image.open(os.path.join(image_path, "Formule_Flex4pts_dark.png"))
+        image_flex_4pts_light = Image.open("static/Formule_Flex4pts.png")
+        image_flex_4pts_dark = Image.open("static/Formule_Flex4pts_dark.png")
         self.flex_4pts_formula_image = customtkinter.CTkImage(light_image=image_flex_4pts_light,
                                             dark_image=image_flex_4pts_dark,
                                             size=(650, 450))
