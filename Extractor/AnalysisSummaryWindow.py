@@ -169,12 +169,14 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
     def create_summary_table(self):
         frame = ctk.CTkFrame(self)
         frame.pack(expand=True, fill='both', padx=20, pady=20)
+    
+        # Définir les en-têtes de colonnes selon les options
         if self.option_kn == False and self.option_defo_percent:
             headers = [
                 'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
                 'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
             ]
-        elif self.option_kn and self.option_defo_percent : 
+        elif self.option_kn and self.option_defo_percent: 
             headers = [
                 'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
                 'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
@@ -189,12 +191,12 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
                 'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
                 'Re [MPa]', 'Rm [MPa]', 'Déformation [-]', 'E [GPa]'
             ]
-            
+    
         # Ajouter une configuration pour les colonnes
         for col, header in enumerate(headers):
             header_label = ctk.CTkLabel(frame, text=header, font=("Arial", 13, "bold"))
             header_label.grid(row=0, column=col, padx=5, pady=5, sticky='w')
-
+    
             # Configurer le poids des colonnes
             if col == 0:
                 frame.grid_columnconfigure(col, weight=3, uniform="columns")  # Poids plus élevé pour la première colonne
@@ -202,9 +204,12 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
                 frame.grid_columnconfigure(col, weight=2, uniform="columns")  # Poids plus élevé pour la deuxième colonne
             else:
                 frame.grid_columnconfigure(col, weight=1, uniform="columns")
-
+    
         self.data = []
-        for row, sample in enumerate(self.sample_list, start=1):
+        current_row = 1  # Suivi de la ligne actuelle dans le tableau
+    
+        for sample in self.sample_list:
+            # Ajouter la ligne pour le sample principal
             values = [
                 sample.file_name, sample.sample_name, sample.F_max, sample.Allong,
                 sample.Re, sample.Rm, sample.Defo, sample.E
@@ -212,42 +217,46 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             self.data.append(values)
             for col, value in enumerate(values):
                 value_label = ctk.CTkLabel(frame, text=value)
-                value_label.grid(row=row, column=col, padx=5, pady=5, sticky='w')
-                
-        # Ajouter les modules de Young des sous-échantillons
-        if sample.subsamples and sample.tested_mode == "Module Young":
-            for idx, modulus in enumerate(sample.subsample_modulus):
-                # Créer une nouvelle ligne pour chaque sous-échantillon
-                row_offset = row + idx + 1
-                # Créer une étiquette pour le module de Young du sous-échantillon
-                modulus_label = ctk.CTkLabel(frame, text=modulus)
-                modulus_label.grid(row=row_offset, column=7, padx=5, pady=5, sticky='w')
-                # Optionnel : Si vous souhaitez avoir une description dans d'autres colonnes
-                description_label = ctk.CTkLabel(frame, text=f"Sous-échantillon {idx+1}")
-                description_label.grid(row=row_offset, column=1, padx=5, pady=5, sticky='w')
-
+                value_label.grid(row=current_row, column=col, padx=5, pady=5, sticky='w')
+    
+            # Ajouter les lignes pour les sous-échantillons si présents
+            if sample.subsamples and sample.tested_mode == "Module Young":
+                for idx, modulus in enumerate(sample.subsample_modulus):
+                    # Créer une nouvelle ligne pour chaque sous-échantillon
+                    row_offset = current_row + idx + 1
+                    # Créer une étiquette pour le module de Young du sous-échantillon
+                    modulus_label = ctk.CTkLabel(frame, text=modulus)
+                    modulus_label.grid(row=row_offset, column=7, padx=5, pady=5, sticky='w')
+                    # Optionnel : Si vous souhaitez avoir une description dans d'autres colonnes
+                    description_label = ctk.CTkLabel(frame, text=f"Sous-échantillon {idx+1}")
+                    description_label.grid(row=row_offset, column=1, padx=5, pady=5, sticky='w')
+    
+                current_row += len(sample.subsample_modulus)  # Avancer de la longueur des sous-échantillons
+    
+            current_row += 1  # Avancer d'une ligne pour le prochain échantillon
+    
         if len(self.sample_list) > 2:
             numeric_data = np.array(self.data)[:, 2:].astype(np.float64)  # Convertir uniquement les valeurs numériques
             averages = self.vectorized_format_sign(np.mean(numeric_data, axis=0), 3)
             stdevs = self.vectorized_format_sign(np.std(numeric_data, axis=0), 3)
-
+    
             avg_row = ['Moyenne', ''] + list(averages)
             std_row = ['Écart-type', ''] + list(stdevs)
-
+    
             bold_font = ("Arial", 13, "bold")
-
+    
             for col, value in enumerate(avg_row):
                 avg_label = ctk.CTkLabel(frame, text=value, font=bold_font)
-                avg_label.grid(row=len(self.sample_list) + 1, column=col, padx=5, pady=5, sticky='w')
-
+                avg_label.grid(row=current_row + 1, column=col, padx=5, pady=5, sticky='w')
+    
                 # Ajuster la largeur minimale des colonnes de données numériques
                 if col > 1:
                     frame.grid_columnconfigure(col, minsize=100, uniform="columns")
-
+    
             for col, value in enumerate(std_row):
                 std_label = ctk.CTkLabel(frame, text=value)
-                std_label.grid(row=len(self.sample_list) + 2, column=col, padx=5, pady=5, sticky='w')
-
+                std_label.grid(row=current_row + 2, column=col, padx=5, pady=5, sticky='w')
+    
                 # Ajuster la largeur minimale des colonnes de données numériques
                 if col > 1:
                     frame.grid_columnconfigure(col, minsize=100, uniform="columns")
