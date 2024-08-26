@@ -8,8 +8,8 @@ GUI Related Functions
 - Basically everythings related of the main window's functions
 - Events throughs files managed by this file mainly
 
-Version: Beta 1.8
-Last Update: 21.08.24
+Version: Beta 1.9
+Last Update: 26.08.24
 
 @author: quentin.raball
 """
@@ -378,7 +378,6 @@ class InterfaceFunctions:
         option_percent = bool(options.get('option_defo_percent', False))
         defo = sample.deformation_values
         stress = sample.stress_values
-        print(f"Option %: {option_percent}")
         if option_percent == True:
             E = 10*float(sample.E)
         else: 

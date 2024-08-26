@@ -50,6 +50,7 @@ class Sample:
         self.stress_values = []
         self.deformation_values = []
         self.samples_and_channels = []
+        self.subsamples = []
         self.L0 = None
         self.L0_rect = None
         self.L1 = None
@@ -520,15 +521,32 @@ class Sample:
                     'deformation': self.deformation_values[start_idx:end_idx],
                     'stress': self.stress_values[start_idx:end_idx],
                 }
-                subsamples.append(subsample)            
+                # Assurez-vous que le sous-échantillon n'est pas vide
+                if not (subsample['force'] and subsample['displacement'] and subsample['deformation'] and subsample['stress']):
+                    print(f"Le sous-échantillon {i + 1} est incomplet.")
+                    continue
+                subsamples.append(subsample)
+                
+                # Dessiner le graphique contrainte-déformation pour le sous-échantillon
+                """plt.figure(figsize=(10, 6))
+                plt.plot(subsample['deformation'], subsample['stress'], label=f'Subsample {i + 1}')
+                plt.xlabel('Déformation')
+                plt.ylabel('Contrainte')
+                plt.title(f'Graphique Contrainte-Déformation pour le sous-échantillon {i + 1}')
+                plt.legend()
+                plt.grid(True)
+                plt.show()"""
+                
         else:
             print("Les indices de début et de fin ne correspondent pas. Vérifiez vos données.")
-    
+            
+        print(f"Nombre de sous-échantillons créés: {len(subsamples)}")
         return subsamples
     
     def calculate_youngs_modulus(self):
         if self.tested_mode == "Module Young":
             young_modulus_values = []
+            self.subsample_modulus = []
         
             for subsample in self.subsamples:
                 # Utiliser les valeurs de déformation et contrainte du sous-échantillon directement
@@ -544,7 +562,9 @@ class Sample:
                 else:
                     young_modulus = coefficients[0] / 1000
                     self.Y_Offset = coefficients[1] / 100
+                young_modulus = self.format_sign(young_modulus, self.round_val)
                 young_modulus_values.append(young_modulus)
+                self.subsample_modulus.append(young_modulus)
     
             # Calculer la moyenne des modules de Young pour chaque sous-échantillon
             self.E = np.mean(young_modulus_values)
@@ -619,9 +639,10 @@ class Sample:
         self.show_rp02_prev = self.show_rp02
     
         if self.Defo < self.coef_rp:
-            message = "Attention: Rupture fragile détectée.\nVeuillez contrôler les résultats."
-            messagebox.showwarning("Avertissement", message)
-            print(message)
+            if not self.tested_mode == "Module Young":
+                message = "Attention: Rupture fragile détectée.\nVeuillez contrôler les résultats."
+                messagebox.showwarning("Avertissement", message)
+                print(message)
             self.Defo = 0
             self.Re = max(self.stress_values)
             self.show_rp02 = False
@@ -643,6 +664,7 @@ class Sample:
             self.Allong = self.format_sign(self.Allong, self.round_val)
             self.Defo = self.format_sign(self.Defo, self.round_val)
             self.elastic_retreat = self.format_sign(self.elastic_retreat, self.round_val)
+            
             
     def display_results(self):
         print("\nDonnées Individuelles Extraites :\n\nForce Max = ", self.F_max, " [N]\nRm = ", self.Rm, " [MPa]\nRp0.2 = ", self.Re, " [MPa]\nE = ", self.E, " [GPa]\nAllongement max = ", self.Allong, " [mm]\nDéformation Max = ", self.Defo, " [%]\nRetour élastique: ", self.elastic_retreat, " [%]\n")

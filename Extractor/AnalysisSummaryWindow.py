@@ -213,6 +213,18 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             for col, value in enumerate(values):
                 value_label = ctk.CTkLabel(frame, text=value)
                 value_label.grid(row=row, column=col, padx=5, pady=5, sticky='w')
+                
+        # Ajouter les modules de Young des sous-échantillons
+        if sample.subsamples and sample.tested_mode == "Module Young":
+            for idx, modulus in enumerate(sample.subsample_modulus):
+                # Créer une nouvelle ligne pour chaque sous-échantillon
+                row_offset = row + idx + 1
+                # Créer une étiquette pour le module de Young du sous-échantillon
+                modulus_label = ctk.CTkLabel(frame, text=modulus)
+                modulus_label.grid(row=row_offset, column=7, padx=5, pady=5, sticky='w')
+                # Optionnel : Si vous souhaitez avoir une description dans d'autres colonnes
+                description_label = ctk.CTkLabel(frame, text=f"Sous-échantillon {idx+1}")
+                description_label.grid(row=row_offset, column=1, padx=5, pady=5, sticky='w')
 
         if len(self.sample_list) > 2:
             numeric_data = np.array(self.data)[:, 2:].astype(np.float64)  # Convertir uniquement les valeurs numériques
