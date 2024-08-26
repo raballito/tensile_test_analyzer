@@ -468,7 +468,7 @@ class InterfaceFunctions:
                     sample.export_preview(graph_type=graph_type, directory=directory)
                 exported_sample.append(sample.sample_name)
                 
-            message = f"Graphiques de {exported_sample} exportés sous output/IMG."
+            message = f"Graphiques de {exported_sample} exportés sous {directory}."
             print(message)
             messagebox.showinfo("Exportation terminée", message)
             

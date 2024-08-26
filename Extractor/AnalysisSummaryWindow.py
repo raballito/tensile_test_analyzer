@@ -107,6 +107,9 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             
             # Plot only positive values
             positive_force_values = [max(0, force) for force in sample.force_values]
+            if self.option_kn:
+                max_force = max_force/1000
+                positive_force_values = [positive_force / 1000 for positive_force in positive_force_values]
             ax.plot(adjusted_displacement_values, positive_force_values, label=self.get_label(sample))
         
         # Adjust the plot limits based on the maximum positive values

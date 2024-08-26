@@ -169,7 +169,7 @@ class Sample:
                 directory, 
                 'Force-Déplacement', 
                 'Déplacement [mm]', 
-                'Force [N]', 
+                'Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]',  
                 self.displacement_values, 
                 self.force_values, 
                 f"graphique_force_déplacement_{os.path.basename(self.file_path)} - {self.sample_name}.png",
@@ -182,7 +182,7 @@ class Sample:
                 directory, 
                 'Force-Temps', 
                 'Time [s]', 
-                'Force [N]', 
+                'Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]', 
                 self.time_values, 
                 self.force_values, 
                 f"graphique_force_temps_{os.path.basename(self.file_path)} - {self.sample_name}.png",
@@ -229,8 +229,8 @@ class Sample:
     
         plt.figure()
     
-        if y_label == 'Force [N]':
-            force_values_plot = [val / 1000 for val in y_values] if self.master.get_option_scale_kN() else y_values
+        if y_label == 'Force [kN]':
+            force_values_plot = [val / 1000 for val in y_values] 
         else:
             force_values_plot = y_values
     
@@ -308,7 +308,7 @@ class Sample:
             max_x_value = self.t_max
         
         if max_y_label == 'F_max':
-            max_y_value = self.F_max /1000 if self.master.get_option_scale_kN() else self.F_max
+            max_y_value = self.F_max
         elif max_y_label == 'σ_max':
             max_y_value = self.Rm
         

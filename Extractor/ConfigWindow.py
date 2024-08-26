@@ -52,7 +52,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         if not self.sample.D0 == None:
             D0_default = tkinter.StringVar(self, self.sample.D0)
         else:
-            D0_default = tkinter.StringVar(self, 1)
+            D0_default = tkinter.StringVar(self, 2)
         if not self.sample.L0 == None:
             L0_default = tkinter.StringVar(self, self.sample.L0)
         else:

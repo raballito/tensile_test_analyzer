@@ -259,8 +259,14 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         # Ajout des données de bases
         sample_df["Temps [s]"] = sample.time_values
         sample_df["Déplacement [mm]"] = sample.displacement_values
-        force_unit = "Force [kN]" if self.option_kn else "Force [N]"
-        sample_df[force_unit] = sample.force_values
+        if self.option_kn:
+            force_values = [force / 1000 for force in sample.force_values]
+            force_unit = "Force [kN]"
+        else:
+            force_values = sample.force_values
+            force_unit = "Force [N]"
+            
+        sample_df[force_unit] = force_values
     
         # Ajouter les données d'analyse si sélectionnées
         if include_analysis:
@@ -438,19 +444,24 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
     def plot_force_displacement(self, ax, sample_list):
         max_force = 0
         max_displacement = 0
-
+        
+        
         for sample in sample_list:
-            max_force = max(max_force, max(sample.force_values))
-            max_displacement = max(max_displacement, max(sample.displacement_values))
+            force_values = sample.force_values
+            displacement_values = sample.displacement_values
+            if self.option_kn:
+                force_values = [force/1000 for force in force_values]
+            max_force = max(max_force, max(force_values))
             
-            ax.plot(sample.displacement_values, sample.force_values, label=self.get_label(sample))
+            max_displacement = max(max_displacement, max(displacement_values))
+            ax.plot(displacement_values, force_values, label=self.get_label(sample))
         
         ax.set_xlim(0, 1.2 * max_displacement)
         ax.set_ylim(0, 1.3 * max_force)
 
         ax.set_title('Force-Déplacement')
         ax.set_xlabel('Déplacement [mm]')
-        ax.set_ylabel('Force [N]') if not self.option_kn else ax.set_xlabel('Force [kN]')
+        ax.set_ylabel('Force [N]') if not self.option_kn else ax.set_ylabel('Force [kN]')
         if self.option_legend:
             ax.legend()
 
