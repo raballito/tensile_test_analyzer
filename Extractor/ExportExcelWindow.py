@@ -275,7 +275,9 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
             if include_deformation_values:
                 defo_unit = "Déformation [%]" if self.option_defo_percent else "Déformation [-]"
                 sample_df[defo_unit] = sample.deformation_values 
-    
+        
+        sample_df = self.reduce_data_size(sample_df)
+        
         # Écrire les données de l'échantillon dans le fichier Excel
         sample_df.to_excel(writer, sheet_name=sheet_name, index=False)
     
@@ -283,6 +285,15 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         if include_graphics:
             self.add_sample_graph(writer, sample)
     
+    def reduce_data_size(self, data_frame):
+        # Conserver une ligne sur dix
+        data_reduced = data_frame.iloc[0::10, :]
+        print("Taille des données réduites:", data_reduced.shape)
+
+        # Supprimer les colonnes contenant uniquement des valeurs NaN
+        data_reduced = data_reduced.dropna(axis=1, how='all')
+        
+        return data_reduced
     
     def add_sample_graph(self, writer, sample):
         # Graphique force-déplacement
