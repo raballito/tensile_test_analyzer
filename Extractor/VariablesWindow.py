@@ -7,8 +7,8 @@ Used to get main values from the sample structure
 
 Print tables with all values. Export possible
 
-Version: Beta 1.8
-Last Update: 21.08.24
+Version: Beta 1.9
+Last Update: 26.08.24
 
 @author: quentin.raball
 """
