@@ -374,9 +374,11 @@ class InterfaceFunctions:
         self.master.canvas3.get_tk_widget().grid_columnconfigure(0, weight=1)
         
         # Récupérer les données
-        option_percent = bool(self.master.checkbox_4.get())
+        options = self.get_options()
+        option_percent = bool(options.get('option_defo_percent', False))
         defo = sample.deformation_values
         stress = sample.stress_values
+        print(f"Option %: {option_percent}")
         if option_percent == True:
             E = 10*float(sample.E)
         else: 
