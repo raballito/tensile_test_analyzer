@@ -74,7 +74,7 @@ class Sample:
         self.round_val = self.master.get_round_val()
         self.coef_rp_unformatted = self.master.get_coef_rp()
         self.coef_rp = float(self.coef_rp_unformatted.strip('%'))
-        self.end_filter = 20
+        self.end_filter = 0
         self.show_file_path = self.master.get_option_file_path()
         self.show_sample_name = self.master.get_option_sample_name()
         self.scale_kN = self.master.get_option_scale_kN()
@@ -146,8 +146,23 @@ class Sample:
         # Correction facteur force
         data['Force [N]'] = data['Force [N]'].apply(lambda x: x * self.force_unit)
         data.dropna(inplace=True)
-        if self.end_filter != 0 and self.end_filter is not None:
-            data = data[:-self.end_filter]
+        
+        # Détection de la chute de force - Calculer la différence de force entre les points successifs
+        data['Force Change [N/s]'] = data['Force [N]'].diff() / data['Temps [s]'].diff()
+        last_n_points = 50  # Nombre de points à examiner à la fin
+        recent_data = data.tail(last_n_points).copy()  # Créez une copie pour éviter le warning
+        recent_data['Force Change [N/s]'] = recent_data['Force [N]'].diff() / recent_data['Temps [s]'].diff()
+        threshold = -50  # Exemple de seuil, à ajuster
+        recent_data.loc[:, 'Force Change [N/s]'] = recent_data['Force [N]'].diff() / recent_data['Temps [s]'].diff()
+        avg_slope = recent_data['Force Change [N/s]'].mean()
+        
+        if avg_slope < threshold:
+            # Trouver l'index de la première apparition de la chute
+            start_of_drop = recent_data[recent_data['Force Change [N/s]'] < threshold].index.min()
+            if not pd.isna(start_of_drop):
+                # Garder les points jusqu'à la chute
+                data = data.loc[:start_of_drop]
+
         self.time_values = data['Temps [s]'].tolist()
         self.force_values = data['Force [N]'].tolist()
         self.displacement_values = data['Déplacement [mm]'].tolist()
