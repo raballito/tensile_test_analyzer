@@ -46,7 +46,11 @@ def mock_master(mocker):
     return master
 
 @pytest.fixture
-def interface_functions(mock_master):
+def interface_functions(mock_master, mocker):
+    # Mock to bypass any initial dialogs or folder selection
+    mocker.patch('tkinter.filedialog.askdirectory', return_value=tempfile.gettempdir())
+    mocker.patch('tkinter.messagebox.showinfo')  # To avoid popups during testing
+    
     return InterfaceFunctions(mock_master)
 
 # Test des méthodes d'ouverture des fenêtres
@@ -75,7 +79,6 @@ def test_open_excel_export_window_event(interface_functions, mocker):
     mocker.patch('Extractor.Functions_GUI.InterfaceFunctions.get_options', return_value={'option_name': True})
     interface_functions.open_excel_export_window_event(sample_list)
     assert isinstance(interface_functions.excel_export_window, ExportExcelWindow)
-
 
 def test_update_preview(interface_functions):
     interface_functions.update_preview()
@@ -117,4 +120,3 @@ def test_create_short_list(interface_functions):
 def test_format_sign(interface_functions):
     formatted_num = interface_functions.format_sign(1234.56789, 3)
     assert formatted_num == 1230.0
-
