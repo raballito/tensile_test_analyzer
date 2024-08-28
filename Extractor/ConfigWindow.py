@@ -436,6 +436,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         F_min = self.option_f_min_rond.get()
         F_max = self.option_f_max_rond.get()
         self.sample.lin_range = [float(F_min), float(F_max)]
+        return [float(F_min), float(F_max)]
     
     def get_updated_data(self):
         test_mode = self.get_test_mode()

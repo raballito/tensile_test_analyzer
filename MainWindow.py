@@ -61,13 +61,13 @@ class MainWindow(customtkinter.CTk):
 
         # Barre latérale et widget associés
         logo_img = Image.open("static\\COMATEC_HEIG-VD_logotype_rouge-rvb.png")
-        logo = customtkinter.CTkImage(light_image=logo_img,
+        self.logo = customtkinter.CTkImage(light_image=logo_img,
                                   dark_image=logo_img,
                                   size=(160,49))
         self.sidebar_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, rowspan=7, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(7, weight=1)
-        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, image=logo, text="")
+        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, image=self.logo, text="")
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
         self.title_label = customtkinter.CTkLabel(self.sidebar_frame, text="Tensile Test Analyzer", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.title_label.grid(row=1, column=0, padx=20, pady=(20, 10))

@@ -12,7 +12,7 @@ Available functions:
 -analyze() to analyze the samples with mode and geometry
 
 Version: Beta 1.9
-Last Update: 26.08.24
+Last Update: 27.08.24
 
 @author: quentin.raball
 """
