@@ -91,34 +91,41 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
 
     def plot_force_displacement(self, figure):
         ax = figure.add_subplot(111)
-        
+    
         # Initialiser des listes pour stocker les valeurs de force et de déplacement
         all_force_values = []
         all_displacement_values = []
-        
+    
         for sample in self.sample_list:
             # Trouver l'index où la déformation est la plus proche de zéro
             zero_deformation_index = min(range(len(sample.deformation_values)), key=lambda i: abs(sample.deformation_values[i]))
             offset_displacement = sample.displacement_values[zero_deformation_index]
-            
+    
             # Ajuster les valeurs de déplacement pour cet échantillon
             adjusted_displacement_values = [disp - offset_displacement for disp in sample.displacement_values]
-            
+    
             # Collecter toutes les valeurs de force et de déplacement
             all_force_values.extend(sample.force_values)
             all_displacement_values.extend(adjusted_displacement_values)
-            
+    
             # Plot only positive values
             positive_force_values = [max(0, force) for force in sample.force_values]
             if self.option_kn:
                 positive_force_values = [force / 1000 for force in positive_force_values]
-            
+    
             ax.plot(adjusted_displacement_values, positive_force_values, label=self.get_label(sample))
-        
-        # Calculer les maximums basés sur toutes les valeurs collectées
-        max_force = max(all_force_values) if not self.option_kn else max(all_force_values)/1000
-        max_displacement = max(all_displacement_values)
-        
+    
+        # Vérifier si les listes sont vides avant de calculer les maximums
+        if all_force_values:
+            max_force = max(all_force_values) / 1000 if self.option_kn else max(all_force_values)
+        else:
+            max_force = 0  # Valeur par défaut si aucune donnée
+    
+        if all_displacement_values:
+            max_displacement = max(all_displacement_values)
+        else:
+            max_displacement = 0  # Valeur par défaut si aucune donnée
+    
         # Ajuster les limites du graphique
         ax.set_xlim(0, 1.2 * max_displacement)
         ax.set_ylim(0, 1.3 * max_force)
