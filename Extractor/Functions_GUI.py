@@ -9,7 +9,7 @@ GUI Related Functions
 - Events throughs files managed by this file mainly
 
 Version: Beta 1.9
-Last Update: 26.08.24
+Last Update: 28.08.24
 
 @author: quentin.raball
 """

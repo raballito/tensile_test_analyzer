@@ -39,7 +39,7 @@ class MainWindow(customtkinter.CTk):
         
         # Charger les fonctions supplémentaires du GUI
         self.interface_functions = InterfaceFunctions(self)
-        self.scrollable_label_button_frame = ScrollableLabelButtonFrame(self)
+        #self.scrollable_label_button_frame = ScrollableLabelButtonFrame(self)
 
         # Configuration de la fenêtre
         self.title("Tensile Test Analyzer")
