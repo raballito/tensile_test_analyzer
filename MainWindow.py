@@ -39,7 +39,6 @@ class MainWindow(customtkinter.CTk):
         
         # Charger les fonctions supplémentaires du GUI
         self.interface_functions = InterfaceFunctions(self)
-        #self.scrollable_label_button_frame = ScrollableLabelButtonFrame(self)
 
         # Configuration de la fenêtre
         self.title("Tensile Test Analyzer")
@@ -187,15 +186,14 @@ class MainWindow(customtkinter.CTk):
         self.checkbox_3.select()
         self.checkbox_4.select()
         self.checkbox_5.select()
-        #self.checkbox_6.select()
         self.appearance_mode_optionemenu.set("Light")
         self.scaling_optionemenu.set("100%")
         self.option_chiffre_sign.set("3")
         self.option_lim_elast.set("0.2%")
-        #self.theme_optionemenu.set("red")
+
                 
         # Création liste de fichiers
-        self.scrollable_label_button_frame = ScrollableLabelButtonFrame(master=self, label_text="Liste des fichiers")
+        self.scrollable_label_button_frame = ScrollableLabelButtonFrame(self)
         self.scrollable_label_button_frame.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
         self.scrollable_label_button_frame.grid_rowconfigure(0, weight=1) # A régler pour agrandir la zone vers le bas
         self.instruction_frame = None

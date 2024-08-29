@@ -35,6 +35,9 @@ class TestConfigWindow(unittest.TestCase):
         self.root = tk.Tk()
         self.mock_ctk_image_rond = MagicMock()
         self.mock_ctk_image_rond.create_scaled_photo_image.return_value = MagicMock()
+        self.mock_ctk_image_rect = MagicMock()
+        self.mock_ctk_image_rect.create_scaled_photo_image.return_value = MagicMock()
+        
 
         # Patch PIL.Image.open
         with patch('PIL.Image.open', return_value=MagicMock(spec=Image.Image)) as MockImageOpen:
@@ -70,10 +73,14 @@ class TestConfigWindow(unittest.TestCase):
 
                     self.config_window.radio_var = MagicMock()
                     self.config_window.radio_var.get = MagicMock(return_value=0)
+                    # Simuler les widgets utilisés par radio_test_mode_event
+                    self.config_window.image_label_rect = MagicMock()
+                    self.config_window.image_label_rond = MagicMock()
                     
                     self.config_window.tabview = MagicMock()
 
                     # Simuler les boutons radio
+                    self.config_window.radio_button_1 = MagicMock()
                     self.config_window.radio_button_2 = MagicMock()
                     self.config_window.radio_button_3 = MagicMock()
                     self.config_window.radio_button_4 = MagicMock()
@@ -132,23 +139,29 @@ class TestConfigWindow(unittest.TestCase):
         self.assertEqual(self.config_window.label_file_path.cget("text"), "/path/to/file")
         self.assertEqual(self.config_window.sample_name.cget("text"), "Sample1")
 
-    def test_radio_button_selection(self):
+    @patch('PIL.Image.open', return_value=MagicMock(spec=Image.Image))
+    def test_radio_button_selection(self, MockImageOpen):
         # Test initial selection
+        self.config_window.radio_button_1.invoke()
         self.config_window.radio_var.get.return_value = 0  # Default value
+        self.config_window.radio_test_mode_event()
         
         # Simuler le clic sur le bouton radio "Flexion 3 points"
         self.config_window.radio_button_2.invoke()
         self.config_window.radio_var.get.return_value = 1  # Simuler la sélection
+        self.config_window.radio_test_mode_event()
         self.assertEqual(self.config_window.radio_var.get(), 1)
     
         # Simuler le clic sur le bouton radio "Flexion 4 points"
         self.config_window.radio_button_3.invoke()
         self.config_window.radio_var.get.return_value = 2  # Simuler la sélection
+        self.config_window.radio_test_mode_event()
         self.assertEqual(self.config_window.radio_var.get(), 2)
     
         # Simuler le clic sur le bouton radio "Module de Young"
         self.config_window.radio_button_4.invoke()
         self.config_window.radio_var.get.return_value = 3  # Simuler la sélection
+        self.config_window.radio_test_mode_event()
         self.assertEqual(self.config_window.radio_var.get(), 3)
 
     @patch('customtkinter.CTkInputDialog')
@@ -242,6 +255,143 @@ class TestConfigWindow(unittest.TestCase):
         self.assertTrue(self.config_window.option_long_l1_rond.winfo_ismapped())
         self.assertTrue(self.config_window.label_long_l1_rect.winfo_ismapped())
         self.assertTrue(self.config_window.option_long_l1_rect.winfo_ismapped())
+        
+    def test_sample_with_none_values(self):
+        self.config_window.sample.D0 = None
+        self.config_window.sample.L0 = None
+        self.config_window.update_menus("Shimadzu", 3)
+        # Vérifier que les méthodes ne lèvent pas d'exception et se comportent correctement
+        self.assertIsNotNone(self.config_window.option_machine.get())
+    
+    def test_update_l1_visibility_flexion_3_points(self):
+        self.config_window.radio_var.set(1)
+        self.config_window.radio_button_2.invoke()
+        self.config_window.radio_var.get.return_value = 1
+        self.config_window.update_l1_visibility()
+        
+        self.assertTrue(self.config_window.label_long_l1_rond.winfo_ismapped())
+        self.assertTrue(self.config_window.option_long_l1_rond.winfo_ismapped())
+        self.assertTrue(self.config_window.label_long_l1_rect.winfo_ismapped())
+        self.assertTrue(self.config_window.option_long_l1_rect.winfo_ismapped())
+    
+    def test_update_menus_unexpected_values(self):
+        # Test avec un nom de banc de test inattendu
+        self.config_window.sample.test_bench = "Inconnu"
+        self.config_window.update_menus("Inconnu", 99)
+        self.assertEqual(self.config_window.option_canal.get(), "Canal Traverse")  # ou autre comportement attendu
+        
+    def test_get_updated_data_traction(self):
+        # Configurer les valeurs pour un test de traction
+        self.config_window.radio_var.get.return_value = 0
+        self.config_window.option_canal.get.return_value = "Canal Traverse"
+        self.config_window.tabview.get.return_value = "Section Ronde"
+        self.config_window.option_diam_init_rond.get.return_value = "5.0"
+        self.config_window.option_long_init_rond.get.return_value = "50.0"
+        self.config_window.option_f_min_rond.get.return_value = "0.0"
+        self.config_window.option_f_max_rond.get.return_value = "100.0"
+
+        # Appeler la méthode get_updated_data
+        result = self.config_window.get_updated_data()
+
+        # Vérifier les mises à jour de Sample
+        self.assertEqual(result, ["Traction", "Section Ronde"])
+        self.assertEqual(self.mock_sample.tested_mode, "Traction")
+        self.assertEqual(self.mock_sample.tested_geometry, "Section Ronde")
+        self.assertEqual(self.mock_sample.D0, 5.0)
+        self.assertEqual(self.mock_sample.L0, 50.0)
+        self.assertEqual(self.mock_sample.lin_range, [0.0, 100.0])
+        
+    def test_get_updated_data_flexion_3pts(self):
+        # Configurer les valeurs pour un test de flexion 3 points
+        self.config_window.radio_var.get.return_value = 1
+        self.config_window.option_canal.get.return_value = "Canal Extensomètre"
+        self.config_window.tabview.get.return_value = "Section Rectangulaire"
+        self.config_window.option_W0_init_rect.get.return_value = "10.0"
+        self.config_window.option_H0_init_rect.get.return_value = "5.0"
+        self.config_window.option_long_init_rect.get.return_value = "100.0"
+        self.config_window.option_f_min_rond.get.return_value = "0.0"
+        self.config_window.option_f_max_rond.get.return_value = "100.0"
+
+        # Appeler la méthode get_updated_data
+        result = self.config_window.get_updated_data()
+
+        # Vérifier les mises à jour de Sample
+        self.assertEqual(result, ["Flexion 3pts", "Section Rectangulaire"])
+        self.assertEqual(self.mock_sample.tested_mode, "Flexion 3pts")
+        self.assertEqual(self.mock_sample.tested_geometry, "Section Rectangulaire")
+        self.assertEqual(self.mock_sample.W0, 10.0)
+        self.assertEqual(self.mock_sample.H0, 5.0)
+        self.assertEqual(self.mock_sample.L0, 100.0)
+        self.assertEqual(self.mock_sample.lin_range, [0.0, 100.0])
+        
+    def test_get_updated_data_flexion_4pts(self):
+        # Configurer les valeurs pour un test de flexion 4 points
+        self.config_window.radio_var.get.return_value = 2
+        self.config_window.option_canal.get.return_value = "Canal Traverse"
+        self.config_window.tabview.get.return_value = "Section Ronde"
+        self.config_window.option_diam_init_rond.get.return_value = "7.0"
+        self.config_window.option_long_init_rond.get.return_value = "70.0"
+        self.config_window.option_long_l1_rond.get.return_value = "35.0"
+        self.config_window.option_f_min_rond.get.return_value = "0.0"
+        self.config_window.option_f_max_rond.get.return_value = "150.0"
+
+        # Appeler la méthode get_updated_data
+        result = self.config_window.get_updated_data()
+
+        # Vérifier les mises à jour de Sample
+        self.assertEqual(result, ["Flexion 4pts", "Section Ronde"])
+        self.assertEqual(self.mock_sample.tested_mode, "Flexion 4pts")
+        self.assertEqual(self.mock_sample.tested_geometry, "Section Ronde")
+        self.assertEqual(self.mock_sample.D0, 7.0)
+        self.assertEqual(self.mock_sample.L0, 70.0)
+        self.assertEqual(self.mock_sample.L1, 35.0)
+        self.assertEqual(self.mock_sample.lin_range, [0.0, 150.0])
+        
+    def test_get_updated_data_module_young(self):
+        # Configurer les valeurs pour un test de module de Young
+        self.config_window.radio_var.get.return_value = 3
+        self.config_window.option_canal.get.return_value = "Canal Extensomètre"
+        self.config_window.tabview.get.return_value = "Section Rectangulaire"
+        self.config_window.option_W0_init_rect.get.return_value = "12.0"
+        self.config_window.option_H0_init_rect.get.return_value = "6.0"
+        self.config_window.option_long_init_rect.get.return_value = "120.0"
+        self.config_window.option_f_min_rond.get.return_value = "10.0"
+        self.config_window.option_f_max_rond.get.return_value = "200.0"
+
+        # Appeler la méthode get_updated_data
+        result = self.config_window.get_updated_data()
+
+        # Vérifier les mises à jour de Sample
+        self.assertEqual(result, ["Module Young", "Section Rectangulaire"])
+        self.assertEqual(self.mock_sample.tested_mode, "Module Young")
+        self.assertEqual(self.mock_sample.tested_geometry, "Section Rectangulaire")
+        self.assertEqual(self.mock_sample.W0, 12.0)
+        self.assertEqual(self.mock_sample.H0, 6.0)
+        self.assertEqual(self.mock_sample.L0, 120.0)
+        self.assertEqual(self.mock_sample.lin_range, [10.0, 200.0])
+        
+    def test_get_updated_data_unknown_test_mode(self):
+        # Configurer un cas où le mode de test est inconnu
+        self.config_window.radio_var.get.return_value = 99  # Valeur qui n'existe pas
+        self.config_window.option_canal.get.return_value = "Canal Extensomètre"
+        self.config_window.tabview.get.return_value = "Section Ronde"
+        self.config_window.option_diam_init_rond.get.return_value = "5.0"
+        self.config_window.option_long_init_rond.get.return_value = "50.0"
+        self.config_window.option_f_min_rond.get.return_value = "0.0"
+        self.config_window.option_f_max_rond.get.return_value = "100.0"
+
+        # Appeler la méthode get_updated_data
+        result = self.config_window.get_updated_data()
+
+        # Vérifier que le mode de test par défaut est "Inconnu"
+        self.assertEqual(result, ["Inconnu", "Section Ronde"])
+        self.assertEqual(self.mock_sample.tested_mode, "Inconnu")
+        self.assertEqual(self.mock_sample.tested_geometry, "Section Ronde")
+        self.assertEqual(self.mock_sample.D0, 5.0)
+        self.assertEqual(self.mock_sample.L0, 50.0)
+        self.assertEqual(self.mock_sample.lin_range, [0.0, 100.0])
+        
+    
 
 if __name__ == '__main__':
     unittest.main()

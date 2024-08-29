@@ -23,11 +23,10 @@ from Extractor.TestBench import TestBench
 
 
 class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
-    def __init__(self, master, command=None, **kwargs):
-        super().__init__(master, **kwargs)
+    def __init__(self, master, **kwargs):
+        super().__init__(master, label_text="Liste des fichiers", **kwargs)
         self.grid_columnconfigure(0, weight=1)
         self.master = master
-        self.command = command
         self.checkbox_variable_list = []  # Liste des variables des cases à cocher
         self.switch_list = []  # Liste des cases à cocher
         self.button_list = []  # Liste des boutons
