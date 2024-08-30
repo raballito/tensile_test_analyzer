@@ -211,11 +211,6 @@ class InterfaceFunctions:
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
-        
-    def change_theme_event(self, new_theme: str):
-        print(f"Changement de theme: {new_theme}")
-        theme_path = os.path.join("static/themes", f"{new_theme}.json")
-        customtkinter.set_default_color_theme(theme_path)
 
     def directory_button_event(self, old_folder):
         print("directory_button clicked")
@@ -233,19 +228,16 @@ class InterfaceFunctions:
             
     def add_button_event(self, folder):
         file_path = filedialog.askopenfilename(initialdir=folder, title="Sélectionner un fichier CSV", filetypes=[("CSV Files", "*.csv"), ("LIA Files", "*.lia")])
-    
         # Vérification si l'utilisateur a cliqué sur "Annuler"
         if not file_path:
             print("Aucun fichier sélectionné.")
             return  # Sort de la fonction si aucun fichier n'est sélectionné
-    
         try:
             short_path = os.path.relpath(file_path)
         except ValueError as e:
             # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
             print(f"Erreur lors de la création du chemin relatif pour {file_path}. Utilisation du chemin complet.\nErreur: {e}")
             short_path = file_path
-    
         print("Ajout du fichier: ", short_path)
         self.master.add_item(short_path)
 
