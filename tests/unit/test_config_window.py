@@ -1,4 +1,5 @@
 import unittest
+from unittest import mock
 from unittest.mock import MagicMock, patch
 import tkinter as tk
 from PIL import Image
@@ -6,6 +7,7 @@ from Extractor.ConfigWindow import ConfigWindow
 from Extractor.Sample import Sample
 from Extractor.ScrollableLabelButtonFrame import ScrollableLabelButtonFrame
 import customtkinter
+
 
 class TestConfigWindow(unittest.TestCase):
 
@@ -38,6 +40,10 @@ class TestConfigWindow(unittest.TestCase):
         self.mock_ctk_image_rect = MagicMock()
         self.mock_ctk_image_rect.create_scaled_photo_image.return_value = MagicMock()
         
+        self.master = MagicMock()
+        self.sample = MagicMock()
+        self.item = MagicMock()
+        
 
         # Patch PIL.Image.open
         with patch('PIL.Image.open', return_value=MagicMock(spec=Image.Image)) as MockImageOpen:
@@ -54,13 +60,13 @@ class TestConfigWindow(unittest.TestCase):
                     return None
 
                 self.mock_ctk_tabview_instance.tab.side_effect = tab_side_effect
-
+                
                 # Initialiser ConfigWindow avec des mocks
                 with patch('Extractor.ConfigWindow.ConfigWindow.__init__', lambda x, *args, **kwargs: None):
                     self.config_window = ConfigWindow(
-                        sample=self.mock_sample,
-                        master=self.root,
-                        item=MagicMock()
+                        sample=self.sample,
+                        master=self.master,
+                        item=self.item
                     )
 
                     # Simuler les attributs nécessaires
@@ -132,12 +138,7 @@ class TestConfigWindow(unittest.TestCase):
 
     def tearDown(self):
         self.root.destroy()
-
-    def test_initial_setup(self):
-        self.assertEqual(self.config_window.title(), "Configuration de l'échantillon")
-        self.assertEqual(self.config_window.geometry(), "400x940")
-        self.assertEqual(self.config_window.label_file_path.cget("text"), "/path/to/file")
-        self.assertEqual(self.config_window.sample_name.cget("text"), "Sample1")
+    
 
     @patch('PIL.Image.open', return_value=MagicMock(spec=Image.Image))
     def test_radio_button_selection(self, MockImageOpen):

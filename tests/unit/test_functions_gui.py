@@ -77,7 +77,7 @@ def test_open_var_window_event(interface_functions, mocker):
     assert isinstance(interface_functions.toplevel_window, VarToplevelWindow)
     
     # Mock d'un sample avec les attributs nécessaires
-    mock_sample = mocker.MagicMock()
+    mock_sample = MagicMock()
     mock_sample.analyzed_sample = True
     mock_sample.stress_values = [0,1,2,3]
     mock_sample.deformation_values = [0,1,2,3]
