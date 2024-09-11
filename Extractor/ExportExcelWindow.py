@@ -436,7 +436,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
             positive_stress_values = [max(0, stress) for stress in sample.stress_values]
             ax.plot(sample.deformation_values, positive_stress_values, label=self.get_label(sample))
             
-            if len(sample_list) == 1 and self.option_elastic_line and option_elastic_line:
+            if len(sample_list) == 1 and self.option_elastic_line and option_elastic_line and sample.Defo > 0:
                 data_plot = pd.DataFrame({'Déformation': sample.deformation_values, 'Contrainte': sample.stress_values})
                 x_label = 'Déformation'
                 self.add_elastic_limit_line(data_plot, x_label, sample.E, sample.coef_rp)
