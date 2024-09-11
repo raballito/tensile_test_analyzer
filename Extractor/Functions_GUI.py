@@ -257,8 +257,13 @@ class InterfaceFunctions:
     def config_button_frame_event(self, sample, master, item):
         sample_name = sample.sample_name
         file_path = sample.file_path
-        rel_file_path = os.path.relpath(file_path)
-        print("Bouton de configuration de:", sample_name, " @ ", rel_file_path, " cliqué")
+        try:
+            short_path = os.path.relpath(file_path)
+        except ValueError as e:
+            # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
+            print(f"Erreur lors de la création du chemin relatif pour {file_path}. Utilisation du chemin complet.\nErreur: {e}")
+            short_path = file_path
+        print("Bouton de configuration de:", sample_name, " @ ", short_path, " cliqué")
         self.open_config_window_event(sample, master, item)
     
     def preview_file(self, sample):
@@ -492,8 +497,13 @@ class InterfaceFunctions:
     def create_short_list(self, long_list):
         short_list = []
         for file_path in long_list:
-            relative_path = os.path.relpath(file_path)
-            short_list.append(relative_path)
+            try:
+                short_path = os.path.relpath(file_path)
+            except ValueError as e:
+                # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
+                print(f"Erreur lors de la création du chemin relatif pour {file_path}. Utilisation du chemin complet.\nErreur: {e}")
+                short_path = file_path
+            short_list.append(short_path)
         return short_list
     
 

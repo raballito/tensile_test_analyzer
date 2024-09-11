@@ -220,8 +220,13 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.save_button.grid(row=7, column=0, pady=10, padx=20, sticky="nswe")
         
         # Comportement par défaut        
-        relative_path = os.path.relpath(file_path)
-        self.label_file_path.configure(text=relative_path)
+        try:
+            short_path = os.path.relpath(file_path)
+        except ValueError as e:
+            # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
+            print(f"Erreur lors de la création du chemin relatif pour {file_path}. Utilisation du chemin complet.\nErreur: {e}")
+            short_path = file_path
+        self.label_file_path.configure(short_path)
         self.update_l1_visibility()
         self.update_menus(self.sample.test_bench, self.radio_var.get())
         
@@ -452,10 +457,15 @@ class ConfigWindow(customtkinter.CTkToplevel):
     def save_config(self):
         # Assignation des valeurs à la classe Sample
         [test_mode, geometry] = self.get_updated_data()
-        rel_file_path = os.path.relpath(self.sample.file_path)
+        try:
+            short_path = os.path.relpath(self.sample.file_path)
+        except ValueError as e:
+            # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
+            print(f"Erreur lors de la création du chemin relatif pour {self.sample.file_path}. Utilisation du chemin complet.\nErreur: {e}")
+            short_path = self.sample.file_path
         self.sample.configured_sample = True
         
-        print(f"Configuration du fichier {rel_file_path} sauvegardée en mode {test_mode}.")
+        print(f"Configuration du fichier {short_path} sauvegardée en mode {test_mode}.")
         
     def on_close(self):
         self.save_config()
