@@ -52,7 +52,6 @@ class Sample:
         self.samples_and_channels = []
         self.subsamples = []
         self.L0 = None
-        self.L0_rect = None
         self.L1 = None
         self.S0 = None
         self.D0 = None
@@ -441,8 +440,8 @@ class Sample:
                 self.deformation_values = [(disp - disp_ini) * 100 * (12 * r0 / (self.L0**2)) for disp in self.displacement_values]
             elif geometry_mode == "Section Rectangulaire":
                 print("Traitement des données en mode flexion 3 points - Géométrie Rectangulaire.")
-                self.stress_values = [(3 * force * self.L0_rect) / (2 * self.W0 * self.H0**2) for force in self.force_values]
-                self.deformation_values = [(disp - disp_ini) * 100 * (6 * self.H0 / (self.L0_rect**2)) for disp in self.displacement_values]
+                self.stress_values = [(3 * force * self.L0) / (2 * self.W0 * self.H0**2) for force in self.force_values]
+                self.deformation_values = [(disp - disp_ini) * 100 * (6 * self.H0 / (self.L0**2)) for disp in self.displacement_values]
             else:
                 print("La géométrie choisie est incorrecte.")
     
