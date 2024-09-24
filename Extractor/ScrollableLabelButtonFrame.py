@@ -164,9 +164,9 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         round_val = self.master.option_chiffre_sign.get()
         return round_val
     
-    def get_coef_rp(self):
-        coef_rp = self.master.option_lim_elast.get()
-        return coef_rp
+    def get_coef_re(self):
+        coef_re = self.master.option_lim_elast.get()
+        return coef_re
     
     def get_option_file_path(self):
         value_file_path = self.master.checkbox_6.get()

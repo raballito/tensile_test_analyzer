@@ -71,8 +71,8 @@ class Sample:
         self.idx0 = None
         self.selected_channel = "Canal Traverse"
         self.round_val = self.master.get_round_val()
-        self.coef_rp_unformatted = self.master.get_coef_rp()
-        self.coef_rp = float(self.coef_rp_unformatted.strip('%'))
+        self.coef_re_unformatted = self.master.get_coef_re()
+        self.coef_re = float(self.coef_re_unformatted.strip('%'))
         self.end_filter = 0
         self.show_file_path = self.master.get_option_file_path()
         self.show_sample_name = self.master.get_option_sample_name()
@@ -108,7 +108,7 @@ class Sample:
         print(f"Max Force: {self.F_max} [N]")
         print(f"Max Stroke: {self.Allong} [mm]")
         print(f"Chiffres sign : {self.master.get_round_val()}")
-        print(f"Rp definition : {self.master.get_coef_rp()}")
+        print(f"Rp definition : {self.master.get_coef_re()}")
         print(f"Option Show file path : {self.master.get_option_file_path()}")
         print(f"Option Show sample name : {self.master.get_option_sample_name()}")
         print(f"Option Force in kN : {self.master.get_option_scale_kN()}")
@@ -214,7 +214,7 @@ class Sample:
                 self.deformation_values, 
                 self.stress_values, 
                 f"graphique_contrainte_deformation_{os.path.basename(self.file_path)} - {self.sample_name}.png",
-                'ε_max', 'σ_max'
+                'ε_max', 'Rm'
             )
             return stress_deformation_path
     
@@ -227,7 +227,7 @@ class Sample:
                 self.displacement_values, 
                 self.stress_values, 
                 f"graphique_contrainte_deplacement_{os.path.basename(self.file_path)} - {self.sample_name}.png",
-                'A_max', 'σ_max'
+                'A_max', 'Rm'
             )
             return stress_displacement_path
     
@@ -296,7 +296,7 @@ class Sample:
         
         self.show_rp02 = self.master.get_option_show_rp()
         
-        if self.show_rp02 and y_label == 'Contrainte [MPa]' and x_label == 'Déformation [%]' and float(self.Defo) > float(self.coef_rp):
+        if self.show_rp02 and y_label == 'Contrainte [MPa]' and x_label == 'Déformation [%]' and float(self.Defo) > float(self.coef_re):
             self.add_elastic_limit_line(data_plot, x_label)
     
     def add_elastic_limit_line(self, data_plot, x_label):
@@ -304,7 +304,7 @@ class Sample:
             E = self.E*10
         else:
             E = self.E*1000
-        x_start = self.coef_rp
+        x_start = self.coef_re
         y_start = 0
         x_end = data_plot[x_label].max()
         y_end = E * (x_end - x_start)
@@ -324,17 +324,12 @@ class Sample:
         
         if max_y_label == 'F_max':
             max_y_value = self.F_max
-        elif max_y_label == 'σ_max':
+        elif max_y_label == 'Rm':
             max_y_value = self.Rm
         
         if self.round_val != 0:
             max_y_value = self.format_sign(max_y_value, self.master.get_round_val())
             max_x_value = self.format_sign(max_x_value, self.master.get_round_val())
-        
-        if y_label == 'Force [N]':
-            force_label = 'Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]'
-        elif y_label == 'Contrainte [MPa]':
-            force_label = 'σ [MPa]'
         
         if max_x_label == 't_max':
             max_x_unit = '[s]'
@@ -345,12 +340,18 @@ class Sample:
         
         if max_y_label == 'F_max':
             max_y_unit = '[kN]' if self.master.get_option_scale_kN() else '[N]'
-        elif max_y_label == 'σ_max':
+        elif max_y_label == 'Rm':
             max_y_unit = '[MPa]'
         
         table_data = [[max_y_label, max_x_label],
                       [max_y_unit, max_x_unit],
                       [max_y_value, max_x_value]]
+        
+        if x_label == 'Déformation [%]' and y_label == 'Contrainte [MPa]':
+            if self.Defo > self.coef_re:
+                table_data[0].append('Re')  # Ajoute le label "Re"
+                table_data[1].append('[MPa]')  # Ajoute l'unité "[MPa]"
+                table_data[2].append(self.Re)  # Ajoute la valeur de Re
         
         table = plt.table(cellText=table_data, loc='lower right', colWidths=[0.15, 0.15, 0.15, 0.15])
         table.auto_set_font_size(False)
@@ -602,8 +603,8 @@ class Sample:
                 x = self.deformation_values[start_idx:end_idx]
                 y = self.stress_values[start_idx:end_idx]
     
-                self.coef_rp_unformatted = self.master.get_coef_rp()
-                self.coef_rp = float(self.coef_rp_unformatted.strip('%'))
+                self.coef_re_unformatted = self.master.get_coef_re()
+                self.coef_re = float(self.coef_re_unformatted.strip('%'))
     
                 coefficients = np.polyfit(x, y, 1)
                 if self.defo_percent:
@@ -612,21 +613,21 @@ class Sample:
                 else:
                     self.E = coefficients[0] / 1000
                     self.Y_Offset = coefficients[1] / 100
-                    self.coef_rp = self.coef_rp / 100
+                    self.coef_re = self.coef_re / 100
     
                 print(f'Module de Young: {self.E} [GPa]')
                 print("Y_Offset =", self.Y_Offset)
                 self.X_Offset = -coefficients[1] / coefficients[0]
                 print("X_Offset =", self.X_Offset)
-                print("Coef_rp =", self.coef_rp)
+                print("coef_re =", self.coef_re)
     
                 self.deformation_values = [deformation - self.X_Offset for deformation in self.deformation_values]
         
     def calculate_interesting_values(self):
         if self.defo_percent:
-            y1 = (-self.coef_rp * self.E * 10)
+            y1 = (-self.coef_re * self.E * 10)
         else:
-            y1 = (-self.coef_rp * self.E * 1000)
+            y1 = (-self.coef_re * self.E * 1000)
     
         def_ini = self.displacement_values[1]
         self.Allong = max(self.displacement_values) - def_ini
@@ -652,7 +653,7 @@ class Sample:
         self.Re = self.stress_values[self.idx0]
         self.show_rp02_prev = self.show_rp02
     
-        if self.Defo < self.coef_rp:
+        if self.Defo < self.coef_re:
             if not self.tested_mode == "Module Young":
                 message = "Attention: Rupture fragile détectée.\nVeuillez contrôler les résultats."
                 messagebox.showwarning("Avertissement", message)

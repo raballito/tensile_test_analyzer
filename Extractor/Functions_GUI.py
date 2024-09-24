@@ -379,7 +379,7 @@ class InterfaceFunctions:
             E = 10*float(sample.E)
         else: 
             E=1000*float(sample.E)
-        x_start = sample.coef_rp
+        x_start = sample.coef_re
         y_start = 0
         x_end = max(defo)
         y_end = E * (x_end - x_start)
@@ -390,7 +390,7 @@ class InterfaceFunctions:
         # Tracer les graphiques de base
         self.master.ax3.plot(defo, stress, label=sample.sample_name)
         show_rp02 = sample.master.get_option_show_rp()
-        if show_rp02 == True and sample.Defo > sample.coef_rp:
+        if show_rp02 == True and sample.Defo > sample.coef_re:
             self.master.ax3.plot([x_start, x_end], [y_start, y_end], label='Limite élastique', linestyle='--', color='orange')
         
         # Configuration des axes et légendes

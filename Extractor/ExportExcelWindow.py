@@ -439,7 +439,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
             if len(sample_list) == 1 and self.option_elastic_line and option_elastic_line and sample.Defo > 0:
                 data_plot = pd.DataFrame({'Déformation': sample.deformation_values, 'Contrainte': sample.stress_values})
                 x_label = 'Déformation'
-                self.add_elastic_limit_line(data_plot, x_label, sample.E, sample.coef_rp)
+                self.add_elastic_limit_line(data_plot, x_label, sample.E, sample.coef_re)
             
         
         # Adjust the plot limits based on the maximum positive values
@@ -495,12 +495,12 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         if self.option_legend:
             ax.legend()
             
-    def add_elastic_limit_line(self, data_plot, x_label, mod_young, coef_rp):
+    def add_elastic_limit_line(self, data_plot, x_label, mod_young, coef_re):
         if self.option_defo_percent:
             E = mod_young*10
         else:
             E = mod_young*1000
-        x_start = coef_rp
+        x_start = coef_re
         y_start = 0
         x_end = data_plot[x_label].max()
         y_end = E * (x_end - x_start)
