@@ -46,11 +46,11 @@ Le département COMATEC utilise actuellement les machines suivantes:
 - Batch processing
 
 ## Utilisation
-Ajoutez les fichiers csv directement obtenus par les machines de tractions dans le dossier Data du programme.
-Vous pouvez aussi ajouter les fichiers depuis l'interface en cliquant sur le bouton approprié.
-Configurez les échantillons en éditant leurs propriétés à partir du bouton correspondant.
-Sélectionnez les fichiers que vous voulez analyser et cliquer sur le bouton "Analyser" en bas de la fenêtre.
-Vous pouvez ensuite exporter les résultats en cliquant sur les boutons appropriés.
+- Ajoutez les fichiers csv directement obtenus par les machines de tractions dans le dossier Data du programme.
+- Vous pouvez aussi ajouter les fichiers depuis l'interface en cliquant sur le bouton approprié.
+- Configurez les échantillons en éditant leurs propriétés à partir du bouton correspondant.
+- Sélectionnez les fichiers que vous voulez analyser et cliquer sur le bouton "Analyser" en bas de la fenêtre.
+- Vous pouvez ensuite exporter les résultats en cliquant sur les boutons appropriés.
 
 
 ## F.A.Q
