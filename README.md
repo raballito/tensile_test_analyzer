@@ -11,7 +11,7 @@ Le projet est basé sur Python et sur le plugin CustomTkInter : https://github.c
 
 Projet en français réalisé par Quentin Raball
 
-N° Version : Beta 1.9
+N° Version : Beta 1.10
 
 ## Fonctionnalités
 - Gestion des fichiers dans le programme.
@@ -36,6 +36,7 @@ Le département COMATEC utilise actuellement les machines suivantes:
 
 
 ## A venir (Work in Progress)
+- Meilleure gestion des fenêtres
 - Meilleure gestion du Dark Mode et réglage des derniers problèmes avec le mode sombre.
 - Sauvegarde + Chargements sessions/résultats d'analyses.
 - Nouveaux modes de test.
@@ -44,10 +45,20 @@ Le département COMATEC utilise actuellement les machines suivantes:
 - Gestion de l'extensomètre pour les machines Shimadzu 20kN et W+B 400kN.
 - Batch processing
 
+## Utilisation
+Ajoutez les fichiers csv directement obtenus par les machines de tractions dans le dossier Data du programme.
+Vous pouvez aussi ajouter les fichiers depuis l'interface en cliquant sur le bouton approprié.
+Configurez les échantillons en éditant leurs propriétés à partir du bouton correspondant.
+Sélectionnez les fichiers que vous voulez analyser et cliquer sur le bouton "Analyser" en bas de la fenêtre.
+Vous pouvez ensuite exporter les résultats en cliquant sur les boutons appropriés.
+
 
 ## F.A.Q
+1) Les résultats n'apparaissent pas sur la fenêtre.
 
-1) Problèmes d'installation du plugin customtkinter
+Agrandissez la fenêtre ou utilisez l'option de "scalling" afin de diminuer la taille des caractères.
+
+2) Problèmes d'installation du plugin customtkinter
 
 Pour résoudre ces problèmes (notamment si lors de l'execution du programme, celui-ci dit que le plugin est introuvable):
 - Installer Miniconda, un gestionnaire de packages pour python.
@@ -59,7 +70,7 @@ Pour résoudre ces problèmes (notamment si lors de l'execution du programme, ce
 
 S'il manque des autres plugins, utiliser la commande : "conda install -n [env-name] [package]" avec [package] le nom du package voulu. Ils sont disponibles ici : https://anaconda.org/
 
-2) Problèmes d'installation de Python
+3) Problèmes d'installation de Python
 
 Pour installer python:
 
