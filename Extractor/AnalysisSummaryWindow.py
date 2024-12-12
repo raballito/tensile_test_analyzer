@@ -39,13 +39,16 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         self.option_show_table = option_list.get('option_show_table', False)
         self.option_kn = option_list.get('option_kn', False)
         
+        self.main_frame = ctk.CTkFrame(self, fg_color="transparent")
+        self.main_frame.grid(row=3, column=0, padx=20, pady=(0,20), sticky="nsew")
+        
         self.create_tabs()
         self.create_summary_table()
         self.create_buttons()
 
     def create_tabs(self):
-        self.tabview = ctk.CTkTabview(self)
-        self.tabview.pack(expand=True, fill='both')
+        self.tabview = ctk.CTkTabview(self.main_frame)
+        self.tabview.grid(row=0, column=0, sticky="nsew")
 
         self.create_tab('Graphique Contrainte-Déformation', self.plot_stress_deformation)
         self.create_tab('Graphique Force-Déplacement', self.plot_force_displacement)
@@ -57,7 +60,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         tab.grid_columnconfigure(0, weight=1)
 
         frame = ctk.CTkFrame(tab)
-        frame.grid(row=0, column=0, padx=20, pady=(10, 10), sticky="nsew")
+        frame.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
 
         figure = plt.Figure()
         plot_function(figure)
@@ -179,8 +182,8 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         return label
 
     def create_summary_table(self):
-        frame = ctk.CTkFrame(self)
-        frame.pack(expand=True, fill='both', padx=20, pady=20)
+        frame = ctk.CTkFrame(self.main_frame)
+        frame.grid(row=1, column=0, sticky="nsew")
     
         # Définir les en-têtes de colonnes selon les options
         if self.option_kn == False and self.option_defo_percent:
@@ -292,13 +295,14 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         return formatted_num
 
     def create_buttons(self):
-        button_frame = ctk.CTkFrame(self, fg_color="transparent")
-        button_frame.pack(pady=20)
+        button_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
+        button_frame.grid(row=2, column=0, pady=20, sticky="nsew")
+
 
         close_button = ctk.CTkButton(button_frame, text="Fermer", command=lambda: self.destroy())
-        close_button.pack(side='left', padx=10)
+        close_button.grid(row=0, column=1, padx=20,sticky="nsew")
         export_button = ctk.CTkButton(button_frame, text="Exporter", command=lambda: self.export_data())
-        export_button.pack(side='left', padx=10)
+        export_button.grid(row=0, column=0, padx=20, sticky="nsew")
 
     def export_data(self):
         # Exporter le tableau
@@ -394,6 +398,3 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         filename_sd = os.path.join(directory, "Contrainte-Déplacement_export.png")
         figure_sd.savefig(filename_sd)
         plt.close(figure_sd)
-
-    
-        
