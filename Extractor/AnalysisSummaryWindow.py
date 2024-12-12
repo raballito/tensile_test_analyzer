@@ -184,7 +184,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
 
     def create_summary_table(self):
         table_frame = ctk.CTkFrame(self)
-        table_frame.grid(row=1, column=1, padx=20, pady=(20, 0), sticky="nsew")
+        table_frame.grid(row=1, column=1, padx=20, sticky="nsew")
         table_frame.grid_columnconfigure(0, weight=1)
     
         # Définir les en-têtes de colonnes selon les options
@@ -280,7 +280,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
                     
     def create_buttons(self):
         button_frame = ctk.CTkFrame(self, fg_color="transparent")
-        button_frame.grid(row=3, column=1, padx=(20, 20), pady=(0, 20), sticky="nsew")
+        button_frame.grid(row=3, column=1, padx=20, pady=20, sticky="nsew")
         button_frame.grid_columnconfigure((1,2), weight=1)
 
         close_button = ctk.CTkButton(button_frame, text="Fermer", command=lambda: self.destroy())
