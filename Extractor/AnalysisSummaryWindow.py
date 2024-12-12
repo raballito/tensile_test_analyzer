@@ -40,7 +40,11 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         self.option_kn = option_list.get('option_kn', False)
         
         self.main_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.main_frame.grid(row=3, column=0, padx=20, pady=(0,20), sticky="nsew")
+        self.main_frame.grid(row=0, column=0, rowspan=3, padx=20, pady=(0,20), sticky="nsew")
+        # Configuration  de la grille principale
+        self.main_frame.grid_rowconfigure(0, weight=0)
+        self.main_frame.grid_rowconfigure(1, weight=1)
+        self.main_frame.grid_rowconfigure(2, weight=2)
         
         self.create_tabs()
         self.create_summary_table()
@@ -48,7 +52,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
 
     def create_tabs(self):
         self.tabview = ctk.CTkTabview(self.main_frame)
-        self.tabview.grid(row=0, column=0, sticky="nsew")
+        self.tabview.grid(row=0, column=0, sticky="ew")
 
         self.create_tab('Graphique Contrainte-Déformation', self.plot_stress_deformation)
         self.create_tab('Graphique Force-Déplacement', self.plot_force_displacement)
@@ -67,7 +71,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
 
         canvas = FigureCanvasTkAgg(figure, master=frame)
         canvas.draw()
-        canvas.get_tk_widget().pack(expand=True, fill='both')
+        canvas.get_tk_widget().grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
 
     def plot_stress_deformation(self, figure):
         ax = figure.add_subplot(111)
@@ -296,13 +300,13 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
 
     def create_buttons(self):
         button_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent")
-        button_frame.grid(row=2, column=0, pady=20, sticky="nsew")
+        button_frame.grid(row=2, column=0, pady=20, sticky="s")
 
 
         close_button = ctk.CTkButton(button_frame, text="Fermer", command=lambda: self.destroy())
-        close_button.grid(row=0, column=1, padx=20,sticky="nsew")
+        close_button.grid(row=0, column=1, padx=20,sticky="ew")
         export_button = ctk.CTkButton(button_frame, text="Exporter", command=lambda: self.export_data())
-        export_button.grid(row=0, column=0, padx=20, sticky="nsew")
+        export_button.grid(row=0, column=0, padx=20, sticky="ew")
 
     def export_data(self):
         # Exporter le tableau
