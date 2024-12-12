@@ -11,8 +11,8 @@ class App(customtkinter.CTk):
         super().__init__()
 
         # configure window
-        self.title("CustomTkinter complex_example.py")
-        self.geometry(f"{1100}x{580}")
+        self.title("Résumé de l'Analyse")
+        self.geometry("1280x800")
 
         # configure grid layout (4x4)
         self.grid_columnconfigure(1, weight=1)

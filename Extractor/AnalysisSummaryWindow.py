@@ -39,13 +39,17 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         self.option_show_table = option_list.get('option_show_table', False)
         self.option_kn = option_list.get('option_kn', False)
         
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure((2, 3), weight=0)
+        self.grid_rowconfigure((0, 1, 2), weight=1)
+        
         self.create_tabs()
         self.create_summary_table()
         self.create_buttons()
 
     def create_tabs(self):
         self.tabview = ctk.CTkTabview(self)
-        self.tabview.pack(expand=True, fill='both', padx=20)
+        self.tabview.grid(row=0, column=1, padx=20, pady=(20, 0), sticky="nsew")
 
         self.create_tab('Graphique Contrainte-Déformation', self.plot_stress_deformation)
         self.create_tab('Graphique Force-Déplacement', self.plot_force_displacement)
@@ -179,8 +183,9 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         return label
 
     def create_summary_table(self):
-        main_frame = ctk.CTkFrame(self)
-        main_frame.pack(expand=True, fill='both', padx=20, pady=20)
+        table_frame = ctk.CTkFrame(self)
+        table_frame.grid(row=1, column=1, padx=20, pady=(20, 0), sticky="nsew")
+        table_frame.grid_columnconfigure(0, weight=1)
     
         # Définir les en-têtes de colonnes selon les options
         if self.option_kn == False and self.option_defo_percent:
@@ -206,16 +211,16 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
     
         # Ajouter une configuration pour les colonnes
         for col, header in enumerate(headers):
-            header_label = ctk.CTkLabel(main_frame, text=header, font=("Arial", 13, "bold"))
+            header_label = ctk.CTkLabel(table_frame, text=header, font=("Arial", 13, "bold"))
             header_label.grid(row=0, column=col, padx=5, pady=5, sticky='w')
     
             # Configurer le poids des colonnes
             if col == 0:
-                main_frame.grid_columnconfigure(col, weight=3, uniform="columns")  # Poids plus élevé pour la première colonne
+                table_frame.grid_columnconfigure(col, weight=3, uniform="columns")  # Poids plus élevé pour la première colonne
             elif col == 1:
-                main_frame.grid_columnconfigure(col, weight=2, uniform="columns")  # Poids plus élevé pour la deuxième colonne
+                table_frame.grid_columnconfigure(col, weight=2, uniform="columns")  # Poids plus élevé pour la deuxième colonne
             else:
-                main_frame.grid_columnconfigure(col, weight=1, uniform="columns")
+                table_frame.grid_columnconfigure(col, weight=1, uniform="columns")
     
         self.data = []
         current_row = 1  # Suivi de la ligne actuelle dans le tableau
@@ -228,7 +233,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             ]
             self.data.append(values)
             for col, value in enumerate(values):
-                value_label = ctk.CTkLabel(main_frame, text=value)
+                value_label = ctk.CTkLabel(table_frame, text=value)
                 value_label.grid(row=current_row, column=col, padx=5, pady=5, sticky='w')
     
             # Ajouter les lignes pour les sous-échantillons si présents
@@ -237,10 +242,10 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
                     # Créer une nouvelle ligne pour chaque sous-échantillon
                     row_offset = current_row + idx + 1
                     # Créer une étiquette pour le module de Young du sous-échantillon
-                    modulus_label = ctk.CTkLabel(main_frame, text=modulus)
+                    modulus_label = ctk.CTkLabel(table_frame, text=modulus)
                     modulus_label.grid(row=row_offset, column=7, padx=5, pady=5, sticky='w')
                     # Optionnel : Si vous souhaitez avoir une description dans d'autres colonnes
-                    description_label = ctk.CTkLabel(main_frame, text=f"Sous-échantillon {idx+1}")
+                    description_label = ctk.CTkLabel(table_frame, text=f"Sous-échantillon {idx+1}")
                     description_label.grid(row=row_offset, column=1, padx=5, pady=5, sticky='w')
     
                 current_row += len(sample.subsample_modulus)  # Avancer de la longueur des sous-échantillons
@@ -258,20 +263,30 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             bold_font = ("Arial", 13, "bold")
     
             for col, value in enumerate(avg_row):
-                avg_label = ctk.CTkLabel(main_frame, text=value, font=bold_font)
+                avg_label = ctk.CTkLabel(table_frame, text=value, font=bold_font)
                 avg_label.grid(row=current_row + 1, column=col, padx=5, pady=5, sticky='w')
     
                 # Ajuster la largeur minimale des colonnes de données numériques
                 if col > 1:
-                    main_frame.grid_columnconfigure(col, minsize=100, uniform="columns")
+                    table_frame.grid_columnconfigure(col, minsize=100, uniform="columns")
     
             for col, value in enumerate(std_row):
-                std_label = ctk.CTkLabel(main_frame, text=value)
+                std_label = ctk.CTkLabel(table_frame, text=value)
                 std_label.grid(row=current_row + 2, column=col, padx=5, pady=5, sticky='w')
     
                 # Ajuster la largeur minimale des colonnes de données numériques
                 if col > 1:
-                    main_frame.grid_columnconfigure(col, minsize=100, uniform="columns")
+                    table_frame.grid_columnconfigure(col, minsize=100, uniform="columns")
+                    
+    def create_buttons(self):
+        button_frame = ctk.CTkFrame(self, fg_color="transparent")
+        button_frame.grid(row=3, column=1, padx=(20, 20), pady=(0, 20), sticky="nsew")
+        button_frame.grid_columnconfigure((1,2), weight=1)
+
+        close_button = ctk.CTkButton(button_frame, text="Fermer", command=lambda: self.destroy())
+        close_button.grid(row=0, column=2, padx=20, sticky="w")
+        export_button = ctk.CTkButton(button_frame, text="Exporter", command=lambda: self.export_data())
+        export_button.grid(row=0, column=1, padx=20, sticky="e")
                     
     def vectorized_format_sign(self, nums, sig_figs):
         return [self.format_sign(num, sig_figs) for num in nums]
@@ -290,15 +305,6 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         except ValueError:
             formatted_num = num
         return formatted_num
-
-    def create_buttons(self):
-        button_frame = ctk.CTkFrame(self, fg_color="transparent")
-        button_frame.pack(pady=20)
-
-        close_button = ctk.CTkButton(button_frame, text="Fermer", command=lambda: self.destroy())
-        close_button.grid(row=0, column=1, padx=20)
-        export_button = ctk.CTkButton(button_frame, text="Exporter", command=lambda: self.export_data())
-        export_button.grid(row=0, column=0, padx=20)
 
     def export_data(self):
         # Exporter le tableau
