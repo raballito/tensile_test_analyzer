@@ -124,6 +124,7 @@ class MainWindow(customtkinter.CTk):
         # Intégration de Matplotlib dans les cadres intermédiaires
         self.figure_force_displacement, self.ax1 = plt.subplots()
         self.figure_force_time, self.ax2 = plt.subplots()
+        
 
         self.canvas = FigureCanvasTkAgg(self.figure_force_displacement, master=self.frame_force_displacement)
         self.canvas.get_tk_widget().grid(row=0, column=0, padx=0, pady=(0, 10), sticky="nsew")

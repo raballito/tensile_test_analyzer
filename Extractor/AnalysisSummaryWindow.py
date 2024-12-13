@@ -49,7 +49,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
 
     def create_tabs(self):
         self.tabview = ctk.CTkTabview(self)
-        self.tabview.grid(row=0, column=1, padx=20, pady=(20, 0), sticky="nsew")
+        self.tabview.grid(row=1, column=1, padx=20, pady=(20, 0), sticky="nsew")
 
         self.create_tab('Graphique Contrainte-Déformation', self.plot_stress_deformation)
         self.create_tab('Graphique Force-Déplacement', self.plot_force_displacement)
@@ -61,12 +61,15 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         tab.grid_columnconfigure(0, weight=1)
 
         frame = ctk.CTkFrame(tab)
-        frame.grid(row=0, column=0, padx=20, pady=10, sticky="nsew")
+        frame.grid(row=0, column=0, padx=20,  sticky="nsew")
 
         figure = plt.Figure()
+        
         plot_function(figure)
+        figure.tight_layout()
 
         canvas = FigureCanvasTkAgg(figure, master=frame)
+        
         canvas.draw()
         canvas.get_tk_widget().pack(expand=True, fill='both')
 
@@ -181,11 +184,34 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         else:
             label = ''
         return label
-
+    
     def create_summary_table(self):
-        table_frame = ctk.CTkFrame(self)
-        table_frame.grid(row=1, column=1, padx=20, sticky="nsew")
-        table_frame.grid_columnconfigure(0, weight=1)
+        # Créer le cadre principal avec une structure hiérarchique
+        main_frame = ctk.CTkFrame(self, fg_color="transparent")
+        main_frame.grid(row=2, column=1, padx=20, sticky="nsew")
+        main_frame.grid_columnconfigure(0, weight=1)
+        main_frame.grid_rowconfigure(0, weight=1)
+        main_frame.grid_rowconfigure(1, weight=0)
+        main_frame.grid_rowconfigure(2, weight=1)
+        
+        
+    
+        # Cadre pour les en-têtes de colonnes (fixes)
+        header_frame = ctk.CTkFrame(main_frame)
+        header_frame.grid(row=1, column=0, sticky="nsew")
+    
+        # Cadre avec défilement pour les données des échantillons
+        scrollable_frame = ctk.CTkScrollableFrame(main_frame)
+        scrollable_frame.grid(row=2, column=0, sticky="nsew")
+        
+        
+        # Cadre pour les moyennes et écarts-types
+        if len(self.sample_list) > 1:
+            stats_frame = ctk.CTkFrame(main_frame)
+            stats_frame.grid(row=3, column=0, padx=(0,12), sticky="nsew")
+            
+            
+
     
         # Définir les en-têtes de colonnes selon les options
         if self.option_kn == False and self.option_defo_percent:
@@ -209,22 +235,15 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
                 'Re [MPa]', 'Rm [MPa]', 'Déformation [-]', 'E [GPa]'
             ]
     
-        # Ajouter une configuration pour les colonnes
+        # Afficher les en-têtes de colonnes
         for col, header in enumerate(headers):
-            header_label = ctk.CTkLabel(table_frame, text=header, font=("Arial", 13, "bold"))
-            header_label.grid(row=0, column=col, padx=5, pady=5, sticky='w')
+            header_label = ctk.CTkLabel(header_frame, text=header, font=("Arial", 13, "bold"))
+            header_label.grid(row=0, column=col, padx=5, pady=5, sticky="nsew")
+            header_frame.grid_columnconfigure(col, weight=1, uniform="columns")
     
-            # Configurer le poids des colonnes
-            if col == 0:
-                table_frame.grid_columnconfigure(col, weight=3, uniform="columns")  # Poids plus élevé pour la première colonne
-            elif col == 1:
-                table_frame.grid_columnconfigure(col, weight=2, uniform="columns")  # Poids plus élevé pour la deuxième colonne
-            else:
-                table_frame.grid_columnconfigure(col, weight=1, uniform="columns")
-    
+        # Ajouter les données des échantillons dans le cadre avec défilement
+        current_row = 0
         self.data = []
-        current_row = 1  # Suivi de la ligne actuelle dans le tableau
-    
         for sample in self.sample_list:
             # Ajouter la ligne pour le sample principal
             values = [
@@ -233,27 +252,28 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             ]
             self.data.append(values)
             for col, value in enumerate(values):
-                value_label = ctk.CTkLabel(table_frame, text=value)
-                value_label.grid(row=current_row, column=col, padx=5, pady=5, sticky='w')
+                value_label = ctk.CTkLabel(scrollable_frame, text=value)
+                value_label.grid(row=current_row, column=col, padx=5, pady=5, sticky="nsew")
     
             # Ajouter les lignes pour les sous-échantillons si présents
             if sample.subsamples and sample.tested_mode == "Module Young":
                 for idx, modulus in enumerate(sample.subsample_modulus):
-                    # Créer une nouvelle ligne pour chaque sous-échantillon
                     row_offset = current_row + idx + 1
-                    # Créer une étiquette pour le module de Young du sous-échantillon
-                    modulus_label = ctk.CTkLabel(table_frame, text=modulus)
-                    modulus_label.grid(row=row_offset, column=7, padx=5, pady=5, sticky='w')
-                    # Optionnel : Si vous souhaitez avoir une description dans d'autres colonnes
-                    description_label = ctk.CTkLabel(table_frame, text=f"Sous-échantillon {idx+1}")
-                    description_label.grid(row=row_offset, column=1, padx=5, pady=5, sticky='w')
-    
-                current_row += len(sample.subsample_modulus)  # Avancer de la longueur des sous-échantillons
-    
-            current_row += 1  # Avancer d'une ligne pour le prochain échantillon
-    
-        if len(self.sample_list) > 2:
-            numeric_data = np.array(self.data)[:, 2:].astype(np.float64)  # Convertir uniquement les valeurs numériques
+                    modulus_label = ctk.CTkLabel(scrollable_frame, text=modulus)
+                    modulus_label.grid(row=row_offset, column=7, padx=5, pady=5, sticky="nsew")
+                    description_label = ctk.CTkLabel(scrollable_frame, text=f"Sous-échantillon {idx+1}")
+                    description_label.grid(row=row_offset, column=1, padx=5, pady=5, sticky="nsew")
+                current_row += len(sample.subsample_modulus)
+            current_row += 1
+            
+        # Configurer la répartition du scrollable frame et moyenne
+        for col in range(len(headers)):
+            scrollable_frame.grid_columnconfigure(col, weight=1, uniform="columns")
+            
+            
+        # Calcul et affichage des statistiques si applicable
+        if len(self.sample_list) > 1:
+            numeric_data = np.array(self.data)[:, 2:].astype(np.float64)
             averages = self.vectorized_format_sign(np.mean(numeric_data, axis=0), 3)
             stdevs = self.vectorized_format_sign(np.std(numeric_data, axis=0), 3)
     
@@ -263,21 +283,17 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             bold_font = ("Arial", 13, "bold")
     
             for col, value in enumerate(avg_row):
-                avg_label = ctk.CTkLabel(table_frame, text=value, font=bold_font)
-                avg_label.grid(row=current_row + 1, column=col, padx=5, pady=5, sticky='w')
-    
-                # Ajuster la largeur minimale des colonnes de données numériques
-                if col > 1:
-                    table_frame.grid_columnconfigure(col, minsize=100, uniform="columns")
+                avg_label = ctk.CTkLabel(stats_frame, text=value, font=bold_font)
+                avg_label.grid(row=0, column=col, padx=5, pady=5, sticky="nsew")
+                #avg_label.grid_columnconfigure(col, weight=1, uniform="columns")
     
             for col, value in enumerate(std_row):
-                std_label = ctk.CTkLabel(table_frame, text=value)
-                std_label.grid(row=current_row + 2, column=col, padx=5, pady=5, sticky='w')
+                std_label = ctk.CTkLabel(stats_frame, text=value)
+                std_label.grid(row=1, column=col, padx=5, pady=5, sticky="nsew")
+                stats_frame.grid_columnconfigure(col, weight=1, uniform="columns")
     
-                # Ajuster la largeur minimale des colonnes de données numériques
-                if col > 1:
-                    table_frame.grid_columnconfigure(col, minsize=100, uniform="columns")
-                    
+    
+    
     def create_buttons(self):
         button_frame = ctk.CTkFrame(self, fg_color="transparent")
         button_frame.grid(row=3, column=1, padx=20, pady=20, sticky="nsew")
@@ -285,8 +301,10 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
 
         close_button = ctk.CTkButton(button_frame, text="Fermer", command=lambda: self.destroy())
         close_button.grid(row=0, column=2, padx=20, sticky="w")
+        close_button.grid_columnconfigure(2, weight=1)
         export_button = ctk.CTkButton(button_frame, text="Exporter", command=lambda: self.export_data())
         export_button.grid(row=0, column=1, padx=20, sticky="e")
+        export_button.grid_columnconfigure(1, weight=1)
                     
     def vectorized_format_sign(self, nums, sig_figs):
         return [self.format_sign(num, sig_figs) for num in nums]

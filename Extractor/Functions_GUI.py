@@ -434,6 +434,7 @@ class InterfaceFunctions:
         self.master.ax4.set_ylabel("Contrainte [MPa]")
         self.master.ax4.legend()
         
+        
         # Redessiner le graphique
         self.master.canvas4.draw()
         
