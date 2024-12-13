@@ -38,6 +38,12 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.sample = sample
         self.item = item
         
+        #self.grid_columnconfigure(1, weight=1)
+        #self.grid_columnconfigure((2, 3), weight=0)
+        #self.grid_rowconfigure((0, 1, 2, 3), weight=1)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure((0,1,2,3,4), weight=1)
+        
         if not hasattr(self.sample, 'last_mode_chosen'):
             self.sample.last_mode_chosen = 0
             
@@ -99,7 +105,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         # Créer la tabview avec deux onglets
         self.tabview = customtkinter.CTkTabview(self)
         self.tabview.grid(row=4, column=0, padx=(20, 20), pady=(10,0), sticky="nsew")        
-        self.columnconfigure(0, weight=1)
+        
         self.tabview.add("Section Ronde")
         self.tabview.tab("Section Ronde").grid_columnconfigure(0, weight=0)
         self.tabview.tab("Section Ronde").grid_columnconfigure(1, weight=1)
@@ -179,7 +185,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
 
         # Options de fichiers et d'analyse (Tab1)
         self.tabview_options = customtkinter.CTkTabview(self)
-        self.tabview_options.grid(row=5, column=0, padx=(20, 20), pady=(10, 0), sticky="nsew", columnspan=3)
+        self.tabview_options.grid(row=5, column=0, padx=(20, 20), pady=(10, 0), sticky="nsew")
         self.tabview_options.add("Mode de test")
         self.tabview_options.add("Options fichiers")
         self.tabview_options.tab("Mode de test").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
@@ -218,6 +224,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         
         self.save_button = customtkinter.CTkButton(self, text="Sauvegarder", command=lambda: self.on_close(), font=customtkinter.CTkFont(size=15, weight="bold"))
         self.save_button.grid(row=7, column=0, pady=10, padx=20, sticky="nswe")
+        
         
         # Comportement par défaut        
         try:
