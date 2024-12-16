@@ -40,7 +40,6 @@ class ConfigWindow(customtkinter.CTkToplevel):
         
         self.columnconfigure(0, weight=1)
         self.rowconfigure((0,2), weight=1)
-        #self.rowconfigure(1, weight=2)
         self.grid_rowconfigure((0,2), weight=1)
         self.grid_rowconfigure(1, weight=4)
         

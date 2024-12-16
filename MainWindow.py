@@ -55,8 +55,11 @@ class MainWindow(customtkinter.CTk):
 
         # Configuration  de la grille principale
         self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure((2, 3), weight=0)
-        self.grid_rowconfigure((0, 1, 2), weight=1)
+        self.grid_columnconfigure(2, weight=0)
+        self.grid_rowconfigure(0, weight=10)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=1)
+        
 
         # Barre latérale et widget associés
         logo_img = Image.open("static\\COMATEC_HEIG-VD_logotype_rouge-rvb.png")
