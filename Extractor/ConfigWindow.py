@@ -38,11 +38,11 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.sample = sample
         self.item = item
         
-        #self.grid_columnconfigure(1, weight=1)
-        #self.grid_columnconfigure((2, 3), weight=0)
-        #self.grid_rowconfigure((0, 1, 2, 3), weight=1)
         self.columnconfigure(0, weight=1)
-        self.rowconfigure((0,1,2,3,4), weight=1)
+        self.rowconfigure((0,2), weight=1)
+        #self.rowconfigure(1, weight=2)
+        self.grid_rowconfigure((0,2), weight=1)
+        self.grid_rowconfigure(1, weight=4)
         
         if not hasattr(self.sample, 'last_mode_chosen'):
             self.sample.last_mode_chosen = 0
@@ -99,83 +99,103 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.sample_name = customtkinter.CTkLabel(self.top_frame, text=sample_name)
         self.sample_name.grid(row=3, column=0, padx=20, pady=0, sticky="nswe")
         self.top_frame.grid_columnconfigure(0, weight=1)
-        self.top_frame.grid_rowconfigure(0, weight=1)
+        self.top_frame.grid_rowconfigure((0,1,2,3), weight=1, uniform="Row")
         
         # Option type de sample et caractéristiques géométriques
         # Créer la tabview avec deux onglets
         self.tabview = customtkinter.CTkTabview(self)
-        self.tabview.grid(row=4, column=0, padx=(20, 20), pady=(10,0), sticky="nsew")        
+        self.tabview.grid(row=1, column=0, padx=(20, 20), sticky="nsew")
         
         self.tabview.add("Section Ronde")
         self.tabview.tab("Section Ronde").grid_columnconfigure(0, weight=0)
         self.tabview.tab("Section Ronde").grid_columnconfigure(1, weight=1)
+        self.tabview.tab("Section Ronde").grid_rowconfigure(0, weight=1)
+        
+        self.tabview.add("Section Rectangulaire")
+        self.tabview.tab("Section Rectangulaire").grid_columnconfigure(0, weight=0)  # configure grid of individual tabs
+        self.tabview.tab("Section Rectangulaire").grid_columnconfigure(1, weight=1)
+        self.tabview.tab("Section Rectangulaire").grid_rowconfigure(0, weight=1)
+        
+        # Créer les frame défilant
+        self.middle_frame_round = customtkinter.CTkScrollableFrame(self.tabview.tab("Section Ronde"))
+        self.middle_frame_round.grid(row=0, column=0, sticky="nsew", columnspan=2)
+        self.middle_frame_round.grid_columnconfigure(0, weight=0)
+        self.middle_frame_round.grid_columnconfigure(1, weight=1)
+        
+        self.middle_frame_rect = customtkinter.CTkScrollableFrame(self.tabview.tab("Section Rectangulaire"))
+        self.middle_frame_rect.grid(row=0, column=0, sticky="nsew", columnspan=2)
+        self.middle_frame_rect.grid_columnconfigure(0, weight=0)
+        self.middle_frame_rect.grid_columnconfigure(1, weight=1)
+        
+        # Gestion image rond
         image_rond_img_light = Image.open("static/image_traction_rond.png")
         image_rond_img_dark = Image.open("static/image_traction_rond_dark.png")
         self.image_rond = customtkinter.CTkImage(light_image=image_rond_img_light,
                                             dark_image=image_rond_img_dark,
                                             size=(100, 334))
-        self.image_label_rond = customtkinter.CTkLabel(self.tabview.tab("Section Ronde"), image=self.image_rond, text="")
+        self.image_label_rond = customtkinter.CTkLabel(self.middle_frame_round, image=self.image_rond, text="")
         self.image_label_rond.image = self.image_rond  # keep a reference to avoid garbage collection
-        self.image_label_rond.grid(row=0, column=0, padx=(10, 0), pady=(10, 10), rowspan=8, sticky="nsew")
-        self.tabview.add("Section Rectangulaire")
-        self.tabview.tab("Section Rectangulaire").grid_columnconfigure(0, weight=0)  # configure grid of individual tabs
-        self.tabview.tab("Section Rectangulaire").grid_columnconfigure(1, weight=1)
+        self.image_label_rond.grid(row=0, column=0, padx=(10, 0), pady=(10, 0), rowspan=8, sticky="nsew")
+        
+        # Gestion image rect
+        
         image_rect_img_light = Image.open("static/image_traction_rect.png")
         image_rect_img_dark = Image.open("static/image_traction_rect_dark.png")
         self.image_rect = customtkinter.CTkImage(light_image=image_rect_img_light,
                                             dark_image=image_rect_img_dark,
                                             size=(100, 334))
-        self.image_label_rect = customtkinter.CTkLabel(self.tabview.tab("Section Rectangulaire"), image=self.image_rect, text="")
+        self.image_label_rect = customtkinter.CTkLabel(self.middle_frame_rect, image=self.image_rect, text="")
         self.image_label_rect.image = self.image_rect  # keep a reference to avoid garbage collection
         self.image_label_rect.grid(row=0, column=0, padx=(10, 0), pady=(10, 10), rowspan=10,  sticky="nsew")
+        
         # Section Ronde - Options
-        self.label_diam_init_rond = customtkinter.CTkLabel(self.tabview.tab("Section Ronde"), text="Diamètre initial D0 [mm] :")
+        self.label_diam_init_rond = customtkinter.CTkLabel(self.middle_frame_round, text="Diamètre initial D0 [mm] :")
         self.label_diam_init_rond.grid(row=0, column=1, padx=10, pady=(10,0))
-        self.option_diam_init_rond = customtkinter.CTkEntry(self.tabview.tab("Section Ronde"), textvariable = D0_default)
+        self.option_diam_init_rond = customtkinter.CTkEntry(self.middle_frame_round, textvariable = D0_default)
         self.option_diam_init_rond.grid(row=1, column=1, padx=10)
-        self.label_long_init_rond = customtkinter.CTkLabel(self.tabview.tab("Section Ronde"), text="Longueur initiale L0 [mm] :")
+        self.label_long_init_rond = customtkinter.CTkLabel(self.middle_frame_round, text="Longueur initiale L0 [mm] :")
         self.label_long_init_rond.grid(row=2, column=1, padx=10, pady=(10,0))
-        self.option_long_init_rond = customtkinter.CTkEntry(self.tabview.tab("Section Ronde"), textvariable = L0_default)
+        self.option_long_init_rond = customtkinter.CTkEntry(self.middle_frame_round, textvariable = L0_default)
         self.option_long_init_rond.grid(row=3, column=1, padx=10)
-        self.label_f_max_rond = customtkinter.CTkLabel(self.tabview.tab("Section Ronde"), text="Force max régression linéaire [N] :")
+        self.label_f_max_rond = customtkinter.CTkLabel(self.middle_frame_round, text="Force max régression linéaire [N] :")
         self.label_f_max_rond.grid(row=4, column=1, padx=10, pady=(10,0))
-        self.option_f_max_rond = customtkinter.CTkEntry(self.tabview.tab("Section Ronde"), textvariable = F_max_default)
+        self.option_f_max_rond = customtkinter.CTkEntry(self.middle_frame_round, textvariable = F_max_default)
         self.option_f_max_rond.grid(row=5, column=1, padx=10)
-        self.label_f_min_rond = customtkinter.CTkLabel(self.tabview.tab("Section Ronde"), text="Force min régression linéaire [N] :")
+        self.label_f_min_rond = customtkinter.CTkLabel(self.middle_frame_round, text="Force min régression linéaire [N] :")
         self.label_f_min_rond.grid(row=6, column=1, padx=10, pady=(10,0))
-        self.option_f_min_rond = customtkinter.CTkEntry(self.tabview.tab("Section Ronde"), textvariable = F_min_default)
+        self.option_f_min_rond = customtkinter.CTkEntry(self.middle_frame_round, textvariable = F_min_default)
         self.option_f_min_rond.grid(row=7, column=1, padx=10, pady=(10, 0))
-        self.label_long_l1_rond = customtkinter.CTkLabel(self.tabview.tab("Section Ronde"), text="Longueur d'appui L1 [mm] :")
+        self.label_long_l1_rond = customtkinter.CTkLabel(self.middle_frame_round, text="Longueur d'appui L1 [mm] :")
         self.label_long_l1_rond.grid(row=10, column=1, padx=10, pady=(10, 0))
-        self.option_long_l1_rond = customtkinter.CTkEntry(self.tabview.tab("Section Ronde"), textvariable=L1_default)
+        self.option_long_l1_rond = customtkinter.CTkEntry(self.middle_frame_round, textvariable=L1_default)
         self.option_long_l1_rond.grid(row=11, column=1, padx=10, pady=(0, 10))
         self.label_long_l1_rond.grid_remove()
         self.option_long_l1_rond.grid_remove()
         
         # Section Rectangulaires - Options
-        self.label_W0_init_rect = customtkinter.CTkLabel(self.tabview.tab("Section Rectangulaire"), text="Largeur initiale W0 [mm] :")
+        self.label_W0_init_rect = customtkinter.CTkLabel(self.middle_frame_rect, text="Largeur initiale W0 [mm] :")
         self.label_W0_init_rect.grid(row=0, column=1, padx=10, pady=(10,0))
-        self.option_W0_init_rect = customtkinter.CTkEntry(self.tabview.tab("Section Rectangulaire"), textvariable = W0_default)
+        self.option_W0_init_rect = customtkinter.CTkEntry(self.middle_frame_rect, textvariable = W0_default)
         self.option_W0_init_rect.grid(row=1, column=1, padx=10)
-        self.label_H0_init_rect = customtkinter.CTkLabel(self.tabview.tab("Section Rectangulaire"), text="Epaisseur initiale H0 [mm] :")
+        self.label_H0_init_rect = customtkinter.CTkLabel(self.middle_frame_rect, text="Epaisseur initiale H0 [mm] :")
         self.label_H0_init_rect.grid(row=2, column=1, padx=10, pady=(10,0))
-        self.option_H0_init_rect = customtkinter.CTkEntry(self.tabview.tab("Section Rectangulaire"), textvariable = H0_default)
+        self.option_H0_init_rect = customtkinter.CTkEntry(self.middle_frame_rect, textvariable = H0_default)
         self.option_H0_init_rect.grid(row=3, column=1, padx=10)
-        self.label_long_init_rect = customtkinter.CTkLabel(self.tabview.tab("Section Rectangulaire"), text="Longueur initiale L0 [mm] :")
+        self.label_long_init_rect = customtkinter.CTkLabel(self.middle_frame_rect, text="Longueur initiale L0 [mm] :")
         self.label_long_init_rect.grid(row=4, column=1, padx=10, pady=(10,0))
-        self.option_long_init_rect = customtkinter.CTkEntry(self.tabview.tab("Section Rectangulaire"), textvariable = L0_default)
+        self.option_long_init_rect = customtkinter.CTkEntry(self.middle_frame_rect, textvariable = L0_default)
         self.option_long_init_rect.grid(row=5, column=1, padx=10)
-        self.label_f_max_rect = customtkinter.CTkLabel(self.tabview.tab("Section Rectangulaire"), text="Force max régression linéaire [N] :")
+        self.label_f_max_rect = customtkinter.CTkLabel(self.middle_frame_rect, text="Force max régression linéaire [N] :")
         self.label_f_max_rect.grid(row=6, column=1, padx=10, pady=(10,0))
-        self.option_f_max_rect = customtkinter.CTkEntry(self.tabview.tab("Section Rectangulaire"), textvariable = F_max_default)
+        self.option_f_max_rect = customtkinter.CTkEntry(self.middle_frame_rect, textvariable = F_max_default)
         self.option_f_max_rect.grid(row=7, column=1, padx=10)
-        self.label_f_min_rect = customtkinter.CTkLabel(self.tabview.tab("Section Rectangulaire"), text="Force min régression linéaire [N] :")
+        self.label_f_min_rect = customtkinter.CTkLabel(self.middle_frame_rect, text="Force min régression linéaire [N] :")
         self.label_f_min_rect.grid(row=8, column=1, padx=10, pady=(10,0))
-        self.option_f_min_rect = customtkinter.CTkEntry(self.tabview.tab("Section Rectangulaire"), textvariable = F_min_default)
+        self.option_f_min_rect = customtkinter.CTkEntry(self.middle_frame_rect, textvariable = F_min_default)
         self.option_f_min_rect.grid(row=9, column=1, padx=10, pady=(10, 0))
-        self.label_long_l1_rect = customtkinter.CTkLabel(self.tabview.tab("Section Rectangulaire"), text="Longueur d'appui L1 [mm] :")
+        self.label_long_l1_rect = customtkinter.CTkLabel(self.middle_frame_rect, text="Longueur d'appui L1 [mm] :")
         self.label_long_l1_rect.grid(row=10, column=1, padx=10, pady=(10, 0))
-        self.option_long_l1_rect = customtkinter.CTkEntry(self.tabview.tab("Section Rectangulaire"), textvariable=L1_default)
+        self.option_long_l1_rect = customtkinter.CTkEntry(self.middle_frame_rect, textvariable=L1_default)
         self.option_long_l1_rect.grid(row=11, column=1, padx=10, pady=(0, 10))
         self.label_long_l1_rect.grid_remove()
         self.option_long_l1_rect.grid_remove()
@@ -185,7 +205,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
 
         # Options de fichiers et d'analyse (Tab1)
         self.tabview_options = customtkinter.CTkTabview(self)
-        self.tabview_options.grid(row=5, column=0, padx=(20, 20), pady=(10, 0), sticky="nsew")
+        self.tabview_options.grid(row=2, column=0, padx=(20, 20), pady=(10, 0), sticky="nsew")
         self.tabview_options.add("Mode de test")
         self.tabview_options.add("Options fichiers")
         self.tabview_options.tab("Mode de test").grid_columnconfigure(0, weight=1)  # configure grid of individual tabs
@@ -223,7 +243,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         
         
         self.save_button = customtkinter.CTkButton(self, text="Sauvegarder", command=lambda: self.on_close(), font=customtkinter.CTkFont(size=15, weight="bold"))
-        self.save_button.grid(row=7, column=0, pady=10, padx=20, sticky="nswe")
+        self.save_button.grid(row=3, column=0, pady=10, padx=20, sticky="nswe")
         
         
         # Comportement par défaut        
