@@ -11,8 +11,8 @@ Configuration Window
 - Configuration of sample class through GUI
 
 
-Version: Beta 1.9
-Last Update: 26.08.24
+Version: Beta 1.12
+Last Update: 31.03.26
 
 
 @author: quentin.raball
@@ -227,7 +227,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.label_option_machine = customtkinter.CTkLabel(self.tabview_options.tab("Options fichiers"), text="Machine de test utilisée :")
         self.label_option_machine.grid(row=0, column=0, padx=20, pady=(10,0))
         self.option_machine = customtkinter.CTkOptionMenu(self.tabview_options.tab("Options fichiers"), dynamic_resizing=True,
-                                                        values=["Shimadzu 20kN", "W+B 100kN", "W+B 400kN"])
+                                                        values=["Shimadzu 20kN", "W+B 100kN", "Wolpert 400kN"])
         self.option_machine.grid(row=1, column=0, padx=20)
         self.label_option_machine = customtkinter.CTkLabel(self.tabview_options.tab("Options fichiers"), text="Canal utilisé :")
         self.label_option_machine.grid(row=2, column=0, padx=20, pady=(10,0))
@@ -267,17 +267,24 @@ class ConfigWindow(customtkinter.CTkToplevel):
         
         
     def update_menus(self, test_bench, test_mode):
-        if test_bench == "Shimadzu" or test_bench == "WB400kN_1" or test_bench == "WB400kN_2":
-            self.option_canal.set("Canal Traverse")
-            self.option_canal.configure(state="disabled")
-            self.radio_button_4.configure(state="disabled")
-            self.option_machine.configure(state="disabled")
-            if test_bench == "Shimadzu":
+        if test_bench == "Shimadzu_1" or test_bench == "Shimadzu_2":
+            if test_bench == "Shimadzu_1":
+                self.option_canal.set("Canal Traverse")
                 self.option_machine.set("Shimadzu 20kN")
-            else: 
-                self.option_machine.set("W+B 400kN")
+                self.radio_button_4.configure(state="disabled")
+                self.option_canal.configure(state="disabled")
+            elif test_bench == "Shimadzu_2":
+                if test_mode == 3:
+                    self.option_machine.configure(state="disabled")
+                    self.option_machine.set("Shimadzu 20kN")
+                    self.option_canal.set("Canal Extensomètre")
+                    self.option_canal.configure(state="disabled")
+                else:
+                    self.option_machine.configure(state="disabled")
+                    self.option_machine.set("Shimadzu 20kN")
+                    self.option_canal.configure(state="enable")                
                 
-        elif test_bench == "WB100kN_1" or "WB100kN_2":
+        elif test_bench == "WB100kN_1" or test_bench == "WB100kN_2":
             if test_mode == 3:
                 self.option_machine.configure(state="disabled")
                 self.option_machine.set("W+B 100kN")
@@ -287,6 +294,13 @@ class ConfigWindow(customtkinter.CTkToplevel):
                 self.option_machine.configure(state="disabled")
                 self.option_machine.set("W+B 100kN")
                 self.option_canal.configure(state="enabled")
+                
+        elif test_bench == "WB400kN_1" or test_bench == "WB400kN_2":
+                self.option_machine.set("Wolpert 400kN")
+                self.option_canal.set("Canal Traverse")
+                self.radio_button_4.configure(state="disabled")
+                self.option_canal.configure(state="disabled")
+        
         else:
             self.option_machine.set("WB100kN")
             self.option_canal.configure(state="enabled")
@@ -422,7 +436,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
                     self.sample.stroke_channel = 10
                     self.sample.selected_channel = "Canal Traverse"
                     
-        if machine == "WB100kN_2":
+        elif machine == "WB100kN_2":
             if canal == "Canal Extensomètre":
                 if self.sample.stroke_channel != 4:
                     self.sample.stroke_channel = 4
@@ -431,6 +445,17 @@ class ConfigWindow(customtkinter.CTkToplevel):
                 if self.sample.stroke_channel != 5:
                     self.sample.stroke_channel = 5
                     self.sample.selected_channel = "Canal Traverse"
+        
+        elif machine == "Shimadzu_2":
+            if canal == "Canal Extensomètre":
+                if self.sample.stroke_channel != 4:
+                    self.sample.stroke_channel = 4
+                    self.sample.selected_channel = "Canal Extensomètre"
+            elif canal == "Canal Traverse":
+                if self.sample.stroke_channel != 3:
+                    self.sample.stroke_channel = 3
+                    self.sample.selected_channel = "Canal Traverse"            
+        
         self.sample.import_data()
         print(f"Canal enregistré: {self.sample.selected_channel}")
     

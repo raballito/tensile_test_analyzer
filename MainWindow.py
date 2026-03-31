@@ -12,8 +12,8 @@ Tensile Test Analyzer - Main Window
 - Multisampling handling
 - Export graphics and sample summary
 
-Version: Beta 1.9
-Last Update: 26.08.24
+Version: Beta 1.12
+Last Update: 31.03.26
 
 @author: quentin.raball
 """
@@ -45,13 +45,15 @@ class MainWindow(customtkinter.CTk):
         self.geometry(f"{1200}x{800}")
 
         # Initialisation du dossier de travail
-        self.interface_functions.pop_message_init()
-        if not os.path.exists("Data"):
-            os.makedirs("Data")
-        self.folder_ask = self.interface_functions.ask_directory("Data")
-        if not self.folder_ask == None:
-            list_csv = self.interface_functions.list_csv(self.folder_ask)
-        else: list_csv = None
+        self.selected_files = []
+
+        files = self.interface_functions.ask_directory("Data")
+        
+        if files:
+            self.selected_files = files
+            list_csv = self.interface_functions.list_csv(files)
+        else:
+            list_csv = []
 
         # Configuration  de la grille principale
         self.grid_columnconfigure(1, weight=1)
@@ -73,11 +75,11 @@ class MainWindow(customtkinter.CTk):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
         self.title_label = customtkinter.CTkLabel(self.sidebar_frame, text="Tensile Test Analyzer", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.title_label.grid(row=1, column=0, padx=20, pady=(20, 10))
-        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Ajouter un fichier", command=lambda: self.on_button_add_file(self.folder_ask))
+        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Ajouter un fichier", command=self.on_button_add_file)
         self.sidebar_button_1.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Supprimer les fichiers", command=lambda: self.on_remove_button_event())
         self.sidebar_button_2.grid(row=3, column=0, padx=20, pady=10)
-        self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text="Changer de répertoire", command=lambda: self.on_change_directory_event())
+        self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text="Changer de répertoire", command=self.on_change_directory_event)
         self.sidebar_button_3.grid(row=4, column=0, padx=20, pady=10)
         #self.sidebar_button_4 = customtkinter.CTkButton(self.sidebar_frame, text="TestButton", command=lambda: self.on_test_button_clicked())
         #self.sidebar_button_4.grid(row=5, column=0, padx=20, pady=10) # Bouton pour debug sample
@@ -269,16 +271,52 @@ class MainWindow(customtkinter.CTk):
         sample_list = self.scrollable_label_button_frame.get_sample_var(selected_checkboxes)
         self.interface_functions.open_excel_export_window_event(sample_list)
         
-    def on_button_add_file(self, folder):
-        self.interface_functions.add_button_event(folder)
+    def on_button_add_file(self):
+        new_files = self.interface_functions.ask_directory("Data")
+    
+        if not new_files:
+            return
+    
+        csv_files = self.interface_functions.list_csv(new_files)
+    
+        # normaliser les fichiers déjà présents
+        existing_files = set(self.normalize_path(f) for f in self.selected_files)
+    
+        for file in csv_files:
+            norm_file = self.normalize_path(file)
+    
+            if norm_file not in existing_files:
+                self.add_item(file)
+                self.selected_files.append(file)
+                existing_files.add(norm_file)  # mettre à jour le set
+            else:
+                self.interface_functions.show_warning(file)
+        
+    def normalize_path(self, path):
+        return os.path.normcase(os.path.abspath(path))
 
     def on_remove_button_event(self):
         selected_checkboxes = self.scrollable_label_button_frame.get_selected_checkboxes()
+        
+        # récupérer les samples à supprimer
+        samples_to_remove = self.scrollable_label_button_frame.get_sample_var(selected_checkboxes)
+        
+        # supprimer de selected_files
+        paths_to_remove = [os.path.abspath(sample.file_path) for sample in samples_to_remove]
+        
+        self.selected_files = [
+            f for f in self.selected_files
+            if os.path.abspath(f) not in paths_to_remove
+        ]
+        
+        # suppression UI
         self.interface_functions.remove_button_event(selected_checkboxes)
         
     def on_change_directory_event(self):
-        new_folder = self.interface_functions.directory_button_event(self.folder_ask)
-        self.folder_ask = new_folder
+        new_files = self.interface_functions.directory_button_event(self.selected_files)
+    
+        if new_files:
+            self.selected_files = new_files
         
     def on_close(self):
         print("Fermeture de la fenêtre principale.")

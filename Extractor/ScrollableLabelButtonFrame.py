@@ -9,8 +9,8 @@ Created on Mon Apr 22 11:15:29 2024
 - Get selected checkbox and sample vars functions from mainwindow
 - Get Export Options functions
 
-Version: Beta 1.9
-Last Update: 26.08.24
+Version: Beta 1.12
+Last Update: 31.03.26
 
 @author: quentin.raball
 
@@ -42,10 +42,23 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         self.bind_all("<Button-5>", self.on_mouse_wheel)
     
     def on_mouse_wheel(self, event):
+        canvas = self._parent_canvas
+    
+        # hauteur visible vs hauteur totale
+        if canvas.bbox("all") is None:
+            return
+    
+        _, _, _, content_height = canvas.bbox("all")
+        visible_height = canvas.winfo_height()
+    
+        # scroll uniquement si nécessaire
+        if content_height <= visible_height:
+            return
+    
         if event.num == 4 or event.delta > 0:
-            self._parent_canvas.yview_scroll(-10, "units")
+            canvas.yview_scroll(-10, "units")
         elif event.num == 5 or event.delta < 0:
-            self._parent_canvas.yview_scroll(10, "units")
+            canvas.yview_scroll(10, "units")
     
     def check_empty_list(self):
         if len(self.sample_list) != 0:

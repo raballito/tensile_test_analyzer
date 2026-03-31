@@ -8,8 +8,8 @@ GUI Related Functions
 - Basically everythings related of the main window's functions
 - Events throughs files managed by this file mainly
 
-Version: Beta 1.9
-Last Update: 28.08.24
+Version: Beta 1.12
+Last Update: 31.03.26
 
 @author: quentin.raball
 """
@@ -43,11 +43,27 @@ class InterfaceFunctions:
     def pop_message_init(self):
         messagebox.showinfo("Initialisation du programme", "Bienvenu dans le programme Tensile Test Analyser.\n\nVeuillez sélectionner un répertoire de données contenant des fichiers csv.")
     
+    def show_warning(self, file):
+        print(f"Fichier ignoré (déjà présent) : {file}")
+        messagebox.showwarning("Fichier déjà présent", f"{os.path.basename(file)} est déjà dans la liste.")
+        
     def ask_directory(self, folder):
-        folder_path = filedialog.askdirectory(initialdir=folder, title="Choisissez un répertoire de données")
-        if not folder_path:
+        options = {
+            "initialdir": folder,
+            "title": "Choisissez les fichiers de données",
+            "filetypes": [
+                ("Fichiers de données", "*.csv *.lia"),
+                ("CSV files", "*.csv"),
+                ("LIA files", "*.lia"),
+                ("All files", "*.*")
+            ]
+        }
+    
+        file_paths = filedialog.askopenfilenames(**options)
+    
+        if not file_paths:
             return None
-        return folder_path
+        return list(file_paths)
     
     def save_as(titre="Enregistrer sous", defaultextension=".csv", filetypes=[("CSV files", "*.csv"), ("All files", "*.*")]):
         file_path = filedialog.asksaveasfilename(
@@ -57,21 +73,25 @@ class InterfaceFunctions:
         )
         return file_path
     
-    def list_csv(self, csv_folder):
+    def list_csv(self, file_list):
         csv_files = []
-        # Parcours des fichiers dans le dossier
-        for filename in os.listdir(csv_folder):
-            filepath = os.path.abspath(os.path.join(csv_folder, filename))
-                
-            if filename.endswith(".lia"):
-                # Si le fichier se termine par ".lia", renommer en ".csv" et ajouter à la liste
+    
+        for filepath in file_list:
+            filepath = os.path.abspath(filepath)
+    
+            if filepath.lower().endswith(".lia"):
                 new_filepath = filepath[:-4] + ".csv"
-                os.rename(filepath, new_filepath)
+                
+                # ⚠️ éviter d’écraser un fichier existant
+                if not os.path.exists(new_filepath):
+                    os.rename(filepath, new_filepath)
+                
                 csv_files.append(new_filepath)
-            elif filename.endswith(".csv"):
-                # Si le fichier est déjà en ".csv", ajouter à la liste
+    
+            elif filepath.lower().endswith(".csv"):
                 csv_files.append(filepath)
-        print("Nombre de fichiers détectés dans dossier", csv_folder, ": ", len(csv_files))
+    
+        print("Nombre de fichiers sélectionnés :", len(csv_files))
         return csv_files
 
     # Fonctions supplémentaires GUI
@@ -214,17 +234,24 @@ class InterfaceFunctions:
 
     def directory_button_event(self, old_folder):
         print("directory_button clicked")
-        new_folder = self.ask_directory(old_folder)
-        if new_folder is None:  # Vérifiez si l'utilisateur a annulé la sélection
-            print("Opération annulée. Aucun répertoire sélectionné.")
+    
+        new_files = self.ask_directory(old_folder)
+    
+        if new_files is None:
+            print("Opération annulée.")
             return
-        list_csv = self.list_csv(new_folder)
+    
+        list_csv = self.list_csv(new_files)
+    
         self.clear_plot()
-        self.master.scrollable_label_button_frame.remove_all_items() 
-        for i in range(len(list_csv)):
-            self.master.scrollable_label_button_frame.add_item(list_csv[i])
+        self.master.scrollable_label_button_frame.remove_all_items()
+    
+        for file in list_csv:
+            self.master.scrollable_label_button_frame.add_item(file)
+    
         self.master.scrollable_label_button_frame.check_empty_list()
-        return new_folder
+    
+        return new_files
             
     def add_button_event(self, folder):
         file_path = filedialog.askopenfilename(initialdir=folder, title="Sélectionner un fichier CSV", filetypes=[("CSV Files", "*.csv"), ("LIA Files", "*.lia")])
@@ -243,6 +270,7 @@ class InterfaceFunctions:
 
     def remove_button_event(self, item_list):
         for item in item_list:
+            self.remove_stress_graph()
             self.master.scrollable_label_button_frame.remove_item(item)
         self.clear_plot()
         print("Elements supprimés :", item_list)
