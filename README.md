@@ -11,7 +11,7 @@ Le projet est basé sur Python et sur le plugin CustomTkInter : https://github.c
 
 Projet en français réalisé par Quentin Raball
 
-N° Version : Beta 1.10
+N° Version : Beta 1.12 (Avril 2026)
 
 ## Fonctionnalités
 - Gestion des fichiers dans le programme.
@@ -30,9 +30,9 @@ N° Version : Beta 1.10
 
 ## Machine Utilisées
 Le département COMATEC utilise actuellement les machines suivantes:
-- Shimadzu - 20 [kN] maximum - Sans Extensomètre
+- Shimadzu - 20 [kN] maximum - Avec et sans Extensomètre
 - Walter & Bai - 100 [kN] maximum - Avec et sans extensomètres
-- Walter & Bai - 400 [kN] maximum - Sans extensomètre
+- Wolpert - 400 [kN] maximum - Sans extensomètre
 
 
 ## A venir (Work in Progress)
@@ -42,13 +42,14 @@ Le département COMATEC utilise actuellement les machines suivantes:
 - Nouveaux modes de test.
 - Nouvelles géométries d'échantillons.
 - Nouvelles machines supportées.
-- Gestion de l'extensomètre pour les machines Shimadzu 20kN et W+B 400kN.
+- Gestion de l'extensomètre pour la machines Wolpert 400kN.
 - Batch processing
 
 ## Utilisation
 - Ajoutez les fichiers csv directement obtenus par les machines de tractions dans le dossier Data du programme.
 - Vous pouvez aussi ajouter les fichiers depuis l'interface en cliquant sur le bouton approprié.
-- Configurez les échantillons en éditant leurs propriétés à partir du bouton correspondant.
+- Configurez les échantillons et le mode d'essai en éditant leurs propriétés à partir du bouton correspondant.
+- Configurez le canal utilisé en le choisissant dans les propriétés du fichier, dans la rubrique "Option fichiers".
 - Sélectionnez les fichiers que vous voulez analyser et cliquer sur le bouton "Analyser" en bas de la fenêtre.
 - Vous pouvez ensuite exporter les résultats en cliquant sur les boutons appropriés.
 
