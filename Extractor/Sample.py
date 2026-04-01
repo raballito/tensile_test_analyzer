@@ -319,7 +319,7 @@ class Sample:
         plt.gca().set_xlim(0, 1.2 * (data_plot[x_label].max() - data_plot[x_label].iloc[1]))
         plt.gca().set_ylim(0, 1.3 * data_plot[y_label].max())
         
-        if y_label == 'Force [N]':
+        if y_label == 'Force [N]' or 'Force [kN]':
             plt.ylabel('Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]')
         elif y_label == 'Contrainte [MPa]':
             plt.ylabel('Contrainte [MPa]')
