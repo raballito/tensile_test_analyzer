@@ -49,6 +49,7 @@ Le département COMATEC utilise actuellement les machines suivantes:
 - Ajoutez les fichiers csv directement obtenus par les machines de tractions dans le dossier Data du programme.
 - Vous pouvez aussi ajouter les fichiers depuis l'interface en cliquant sur le bouton approprié.
 - Configurez les échantillons et le mode d'essai en éditant leurs propriétés à partir du bouton correspondant.
+- Réglez les lignes de la régression linéaire pour qu'elles corespondent à la partie linéaire de la force durant l'essai.
 - Configurez le canal utilisé en le choisissant dans les propriétés du fichier, dans la rubrique "Option fichiers".
 - Sélectionnez les fichiers que vous voulez analyser et cliquer sur le bouton "Analyser" en bas de la fenêtre.
 - Vous pouvez ensuite exporter les résultats en cliquant sur les boutons appropriés.
