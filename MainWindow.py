@@ -46,14 +46,8 @@ class MainWindow(customtkinter.CTk):
 
         # Initialisation du dossier de travail
         self.selected_files = []
-
-        files = self.interface_functions.ask_directory("Data")
+        list_csv = self.interface_functions.init_programm()
         
-        if files:
-            self.selected_files = files
-            list_csv = self.interface_functions.list_csv(files)
-        else:
-            list_csv = []
 
         # Configuration  de la grille principale
         self.grid_columnconfigure(1, weight=1)

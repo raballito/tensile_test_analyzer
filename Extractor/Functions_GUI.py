@@ -40,12 +40,33 @@ class InterfaceFunctions:
         self.analysisWindow = None
         self.excel_export_window = None
     
-    def pop_message_init(self):
-        messagebox.showinfo("Initialisation du programme", "Bienvenu dans le programme Tensile Test Analyser.\n\nVeuillez sélectionner un répertoire de données contenant des fichiers csv.")
-    
     def show_warning(self, file):
         print(f"Fichier ignoré (déjà présent) : {file}")
         messagebox.showwarning("Fichier déjà présent", f"{os.path.basename(file)} est déjà dans la liste.")
+    
+    def init_programm(self):
+        data_folder = "Data"
+
+        # Créer le dossier s'il n'existe pas
+        if not os.path.exists(data_folder):
+            os.makedirs(data_folder)
+        
+        # Chercher automatiquement les fichiers dans Data
+        file_list = [
+            os.path.join(data_folder, f)
+            for f in os.listdir(data_folder)
+            if f.lower().endswith((".csv", ".lia"))
+        ]
+        # Conversion via ta fonction existante
+        if len(file_list) > 0:
+            list_csv = self.list_csv(file_list)
+            return list_csv
+        else:
+            list_csv = None
+            return list_csv
+        
+        # Important : stocker la "source"
+        self.folder_ask = data_folder
         
     def ask_directory(self, folder):
         options = {
@@ -82,7 +103,7 @@ class InterfaceFunctions:
             if filepath.lower().endswith(".lia"):
                 new_filepath = filepath[:-4] + ".csv"
                 
-                # ⚠️ éviter d’écraser un fichier existant
+                # éviter d’écraser un fichier existant
                 if not os.path.exists(new_filepath):
                     os.rename(filepath, new_filepath)
                 
@@ -233,7 +254,7 @@ class InterfaceFunctions:
         customtkinter.set_widget_scaling(new_scaling_float)
 
     def directory_button_event(self, old_folder):
-        print("directory_button clicked")
+        print("Changement de dossier")
     
         new_files = self.ask_directory(old_folder)
     
@@ -253,20 +274,6 @@ class InterfaceFunctions:
     
         return new_files
             
-    def add_button_event(self, folder):
-        file_path = filedialog.askopenfilename(initialdir=folder, title="Sélectionner un fichier CSV", filetypes=[("CSV Files", "*.csv"), ("LIA Files", "*.lia")])
-        # Vérification si l'utilisateur a cliqué sur "Annuler"
-        if not file_path:
-            print("Aucun fichier sélectionné.")
-            return  # Sort de la fonction si aucun fichier n'est sélectionné
-        try:
-            short_path = os.path.relpath(file_path)
-        except ValueError as e:
-            # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
-            print(f"Erreur lors de la création du chemin relatif pour {file_path}. Utilisation du chemin complet.\nErreur: {e}")
-            short_path = file_path
-        print("Ajout du fichier: ", short_path)
-        self.master.add_item(short_path)
 
     def remove_button_event(self, item_list):
         for item in item_list:
@@ -327,6 +334,7 @@ class InterfaceFunctions:
         self.master.ax1.set_ylabel("Force [N]")
         self.master.ax1.legend()
         
+        self.master.figure_force_displacement.tight_layout()
         self.master.canvas.draw()
         
     def preview_force_time_graph(self, sample):
@@ -351,6 +359,7 @@ class InterfaceFunctions:
         self.master.ax2.set_ylabel("Force [N]")
         self.master.ax2.legend()
         
+        self.master.figure_force_time.tight_layout()
         self.master.canvas2.draw()
         
     def preview_stress_deformation_graph(self, sample):
@@ -427,6 +436,7 @@ class InterfaceFunctions:
         self.master.ax3.legend()
         
         # Redessiner le graphique
+        self.master.figure_stress_deformation.tight_layout()
         self.master.canvas3.draw()
 
     def display_stress_displacement_graph(self, sample):
@@ -464,6 +474,7 @@ class InterfaceFunctions:
         
         
         # Redessiner le graphique
+        self.master.figure_stress_displacement.tight_layout()
         self.master.canvas4.draw()
         
     def update_preview(self):
