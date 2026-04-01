@@ -8,8 +8,8 @@ Excel Export Window
 - Export in Output directory
 - Export everything in Excel file
 
-Version: Beta 1.9
-Last Update: 26.08.24
+Version: Beta 1.12
+Last Update: 31.03.26
 
 @author: quentin.raball
 """

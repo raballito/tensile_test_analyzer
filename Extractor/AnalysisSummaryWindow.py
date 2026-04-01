@@ -6,8 +6,8 @@ End of analysis window. Print a summary of the analysis with table and graphics.
 - 3 types of graphics
 - Summary table with average and standard deviation
 
-Version: Beta 1.9
-Last Update: 28.08.24
+Version: Beta 1.12
+Last Update: 31.03.26
 
 @author: quentin.raball
 """
@@ -194,8 +194,6 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         main_frame.grid_rowconfigure(1, weight=0)
         main_frame.grid_rowconfigure(2, weight=1)
         
-        
-    
         # Cadre pour les en-têtes de colonnes (fixes)
         header_frame = ctk.CTkFrame(main_frame)
         header_frame.grid(row=1, column=0, sticky="nsew")
@@ -204,15 +202,11 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         scrollable_frame = ctk.CTkScrollableFrame(main_frame)
         scrollable_frame.grid(row=2, column=0, sticky="nsew")
         
-        
         # Cadre pour les moyennes et écarts-types
         if len(self.sample_list) > 1:
             stats_frame = ctk.CTkFrame(main_frame)
             stats_frame.grid(row=3, column=0, padx=(0,12), sticky="nsew")
-            
-            
 
-    
         # Définir les en-têtes de colonnes selon les options
         if self.option_kn == False and self.option_defo_percent:
             headers = [
@@ -291,8 +285,6 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
                 std_label = ctk.CTkLabel(stats_frame, text=value)
                 std_label.grid(row=1, column=col, padx=5, pady=5, sticky="nsew")
                 stats_frame.grid_columnconfigure(col, weight=1, uniform="columns")
-    
-    
     
     def create_buttons(self):
         button_frame = ctk.CTkFrame(self, fg_color="transparent")

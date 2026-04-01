@@ -123,10 +123,12 @@ class Sample:
     def import_data(self):
         # Lire les données du fichier CSV
         print(f"Importation des données de {self.sample_name}. Veuillez patienter...")
+    
         # Lire tout le fichier, enlever les guillemets doubles, puis séparer chaque ligne par le séparateur
         with open(self.file_path, 'r', encoding='latin-1') as file:
             content = file.read().replace('"', '')
             lines = content.split('\n')
+    
         # Convertir les lignes en une liste de listes en utilisant le séparateur
         data_list = [line.split(self.separator) for line in lines]
         raw_data = pd.DataFrame(data_list)
@@ -137,45 +139,85 @@ class Sample:
         displacement_column = self.stroke_channel - 1
         time_column = self.time_channel - 1
         print(f"Taille actuelle du tableau de données brutes : {raw_data.shape}")
+    
         # Extraction des données de force et de déplacement
         time_data = pd.to_numeric(raw_data.iloc[:, time_column], errors='coerce')
         force_data = pd.to_numeric(raw_data.iloc[:, force_column], errors='coerce')
         displacement_data = pd.to_numeric(raw_data.iloc[:, displacement_column], errors='coerce')
+        
+        # Créer le DataFrame avec les données
         data = pd.DataFrame({'Temps [s]': time_data, 'Force [N]': force_data, 'Déplacement [mm]': displacement_data})
+        
         # Correction facteur force
         data['Force [N]'] = data['Force [N]'].apply(lambda x: x * self.force_unit)
         data.dropna(inplace=True)
-        
+    
+        # **Ajout de la normalisation des signaux**
+        self.normalize_signals(data)
+    
         # Détection de la chute de force - Calculer la différence de force entre les points successifs
         data['Force Change [N/s]'] = data['Force [N]'].diff() / data['Temps [s]'].diff()
         last_n_points = 50  # Nombre de points à examiner à la fin
         recent_data = data.tail(last_n_points).copy()  # Créez une copie pour éviter le warning
-        recent_data['Force Change [N/s]'] = recent_data['Force [N]'].diff() / recent_data['Temps [s]'].diff()
+        recent_data['Force Change [N/s]'] = recent_data['Force [N]'].diff() / data['Temps [s]'].diff()
         threshold = -50  # Exemple de seuil, à ajuster
-        recent_data.loc[:, 'Force Change [N/s]'] = recent_data['Force [N]'].diff() / recent_data['Temps [s]'].diff()
+        recent_data.loc[:, 'Force Change [N/s]'] = recent_data['Force [N]'].diff() / data['Temps [s]'].diff()
         avg_slope = recent_data['Force Change [N/s]'].mean()
-        
+    
         if avg_slope < threshold:
             # Trouver l'index de la première apparition de la chute
             start_of_drop = recent_data[recent_data['Force Change [N/s]'] < threshold].index.min()
             if not pd.isna(start_of_drop):
                 # Garder les points jusqu'à la chute
                 data = data.loc[:start_of_drop]
-
+    
+        # Récupérer les valeurs
         self.time_values = data['Temps [s]'].tolist()
         self.force_values = data['Force [N]'].tolist()
         self.displacement_values = data['Déplacement [mm]'].tolist()
-        self.F_max = self.format_sign(data['Force [N]'].max(),self.round_val)
-        self.t_max = self.format_sign(data['Temps [s]'].max(),self.round_val)
-        self.Allong = self.format_sign(data['Déplacement [mm]'].max() - data['Déplacement [mm]'].iloc[1],self.round_val)
-        def_min = self.format_sign(float(self.F_max)*0.2, self.round_val)
-        def_max = self.format_sign(float(self.F_max)*0.4, self.round_val)
+        self.F_max = self.format_sign(data['Force [N]'].max(), self.round_val)
+        self.t_max = self.format_sign(data['Temps [s]'].max(), self.round_val)
+        self.Allong = self.format_sign(data['Déplacement [mm]'].max() - data['Déplacement [mm]'].iloc[1], self.round_val)
+        
+        # Calcul des limites de la plage linéaire
+        def_min = self.format_sign(float(self.F_max) * 0.2, self.round_val)
+        def_max = self.format_sign(float(self.F_max) * 0.4, self.round_val)
         self.lin_range = [def_min, def_max]
         
         print(f"Nouvelle taille du tableau post-importation : {data.shape}")
         print(f"Importation des données spécifiques de {self.sample_name} terminée.\n")
-    
+        
         return self.time_values, self.force_values, self.displacement_values
+    
+    def normalize_signals(self, data):
+        """
+        Cette fonction normalise les signaux de force et de déplacement si nécessaire
+        en fonction du signe moyen des données (force et déplacement).
+        """
+        import numpy as np
+    
+        # Convertir les listes en tableaux numpy pour faciliter le calcul
+        force = np.array(data['Force [N]'])
+        disp = np.array(data['Déplacement [mm]'])
+    
+        # Ignorer les premières valeurs (bruit / mise en charge)
+        n = len(force)
+        if n < 10:
+            return  # pas assez de données pour décider
+    
+        start_index = int(0.1 * n)  # ignorer 10% du début pour éviter le bruit
+    
+        mean_force = np.mean(force[start_index:])
+        mean_disp = np.mean(disp[start_index:])
+    
+        # Inverser les signaux si majoritairement négatifs
+        if mean_force < 0:
+            data['Force [N]'] = -force
+            print("Inversion des valeurs de force, car majoritairement négatives.")
+    
+        if mean_disp < 0:
+            data['Déplacement [mm]'] = -disp
+            print("Inversion des valeurs de déplacement, car majoritairement négatives.")
     
     
     def export_preview(self, graph_type=None, directory='output/IMG'):

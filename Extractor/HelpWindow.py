@@ -6,8 +6,8 @@ Help window
 - Print images in the window
 - One menu for each mode of analysis
 
-Version: Beta 1.9
-Last Update: 26.08.24
+Version: Beta 1.12
+Last Update: 31.03.26
 
 @author: quentin.raball
 """
