@@ -44,13 +44,14 @@ class InterfaceFunctions:
         print(f"Fichier ignoré (déjà présent) : {file}")
         messagebox.showwarning("Fichier déjà présent", f"{os.path.basename(file)} est déjà dans la liste.")
     
+    def show_warning_ignore(self, file_path):
+        messagebox.showwarning("Fichier ignoré", f"Le fichier {file_path} a été ignoré car une erreur d'importation à été rencontrée.")
+    
     def init_programm(self):
         data_folder = "Data"
-
         # Créer le dossier s'il n'existe pas
         if not os.path.exists(data_folder):
             os.makedirs(data_folder)
-        
         # Chercher automatiquement les fichiers dans Data
         file_list = [
             os.path.join(data_folder, f)
@@ -64,7 +65,6 @@ class InterfaceFunctions:
         else:
             list_csv = None
             return list_csv
-        
         # Important : stocker la "source"
         self.folder_ask = data_folder
         
@@ -79,9 +79,7 @@ class InterfaceFunctions:
                 ("All files", "*.*")
             ]
         }
-    
         file_paths = filedialog.askopenfilenames(**options)
-    
         if not file_paths:
             return None
         return list(file_paths)
@@ -96,19 +94,14 @@ class InterfaceFunctions:
     
     def list_csv(self, file_list):
         csv_files = []
-    
         for filepath in file_list:
             filepath = os.path.abspath(filepath)
-    
             if filepath.lower().endswith(".lia"):
                 new_filepath = filepath[:-4] + ".csv"
-                
                 # éviter d’écraser un fichier existant
                 if not os.path.exists(new_filepath):
                     os.rename(filepath, new_filepath)
-                
                 csv_files.append(new_filepath)
-    
             elif filepath.lower().endswith(".csv"):
                 csv_files.append(filepath)
     
@@ -257,24 +250,18 @@ class InterfaceFunctions:
         print("Changement de dossier")
     
         new_files = self.ask_directory(old_folder)
-    
         if new_files is None:
             print("Opération annulée.")
             return
-    
         list_csv = self.list_csv(new_files)
-    
         self.clear_plot()
         self.master.scrollable_label_button_frame.remove_all_items()
     
         for file in list_csv:
             self.master.scrollable_label_button_frame.add_item(file)
-    
         self.master.scrollable_label_button_frame.check_empty_list()
-    
         return new_files
             
-
     def remove_button_event(self, item_list):
         for item in item_list:
             self.remove_stress_graph()

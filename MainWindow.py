@@ -69,7 +69,7 @@ class MainWindow(customtkinter.CTk):
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
         self.title_label = customtkinter.CTkLabel(self.sidebar_frame, text="Tensile Test Analyzer", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.title_label.grid(row=1, column=0, padx=20, pady=(20, 10))
-        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Ajouter un fichier", command=self.on_button_add_file)
+        self.sidebar_button_1 = customtkinter.CTkButton(self.sidebar_frame, text="Ajouter des fichiers", command=self.on_button_add_file)
         self.sidebar_button_1.grid(row=2, column=0, padx=20, pady=10)
         self.sidebar_button_2 = customtkinter.CTkButton(self.sidebar_frame, text="Supprimer les fichiers", command=lambda: self.on_remove_button_event())
         self.sidebar_button_2.grid(row=3, column=0, padx=20, pady=10)
@@ -111,12 +111,12 @@ class MainWindow(customtkinter.CTk):
         self.tabview1.tab("Force-Temps").grid_rowconfigure(0, weight=1)
         
         self.frame_force_displacement = customtkinter.CTkFrame(self.tabview1.tab("Force-Déplacement"))
-        self.frame_force_displacement.grid(row=0, column=0, padx=20, pady=(10, 10), sticky="nsew")
+        self.frame_force_displacement.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
         self.frame_force_displacement.grid_rowconfigure(0, weight=1)
         self.frame_force_displacement.grid_columnconfigure(0, weight=1)
         
         self.frame_force_time = customtkinter.CTkFrame(self.tabview1.tab("Force-Temps"))
-        self.frame_force_time.grid(row=0, column=0, padx=20, pady=(10, 10), sticky="nsew")
+        self.frame_force_time.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
         self.frame_force_time.grid_rowconfigure(0, weight=1)
         self.frame_force_time.grid_columnconfigure(0, weight=1)
 
@@ -230,9 +230,10 @@ class MainWindow(customtkinter.CTk):
 
     def add_item(self, file_path):
         self.hide_instruction_message()
-        self.scrollable_label_button_frame.add_item(file_path)
+        success = self.scrollable_label_button_frame.add_item(file_path)
         if len(self.scrollable_label_button_frame.frame_list) == 0:
             self.show_instruction_message()
+        return success
         
     def on_var_button_clicked(self):
         selected_checkboxes = self.scrollable_label_button_frame.get_selected_checkboxes()    
@@ -267,22 +268,18 @@ class MainWindow(customtkinter.CTk):
         
     def on_button_add_file(self):
         new_files = self.interface_functions.ask_directory("Data")
-    
         if not new_files:
             return
-    
         csv_files = self.interface_functions.list_csv(new_files)
-    
         # normaliser les fichiers déjà présents
         existing_files = set(self.normalize_path(f) for f in self.selected_files)
-    
         for file in csv_files:
             norm_file = self.normalize_path(file)
-    
             if norm_file not in existing_files:
-                self.add_item(file)
-                self.selected_files.append(file)
-                existing_files.add(norm_file)  # mettre à jour le set
+                success = self.add_item(file)
+                if success : 
+                    self.selected_files.append(file)
+                    existing_files.add(norm_file)  # mettre à jour le set
             else:
                 self.interface_functions.show_warning(file)
         

@@ -47,14 +47,11 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         # hauteur visible vs hauteur totale
         if canvas.bbox("all") is None:
             return
-    
         _, _, _, content_height = canvas.bbox("all")
         visible_height = canvas.winfo_height()
-    
         # scroll uniquement si nécessaire
         if content_height <= visible_height:
             return
-    
         if event.num == 4 or event.delta > 0:
             canvas.yview_scroll(-10, "units")
         elif event.num == 5 or event.delta < 0:
@@ -65,8 +62,16 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             self.master.hide_instruction_message()
         else:
             self.master.show_instruction_message()
+            
+    def is_file_already_loaded(self, file_path):
+        file_path = os.path.abspath(file_path)
+        return any(os.path.abspath(sample.file_path) == file_path for sample in self.sample_list)
 
     def add_item(self, file_path):
+        #Empêche doublon réel
+        if self.is_file_already_loaded(file_path):
+            self.interface_functions.show_warning(file_path)
+            return False
         test_bench_struct = TestBench(self)  # Créer une instance de TestBench pour chaque échantillon
         sample_and_channel = test_bench_struct.identify_file(file_path)
         try:
@@ -95,10 +100,11 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             sample_struct.force_channel = force_channel
             sample_struct.stroke_channel = stroke_channel
             imported = sample_struct.import_data()
-            if imported == None:
+            if imported is None:
                 print(f"Erreur d'importation du fichier {file_path_rel}.\nFichier ignoré.\n")
                 self.checkbox_variable_list.remove(checkbox_var)
-                break
+                self.interface_functions.show_warning_ignore(file_path)
+                return False
             # Création des lignes du tableau
             frame = customtkinter.CTkFrame(self)  # Nouveau cadre pour chaque ligne de fichier
             frame.configure(fg_color=("gray85", "gray25"))
@@ -121,6 +127,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             self.button_list.append(button)
             self.sample_list.append(sample_struct)
             self.frame_list.append(frame)
+        return True
 
     def remove_item(self, item):
         for switch, button, check, frame, sample in zip(self.switch_list, self.button_list, self.checkbox_variable_list, self.frame_list, self.sample_list):
