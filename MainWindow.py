@@ -48,6 +48,12 @@ class MainWindow(customtkinter.CTk):
         self.selected_files = []
         list_csv = self.interface_functions.init_programm()
         
+        # Figures avancées (initialisées une seule fois)
+        self.figure_stress_deformation, self.ax3 = plt.subplots()
+        self.figure_stress_displacement, self.ax4 = plt.subplots()
+        self.canvas3 = None
+        self.canvas4 = None
+
 
         # Configuration  de la grille principale
         self.grid_columnconfigure(1, weight=1)

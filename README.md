@@ -38,10 +38,10 @@ Le département COMATEC utilise actuellement les machines suivantes:
 ## A venir (Work in Progress)
 - Meilleure gestion des fenêtres
 - Meilleure gestion du Dark Mode et réglage des derniers problèmes avec le mode sombre.
-- Sauvegarde + Chargements sessions/résultats d'analyses.
+- Sauvegarde + Chargements sessions/résultats d'analyses précédentes.
 - Nouveaux modes de test.
 - Nouvelles géométries d'échantillons.
-- Nouvelles machines supportées.
+- Importation générique pour des machines différentes.
 - Gestion de l'extensomètre pour la machines Wolpert 400kN.
 - Batch processing
 
@@ -59,7 +59,11 @@ Le département COMATEC utilise actuellement les machines suivantes:
 
 Agrandissez la fenêtre ou utilisez l'option de "scalling" afin de diminuer la taille des caractères.
 
-2) Problèmes d'installation du plugin customtkinter
+2) Les titres des graphiques sont hors de l'image.
+
+Cliquez à nouveau sur la ligne du sample pour mettre à jour la taille du graphique.
+
+3) Problèmes d'installation du plugin customtkinter
 
 Pour résoudre ces problèmes (notamment si lors de l'execution du programme, celui-ci dit que le plugin est introuvable):
 - Installer Miniconda, un gestionnaire de packages pour python.
@@ -71,7 +75,7 @@ Pour résoudre ces problèmes (notamment si lors de l'execution du programme, ce
 
 S'il manque des autres plugins, utiliser la commande : "conda install -n [env-name] [package]" avec [package] le nom du package voulu. Ils sont disponibles ici : https://anaconda.org/
 
-3) Problèmes d'installation de Python
+4) Problèmes d'installation de Python
 
 Pour installer python:
 

@@ -357,7 +357,7 @@ class InterfaceFunctions:
             main_window.tabview1.tab("Contrainte-Déformation").grid_columnconfigure(0, weight=1)
             main_window.tabview1.tab("Contrainte-Déformation").grid_rowconfigure(0, weight=1)
             main_window.frame_stress_deformation = customtkinter.CTkFrame(main_window.tabview1.tab("Contrainte-Déformation"))
-            main_window.frame_stress_deformation.grid(row=0, column=0, padx=20, pady=(10, 10), sticky="nsew")
+            main_window.frame_stress_deformation.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
             main_window.frame_stress_deformation.grid_rowconfigure(0, weight=1)
             main_window.frame_stress_deformation.grid_columnconfigure(0, weight=1)
 
@@ -367,13 +367,19 @@ class InterfaceFunctions:
         
     def preview_stress_displacement_graph(self, sample):
         main_window = self.master
+        if self.master.canvas3 is None:
+            self.master.canvas3 = FigureCanvasTkAgg(
+                self.master.figure_stress_deformation,
+                master=self.master.frame_stress_deformation
+            )
+            self.master.canvas3.get_tk_widget().grid(row=0, column=0, sticky="nsew")
         
         if not main_window.has_tab("Contrainte-Déplacement"):
             main_window.tabview1.add("Contrainte-Déplacement")
             main_window.tabview1.tab("Contrainte-Déplacement").grid_columnconfigure(0, weight=1)
             main_window.tabview1.tab("Contrainte-Déplacement").grid_rowconfigure(0, weight=1)
             main_window.frame_stress_displacement = customtkinter.CTkFrame(main_window.tabview1.tab("Contrainte-Déplacement"))
-            main_window.frame_stress_displacement.grid(row=0, column=0, padx=20, pady=(10, 10), sticky="nsew")
+            main_window.frame_stress_displacement.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
             main_window.frame_stress_displacement.grid_rowconfigure(0, weight=1)
             main_window.frame_stress_displacement.grid_columnconfigure(0, weight=1)
             
@@ -388,7 +394,7 @@ class InterfaceFunctions:
 
     def display_stress_deformation_graph(self, sample):
         # Initialiser figure et axes
-        self.master.figure_stress_deformation, self.master.ax3 = plt.subplots()
+        self.master.ax3.clear()
         self.master.canvas3 = FigureCanvasTkAgg(self.master.figure_stress_deformation, master=self.master.frame_stress_deformation)
         self.master.canvas3.get_tk_widget().grid(row=0, column=0, padx=0, pady=(0, 10), sticky="nsew")
         self.master.canvas3.get_tk_widget().grid_rowconfigure(0, weight=1)
@@ -428,7 +434,7 @@ class InterfaceFunctions:
 
     def display_stress_displacement_graph(self, sample):
         # Initialiser figure et axes
-        self.master.figure_stress_displacement, self.master.ax4 = plt.subplots()
+        self.master.ax4.clear()
         self.master.canvas4 = FigureCanvasTkAgg(self.master.figure_stress_displacement, master=self.master.frame_stress_displacement)
         self.master.canvas4.get_tk_widget().grid(row=0, column=0, padx=0, pady=(0, 10), sticky="nsew")
         self.master.canvas4.get_tk_widget().grid_rowconfigure(0, weight=1)
@@ -459,14 +465,15 @@ class InterfaceFunctions:
         self.master.ax4.set_ylabel("Contrainte [MPa]")
         self.master.ax4.legend()
         
-        
         # Redessiner le graphique
         self.master.figure_stress_displacement.tight_layout()
         self.master.canvas4.draw()
         
     def update_preview(self):
         # Tracer les graphiques de base
+        self.master.figure_force_displacement.tight_layout()
         self.master.canvas.draw()
+        self.master.figure_force_time.tight_layout()
         self.master.canvas2.draw()
     
     def export_graphics_event(self, sample_list, graphs_to_export):
