@@ -222,7 +222,8 @@ class InterfaceFunctions:
             'option_elastic_line': bool(self.master.checkbox_4.get()),
             'option_show_table': bool(self.master.checkbox_5.get()),
             'option_path': bool(self.master.checkbox_6.get()),
-            'option_kn': bool(self.master.checkbox_7.get())
+            'option_kn': bool(self.master.checkbox_7.get()),
+            'option_grid' : bool(self.master.checkbox_8.get())
         }
     
     def change_appearance_mode_event(self, new_appearance_mode: str):
@@ -301,11 +302,23 @@ class InterfaceFunctions:
         
     def preview_force_displacement_graph(self, sample):
         self.master.ax1.clear()
-        force = sample.force_values
+        options = self.get_options()
+        option_kn = bool(options.get('option_kn', False))
         disp = sample.displacement_values
         f_reg_lin_min = float(sample.lin_range[0])
         f_reg_lin_max = float(sample.lin_range[1])
        
+        if option_kn:
+            force = [value / 1000 for value in sample.force_values]
+            f_reg_lin_min /= 1000
+            f_reg_lin_max /= 1000
+            ylabel = "Force [kN]"
+            yunit = "kN"
+        else:
+            force = sample.force_values
+            ylabel = "Force [N]"
+            yunit = "N"
+            
         self.master.ax1.set_xlim(0, 1.2 * max(disp))
         self.master.ax1.set_ylim(0, 1.3 * max(force)) 
        
@@ -313,12 +326,12 @@ class InterfaceFunctions:
         self.master.ax1.plot(disp, force, label=sample.sample_name)
         
         # Ajouter les lignes horizontales pour f_min et f_max
-        self.master.ax1.axhline(y=f_reg_lin_max, color='b', linestyle='--', label=f'reg_lin_max = {f_reg_lin_max} N')
-        self.master.ax1.axhline(y=f_reg_lin_min, color='r', linestyle='--', label=f'reg_lin_min = {f_reg_lin_min} N')
+        self.master.ax1.axhline(y=f_reg_lin_max, color='b', linestyle='--', label=f'reg_lin_max = {f_reg_lin_max} {yunit}')
+        self.master.ax1.axhline(y=f_reg_lin_min, color='r', linestyle='--', label=f'reg_lin_min = {f_reg_lin_min} {yunit}')
         
         # Configuration des axes et légendes
         self.master.ax1.set_xlabel("Déplacement [mm]")
-        self.master.ax1.set_ylabel("Force [N]")
+        self.master.ax1.set_ylabel(ylabel)
         self.master.ax1.legend()
         
         self.master.figure_force_displacement.tight_layout()
@@ -326,10 +339,23 @@ class InterfaceFunctions:
         
     def preview_force_time_graph(self, sample):
         self.master.ax2.clear()
+        options = self.get_options()
+        option_kn = bool(options.get('option_kn', False))
         time = sample.time_values
         force = sample.force_values
         f_reg_lin_min = float(sample.lin_range[0])
         f_reg_lin_max = float(sample.lin_range[1])
+        
+        if option_kn:
+            force = [value / 1000 for value in sample.force_values]
+            f_reg_lin_min /= 1000
+            f_reg_lin_max /= 1000
+            ylabel = "Force [kN]"
+            yunit = "kN"
+        else:
+            force = sample.force_values
+            ylabel = "Force [N]"
+            yunit = "N"
         
         self.master.ax2.set_xlim(0, 1.2 * max(time))
         self.master.ax2.set_ylim(0, 1.3 * max(force))
@@ -338,12 +364,12 @@ class InterfaceFunctions:
         self.master.ax2.plot(time, force, label=sample.sample_name)
         
         # Ajouter les lignes horizontales pour f_min et f_max
-        self.master.ax2.axhline(y=f_reg_lin_max, color='b', linestyle='--', label=f'reg_lin_max = {f_reg_lin_max} N')
-        self.master.ax2.axhline(y=f_reg_lin_min, color='r', linestyle='--', label=f'reg_lin_min = {f_reg_lin_min} N')
+        self.master.ax2.axhline(y=f_reg_lin_max, color='b', linestyle='--', label=f'reg_lin_max = {f_reg_lin_max} {yunit}')
+        self.master.ax2.axhline(y=f_reg_lin_min, color='r', linestyle='--', label=f'reg_lin_min = {f_reg_lin_min} {yunit}')
         
         # Configuration des axes et légendes
         self.master.ax2.set_xlabel("Temps [s]")
-        self.master.ax2.set_ylabel("Force [N]")
+        self.master.ax2.set_ylabel(ylabel)
         self.master.ax2.legend()
         
         self.master.figure_force_time.tight_layout()
@@ -403,13 +429,20 @@ class InterfaceFunctions:
         # Récupérer les données
         options = self.get_options()
         option_percent = bool(options.get('option_defo_percent', False))
-        defo = sample.deformation_values
         stress = sample.stress_values
-        if option_percent == True:
+        
+        if option_percent:
             E = 10*float(sample.E)
+            defo = sample.deformation_values
+            xlabel = "Déformation [%]"
+            x_start = sample.coef_re
         else: 
             E=1000*float(sample.E)
-        x_start = sample.coef_re
+            defo = [value / 100 for value in sample.deformation_values]
+            xlabel = "Déformation [-]"
+            x_start = sample.coef_re / 100
+            
+        
         y_start = 0
         x_end = max(defo)
         y_end = E * (x_end - x_start)
@@ -424,7 +457,7 @@ class InterfaceFunctions:
             self.master.ax3.plot([x_start, x_end], [y_start, y_end], label='Limite élastique', linestyle='--', color='orange')
         
         # Configuration des axes et légendes
-        self.master.ax3.set_xlabel("Déformation [%]")
+        self.master.ax3.set_xlabel(xlabel)
         self.master.ax3.set_ylabel("Contrainte [MPa]")
         self.master.ax3.legend()
         

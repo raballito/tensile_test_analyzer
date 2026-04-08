@@ -238,7 +238,7 @@ class Sample:
             force_time_path = self.export_graph(
                 directory, 
                 'Force-Temps', 
-                'Time [s]', 
+                'Temps [s]', 
                 'Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]', 
                 self.time_values, 
                 self.force_values, 
@@ -282,7 +282,7 @@ class Sample:
         if not os.path.exists(image_path):
             os.makedirs(image_path)
     
-        print(f"Génération du graphique {y_label}-{x_label}.\n")
+        print(f"Génération du graphique {y_label} - {x_label}.\n")
     
         plt.figure()
     
@@ -326,10 +326,11 @@ class Sample:
             
         if x_label == 'Déplacement [mm]':
             plt.xlabel('Déplacement [mm]')
-        elif x_label == 'Déformation [%]':
-            plt.xlabel('Déformation [%]')
-        elif x_label == 'Time [s]':
-            plt.xlabel('Time [s]')
+        elif x_label == 'Temps [s]':
+            plt.xlabel('Temps [s]')
+        elif x_label == 'Déformation [%]' or 'Déformation [-]':
+            plt.xlabel('Déformation [%]' if self.master.get_option_defo_percent() else 'Déformation [-]')
+        
         
         plt.legend().remove()
         

@@ -168,8 +168,8 @@ class MainWindow(customtkinter.CTk):
                                               command=lambda: self.on_export_excel_button_clicked())
         self.export_excel_button.grid(row=6, column=0, padx=20, pady=(20, 20))
 
-        # Options d'exportations
-        self.checkbox_slider_frame = customtkinter.CTkScrollableFrame(self, label_text="Options d'exportation")
+        # Options graphiques / exportations
+        self.checkbox_slider_frame = customtkinter.CTkScrollableFrame(self, label_text="Options graphiques")
         self.checkbox_slider_frame.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
         self.checkbox_1 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Nom du sample")
         self.checkbox_1.grid(row=1, column=0, pady=(0, 0), padx=10, sticky="nw")
@@ -184,7 +184,9 @@ class MainWindow(customtkinter.CTk):
         self.checkbox_6 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Nom du fichier")
         self.checkbox_6.grid(row=6, column=0, pady=(20, 0), padx=10, sticky="nw")
         self.checkbox_7 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Utilisation des [kN]")
-        self.checkbox_7.grid(row=7, column=0, pady=20, padx=10, sticky="nw")
+        self.checkbox_7.grid(row=7, column=0, pady=(20,0) , padx=10, sticky="nw")
+        self.checkbox_8 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Ajout de la grille")
+        self.checkbox_8.grid(row=8, column=0, pady=20, padx=10, sticky="nw")
 
         # Assignation des valeurs et comportements par défaut
         self.checkbox_1.select()
