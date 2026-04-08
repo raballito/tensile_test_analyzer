@@ -35,11 +35,11 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
 
         print(f"Etat des options : {option_list}")
         self.option_name = option_list.get('option_name', False)
-        self.option_path = option_list.get('option_path', False)
         self.option_legend = option_list.get('option_legend', False)
         self.option_defo_percent = option_list.get('option_defo_percent', False)
         self.option_elastic_line = option_list.get('option_elastic_line', False)
         self.option_show_table = option_list.get('option_show_table', False)
+        self.option_show_grid = option_list.get('option_grid', False)
         self.option_kn = option_list.get('option_kn', False)
         
         # Variables pour suivre les choix des utilisateurs
@@ -451,6 +451,8 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         ax.set_ylabel('σ [MPa]')
         if self.option_legend:
             ax.legend()
+        if self.option_show_grid:
+            ax.grid(zorder=0, linestyle='--', alpha=0.5)
 
     def plot_force_displacement(self, ax, sample_list):
         max_force = 0
@@ -475,6 +477,8 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         ax.set_ylabel('Force [N]') if not self.option_kn else ax.set_ylabel('Force [kN]')
         if self.option_legend:
             ax.legend()
+        if self.option_show_grid:
+            ax.grid(zorder=0, linestyle='--', alpha=0.5)
 
     def plot_stress_displacement(self, ax, sample_list):
         max_stress = 0
@@ -494,6 +498,8 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         ax.set_ylabel('σ [MPa]')
         if self.option_legend:
             ax.legend()
+        if self.option_show_grid:
+            ax.grid(zorder=0, linestyle='--', alpha=0.5)
             
     def add_elastic_limit_line(self, data_plot, x_label, mod_young, coef_re):
         if self.option_defo_percent:
