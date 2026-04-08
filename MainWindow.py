@@ -179,14 +179,14 @@ class MainWindow(customtkinter.CTk):
         self.checkbox_3.grid(row=3, column=0, pady=(20, 0), padx=10, sticky="nw")
         self.checkbox_4 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Droite limite élastique")
         self.checkbox_4.grid(row=4, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_5 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Montrer résultats calculés")
+        self.checkbox_5 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Afficher tableau résultats")
         self.checkbox_5.grid(row=5, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_6 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Nom du fichier")
+        self.checkbox_6 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Ajout de la grille")
         self.checkbox_6.grid(row=6, column=0, pady=(20, 0), padx=10, sticky="nw")
         self.checkbox_7 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Utilisation des [kN]")
-        self.checkbox_7.grid(row=7, column=0, pady=(20,0) , padx=10, sticky="nw")
-        self.checkbox_8 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Ajout de la grille")
-        self.checkbox_8.grid(row=8, column=0, pady=20, padx=10, sticky="nw")
+        self.checkbox_7.grid(row=7, column=0, pady=20, padx=10, sticky="nw")
+        
+        
 
         # Assignation des valeurs et comportements par défaut
         self.checkbox_1.select()

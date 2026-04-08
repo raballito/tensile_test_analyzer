@@ -32,11 +32,11 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         
         print(f"Etat des options : {option_list}")
         self.option_name = option_list.get('option_name', False)
-        self.option_path = option_list.get('option_path', False)
         self.option_legend = option_list.get('option_legend', False)
         self.option_defo_percent = option_list.get('option_defo_percent', False)
         self.option_elastic_line = option_list.get('option_elastic_line', False)
         self.option_show_table = option_list.get('option_show_table', False)
+        self.option_show_grid = option_list.get('option_grid', False)
         self.option_kn = option_list.get('option_kn', False)
         
         self.grid_columnconfigure(1, weight=1)
@@ -95,6 +95,9 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         ax.set_ylabel('σ [MPa]')
         if self.option_legend:
             ax.legend()
+        if self.option_show_grid: 
+            ax.grid(zorder=0, linestyle='--', alpha=0.5)
+            
 
     def plot_force_displacement(self, figure):
         ax = figure.add_subplot(111)
@@ -142,6 +145,8 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         ax.set_ylabel('Force [kN]' if self.option_kn else 'Force [N]')
         if self.option_legend:
             ax.legend()
+        if self.option_show_grid: 
+            ax.grid(zorder=0, linestyle='--', alpha=0.5)
 
     def plot_stress_displacement(self, figure):
         ax = figure.add_subplot(111)
@@ -172,15 +177,13 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         ax.set_ylabel('σ [MPa]')
         if self.option_legend:
             ax.legend()
+        if self.option_show_grid: 
+            ax.grid(zorder=0, linestyle='--', alpha=0.5)
             
             
     def get_label(self, sample):
-        if self.option_name and self.option_path:
-            label = f'{sample.sample_name} - {os.path.relpath(sample.file_path)}'
-        elif self.option_name and not self.option_path:
+        if self.option_name:
             label = f'{sample.sample_name}'
-        elif self.option_path and not self.option_name:
-            label = f'{os.path.relpath(sample.file_path)}'
         else:
             label = ''
         return label
@@ -393,20 +396,20 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         # Exporter le graphique Contrainte-Déformation
         figure_cd = plt.Figure(figsize=(10, 5))
         self.plot_stress_deformation(figure_cd)
-        filename_cd = os.path.join(directory, "Contrainte-Déformation_export.png")
+        filename_cd = os.path.join(directory, "Résumé_Contrainte-Déformation.png")
         figure_cd.savefig(filename_cd)
         plt.close(figure_cd)
     
         # Exporter le graphique Force-Déplacement
         figure_fd = plt.Figure(figsize=(10, 5))
         self.plot_force_displacement(figure_fd)
-        filename_fd = os.path.join(directory, "Force-Déplacement_export.png")
+        filename_fd = os.path.join(directory, "Résumé_Force-Déplacement.png")
         figure_fd.savefig(filename_fd)
         plt.close(figure_fd)
     
         # Exporter le graphique Contrainte-Déplacement
         figure_sd = plt.Figure(figsize=(10, 5))
         self.plot_stress_displacement(figure_sd)
-        filename_sd = os.path.join(directory, "Contrainte-Déplacement_export.png")
+        filename_sd = os.path.join(directory, "Résumé_Contrainte-Déplacement.png")
         figure_sd.savefig(filename_sd)
         plt.close(figure_sd)

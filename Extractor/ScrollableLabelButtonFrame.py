@@ -188,19 +188,11 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         coef_re = self.master.option_lim_elast.get()
         return coef_re
     
-    def get_option_file_path(self):
-        value_file_path = self.master.checkbox_6.get()
-        if value_file_path == 0:
-            option_file_path = False
-        elif value_file_path ==1:
-            option_file_path = True
-        return option_file_path
-    
     def get_option_sample_name(self):
         value_sample_name = self.master.checkbox_1.get()
         if value_sample_name == 0:
             option_sample_name = False
-        elif value_sample_name ==1:
+        elif value_sample_name == 1:
             option_sample_name = True
         return option_sample_name
     
@@ -208,15 +200,23 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         value_scale_kN = self.master.checkbox_7.get()
         if value_scale_kN == 0:
             option_scale_kN = False
-        elif value_scale_kN ==1:
+        elif value_scale_kN == 1:
             option_scale_kN = True
         return option_scale_kN
+    
+    def get_option_grid(self):
+        value_grid = self.master.checkbox_6.get()
+        if value_grid == 0:
+            option_grid = False
+        elif value_grid == 1:
+            option_grid = True
+        return option_grid
     
     def get_option_show_force_stroke(self):
         value_show_force_stroke = self.master.checkbox_5.get()
         if value_show_force_stroke == 0:
             option_show_force_stroke = False
-        elif value_show_force_stroke ==1:
+        elif value_show_force_stroke == 1:
             option_show_force_stroke = True
         return option_show_force_stroke
     
@@ -224,7 +224,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         value_defo_percent = self.master.checkbox_3.get()
         if value_defo_percent == 0:
             option_value_defo_percent = False
-        elif value_defo_percent ==1:
+        elif value_defo_percent == 1:
             option_value_defo_percent = True
         return option_value_defo_percent
     
@@ -232,7 +232,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         value_show_rp = self.master.checkbox_4.get()
         if value_show_rp == 0:
             option_value_show_rp = False
-        elif value_show_rp ==1:
+        elif value_show_rp == 1:
             option_value_show_rp = True
         return option_value_show_rp
     

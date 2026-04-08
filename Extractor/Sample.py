@@ -74,13 +74,13 @@ class Sample:
         self.coef_re_unformatted = self.master.get_coef_re()
         self.coef_re = float(self.coef_re_unformatted.strip('%'))
         self.end_filter = 0
-        self.show_file_path = self.master.get_option_file_path()
         self.show_sample_name = self.master.get_option_sample_name()
         self.scale_kN = self.master.get_option_scale_kN()
         self.show_Fmax_Allong_value = self.master.get_option_show_force_stroke()
         self.defo_percent = self.master.get_option_defo_percent()
         self.show_rp02 = self.master.get_option_show_rp()
         self.show_legend = self.master.get_option_show_legend()
+        self.show_grid = self.master.get_option_grid()
         self.analyzed_sample = False
         self.configured_sample = False
         self.last_mode_chosen = 0
@@ -109,11 +109,11 @@ class Sample:
         print(f"Max Stroke: {self.Allong} [mm]")
         print(f"Chiffres sign : {self.master.get_round_val()}")
         print(f"Rp definition : {self.master.get_coef_re()}")
-        print(f"Option Show file path : {self.master.get_option_file_path()}")
         print(f"Option Show sample name : {self.master.get_option_sample_name()}")
         print(f"Option Force in kN : {self.master.get_option_scale_kN()}")
         print(f"Option Show Force and Stroke : {self.master.get_option_show_force_stroke()}")
         print(f"Option Show Rp Line: {self.master.get_option_show_rp()}")
+        print(f"Option Show grid: {self.master.get_option_grid()}")
         print(f"Analyzed Sample: {self.analyzed_sample}")
         print(f"Analyzed Result: Rm: {self.Rm} [MPa]")
         print(f"Analyzed Result: Re: {self.Re} [MPa]")
@@ -309,17 +309,17 @@ class Sample:
     def update_plot_attributes(self, data_plot, x_label, y_label, max_x_label, max_y_label):
         data_plot.plot(x=x_label, y=y_label, kind='line')
         
-        self.show_file_path = self.master.get_option_file_path()
         self.show_sample_name = self.master.get_option_sample_name()
-        
-        file_name_graph = os.path.basename(self.file_path)
+        self.show_grid = self.master.get_option_grid()
+        if self.show_grid:
+            plt.grid(zorder=0, linestyle='--', alpha=0.5)
         title = self.get_plot_title()
         plt.title(title)
         
         plt.gca().set_xlim(0, 1.2 * (data_plot[x_label].max() - data_plot[x_label].iloc[1]))
         plt.gca().set_ylim(0, 1.3 * data_plot[y_label].max())
         
-        if y_label == 'Force [N]' or 'Force [kN]':
+        if y_label in ['Force [N]', 'Force [kN]']:
             plt.ylabel('Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]')
         elif y_label == 'Contrainte [MPa]':
             plt.ylabel('Contrainte [MPa]')
@@ -328,7 +328,7 @@ class Sample:
             plt.xlabel('Déplacement [mm]')
         elif x_label == 'Temps [s]':
             plt.xlabel('Temps [s]')
-        elif x_label == 'Déformation [%]' or 'Déformation [-]':
+        elif x_label in ['Déformation [%]', 'Déformation [-]']:
             plt.xlabel('Déformation [%]' if self.master.get_option_defo_percent() else 'Déformation [-]')
         
         
@@ -397,16 +397,13 @@ class Sample:
                 table_data[2].append(self.Re)  # Ajoute la valeur de Re
         
         table = plt.table(cellText=table_data, loc='lower right', colWidths=[0.15, 0.15, 0.15, 0.15])
+        table.set_zorder(10)
         table.auto_set_font_size(False)
         table.set_fontsize(10)
         table.scale(1, 1.5)
     
     def get_plot_title(self):
-        if self.show_file_path and self.show_sample_name:
-            return f"{os.path.relpath(self.file_path)} - {self.sample_name}"
-        elif self.show_file_path:
-            return f"{os.path.relpath(self.file_path)}"
-        elif self.show_sample_name:
+        if self.show_sample_name:
             return f"{self.sample_name}"
         else:
             return ""
@@ -584,16 +581,6 @@ class Sample:
                     print(f"Le sous-échantillon {i + 1} est incomplet.")
                     continue
                 subsamples.append(subsample)
-                
-                # Dessiner le graphique contrainte-déformation pour le sous-échantillon
-                """plt.figure(figsize=(10, 6))
-                plt.plot(subsample['deformation'], subsample['stress'], label=f'Subsample {i + 1}')
-                plt.xlabel('Déformation')
-                plt.ylabel('Contrainte')
-                plt.title(f'Graphique Contrainte-Déformation pour le sous-échantillon {i + 1}')
-                plt.legend()
-                plt.grid(True)
-                plt.show()"""
                 
         else:
             print("Les indices de début et de fin ne correspondent pas. Vérifiez vos données.")

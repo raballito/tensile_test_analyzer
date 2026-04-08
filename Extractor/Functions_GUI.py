@@ -26,7 +26,7 @@ from Extractor.ExportExcelWindow import ExportExcelWindow
 from tkinter import messagebox
 from tkinter import filedialog
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.pyplot as plt
+
 
 class InterfaceFunctions:
     def __init__(self, master):
@@ -221,9 +221,8 @@ class InterfaceFunctions:
             'option_defo_percent': bool(self.master.checkbox_3.get()),
             'option_elastic_line': bool(self.master.checkbox_4.get()),
             'option_show_table': bool(self.master.checkbox_5.get()),
-            'option_path': bool(self.master.checkbox_6.get()),
-            'option_kn': bool(self.master.checkbox_7.get()),
-            'option_grid' : bool(self.master.checkbox_8.get())
+            'option_grid': bool(self.master.checkbox_6.get()),
+            'option_kn': bool(self.master.checkbox_7.get())
         }
     
     def change_appearance_mode_event(self, new_appearance_mode: str):
@@ -304,6 +303,8 @@ class InterfaceFunctions:
         self.master.ax1.clear()
         options = self.get_options()
         option_kn = bool(options.get('option_kn', False))
+        option_grid = bool(options.get('option_grid', False))
+        option_legend = bool(options.get('option_legend', True))
         disp = sample.displacement_values
         f_reg_lin_min = float(sample.lin_range[0])
         f_reg_lin_max = float(sample.lin_range[1])
@@ -332,7 +333,10 @@ class InterfaceFunctions:
         # Configuration des axes et légendes
         self.master.ax1.set_xlabel("Déplacement [mm]")
         self.master.ax1.set_ylabel(ylabel)
-        self.master.ax1.legend()
+        if option_legend:
+            self.master.ax1.legend()
+        if option_grid:
+            self.master.ax1.grid(zorder=0, linestyle='--', alpha=0.5) 
         
         self.master.figure_force_displacement.tight_layout()
         self.master.canvas.draw()
@@ -341,6 +345,8 @@ class InterfaceFunctions:
         self.master.ax2.clear()
         options = self.get_options()
         option_kn = bool(options.get('option_kn', False))
+        option_grid = bool(options.get('option_grid', False))
+        option_legend = bool(options.get('option_legend', True))
         time = sample.time_values
         force = sample.force_values
         f_reg_lin_min = float(sample.lin_range[0])
@@ -370,7 +376,10 @@ class InterfaceFunctions:
         # Configuration des axes et légendes
         self.master.ax2.set_xlabel("Temps [s]")
         self.master.ax2.set_ylabel(ylabel)
-        self.master.ax2.legend()
+        if option_legend:
+            self.master.ax2.legend()
+        if option_grid:
+            self.master.ax2.grid(zorder=0, linestyle='--', alpha=0.5) 
         
         self.master.figure_force_time.tight_layout()
         self.master.canvas2.draw()
@@ -429,6 +438,8 @@ class InterfaceFunctions:
         # Récupérer les données
         options = self.get_options()
         option_percent = bool(options.get('option_defo_percent', False))
+        option_grid = bool(options.get('option_grid', False))
+        option_legend = bool(options.get('option_legend', True))
         stress = sample.stress_values
         
         if option_percent:
@@ -459,7 +470,10 @@ class InterfaceFunctions:
         # Configuration des axes et légendes
         self.master.ax3.set_xlabel(xlabel)
         self.master.ax3.set_ylabel("Contrainte [MPa]")
-        self.master.ax3.legend()
+        if option_legend:
+            self.master.ax3.legend()
+        if option_grid:
+            self.master.ax3.grid(zorder=0, linestyle='--', alpha=0.5) 
         
         # Redessiner le graphique
         self.master.figure_stress_deformation.tight_layout()
@@ -474,7 +488,9 @@ class InterfaceFunctions:
         self.master.canvas4.get_tk_widget().grid_columnconfigure(0, weight=1)
         
         # Récupérer les données
-        #disp = sample.displacement_values
+        options = self.get_options()
+        option_grid = bool(options.get('option_grid', False))
+        option_legend = bool(options.get('option_legend', True))
         stress = sample.stress_values
         
         # Trouver l'index où la déformation est la plus proche de zéro
@@ -496,7 +512,10 @@ class InterfaceFunctions:
         # Configuration des axes et légendes
         self.master.ax4.set_xlabel("Déplacement [mm]")
         self.master.ax4.set_ylabel("Contrainte [MPa]")
-        self.master.ax4.legend()
+        if option_legend:
+            self.master.ax4.legend()
+        if option_grid:
+            self.master.ax4.grid(zorder=0, linestyle='--', alpha=0.5) 
         
         # Redessiner le graphique
         self.master.figure_stress_displacement.tight_layout()
@@ -504,9 +523,7 @@ class InterfaceFunctions:
         
     def update_preview(self):
         # Tracer les graphiques de base
-        self.master.figure_force_displacement.tight_layout()
         self.master.canvas.draw()
-        self.master.figure_force_time.tight_layout()
         self.master.canvas2.draw()
     
     def export_graphics_event(self, sample_list, graphs_to_export):
