@@ -136,8 +136,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
         self.image_label_rond.image = self.image_rond  # keep a reference to avoid garbage collection
         self.image_label_rond.grid(row=0, column=0, padx=(10, 0), pady=(10, 0), rowspan=8, sticky="nsew")
         
-        # Gestion image rect
-        
+        # Gestion image rect       
         image_rect_img_light = Image.open("static/image_traction_rect.png")
         image_rect_img_dark = Image.open("static/image_traction_rect_dark.png")
         self.image_rect = customtkinter.CTkImage(light_image=image_rect_img_light,
@@ -448,13 +447,13 @@ class ConfigWindow(customtkinter.CTkToplevel):
         
         elif machine == "Shimadzu_2":
             if canal == "Canal Extensomètre":
-                if self.sample.stroke_channel != 4:
-                    self.sample.stroke_channel = 4
-                    self.sample.selected_channel = "Canal Extensomètre"
+                base_channel = 4
+                self.sample.selected_channel = "Canal Extensomètre"
             elif canal == "Canal Traverse":
-                if self.sample.stroke_channel != 3:
-                    self.sample.stroke_channel = 3
-                    self.sample.selected_channel = "Canal Traverse"            
+                base_channel = 3
+                self.sample.selected_channel = "Canal Traverse"
+            
+            self.sample.stroke_channel = self.sample.offset + base_channel         
         
         self.sample.import_data()
         print(f"Canal enregistré: {self.sample.selected_channel}")

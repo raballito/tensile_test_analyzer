@@ -96,6 +96,8 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             sample_struct.header_index = test_bench_struct.header_index
             sample_struct.force_unit = test_bench_struct.force_unit
             sample_struct.repeat_every = test_bench_struct.repeat_every
+            sample_struct.base_stroke_channel = stroke_channel % test_bench_struct.repeat_every
+            sample_struct.offset = stroke_channel - sample_struct.base_stroke_channel
             sample_struct.time_channel = time_channel
             sample_struct.force_channel = force_channel
             sample_struct.stroke_channel = stroke_channel

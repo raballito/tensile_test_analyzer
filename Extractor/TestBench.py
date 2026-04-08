@@ -100,7 +100,7 @@ class TestBench:
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(first_line[1]) // 3
+                self.number_of_test = len(first_line[1]) // self.repeat_every
                 self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
                 
         elif test_bench=="Shimadzu_2": #avec extensomètre
@@ -118,7 +118,7 @@ class TestBench:
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(first_line[1]) // 3
+                self.number_of_test = len(first_line[1]) // self.repeat_every
                 self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
         
         # W+B 100kN
@@ -136,7 +136,7 @@ class TestBench:
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(first_line[1]) // 10
+                self.number_of_test = len(first_line[1]) // self.repeat_every
                 self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
             
         elif test_bench == 'WB100kN_2': #Version sans les virtual channel
@@ -153,7 +153,7 @@ class TestBench:
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(first_line[1]) // 5
+                self.number_of_test = len(first_line[1]) // self.repeat_every
                 self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
                 
         # Wolpert 400 kN        
@@ -171,7 +171,7 @@ class TestBench:
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(first_line[1]) // 3
+                self.number_of_test = len(first_line[1]) // self.repeat_every
                 self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
         
         elif test_bench == 'WB400kN_2':
@@ -188,7 +188,7 @@ class TestBench:
                 list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
                 list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(first_line[1]) // 3
+                self.number_of_test = len(first_line[1]) // self.repeat_every
                 self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel]
                 
                 
