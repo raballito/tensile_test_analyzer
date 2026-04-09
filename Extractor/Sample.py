@@ -171,6 +171,10 @@ class Sample:
         self.F_max = self.format_sign(data['Force [N]'].max(), self.round_val)
         self.t_max = self.format_sign(data['Temps [s]'].max(), self.round_val)
         self.Allong = self.format_sign(data['Déplacement [mm]'].max() - data['Déplacement [mm]'].iloc[1], self.round_val)
+        # Après mise à jour des valeurs
+        self.stress_values = None
+        self.deformation_values = None
+        self.analyzed_sample = False
         
         # Calcul des limites de la plage linéaire
         def_min = self.format_sign(float(self.F_max) * 0.2, self.round_val)

@@ -292,7 +292,7 @@ class InterfaceFunctions:
     def preview_file(self, sample):
         self.preview_force_displacement_graph(sample)
         self.preview_force_time_graph(sample)
-        if sample.analyzed_sample == True:
+        if sample.analyzed_sample and sample.stress_values is not None:
             self.preview_stress_deformation_graph(sample)
             self.preview_stress_displacement_graph(sample)
         else:
