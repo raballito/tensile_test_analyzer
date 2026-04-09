@@ -24,10 +24,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from tkinter import messagebox
+from Extractor.DataFilter import FilterData
 
 class Sample:    
     def __init__(self, master):
         self.master = master
+        self.FilterData = FilterData()
         self.file_name = None
         self.file_path = None
         self.test_bench = None
@@ -153,13 +155,15 @@ class Sample:
         
         # Correction facteur force
         data['Force [N]'] = data['Force [N]'].apply(lambda x: x * self.force_unit)
-        data.dropna(inplace=True)
+        
+        
     
         # Ajout de la normalisation des signaux
-        self.normalize_signals(data)
+        data.dropna(inplace=True)
+        data = self.FilterData.normalize_signals(data)
         
         # Supression de fin d'essais
-        data = self.clean_end_of_test(data)
+        data = self.FilterData.clean_end_of_test(data, selected_channel=self.selected_channel)
         data.dropna(inplace=True)
         
         # Récupérer les valeurs
@@ -180,141 +184,7 @@ class Sample:
         
         return self.time_values, self.force_values, self.displacement_values
     
-    def normalize_signals(self, data):
-        """
-        Cette fonction normalise les signaux de force et de déplacement si nécessaire
-        en fonction du signe moyen des données (force et déplacement).
-        """
-        import numpy as np
     
-        # Convertir les listes en tableaux numpy pour faciliter le calcul
-        force = np.array(data['Force [N]'])
-        disp = np.array(data['Déplacement [mm]'])
-    
-        # Ignorer les premières valeurs (bruit / mise en charge)
-        n = len(force)
-        if n < 10:
-            return  # pas assez de données pour décider
-    
-        start_index = int(0.1 * n)  # ignorer 10% du début pour éviter le bruit
-    
-        mean_force = np.mean(force[start_index:])
-        mean_disp = np.mean(disp[start_index:])
-    
-        # Inverser les signaux si majoritairement négatifs
-        if mean_force < 0:
-            data['Force [N]'] = -force
-            print("Inversion des valeurs de force, car majoritairement négatives.")
-    
-        if mean_disp < 0:
-            data['Déplacement [mm]'] = -disp
-            print("Inversion des valeurs de déplacement, car majoritairement négatives.")
-            
-    def clean_end_of_test(self, data, method="mixed", last_n_points=300, slope_threshold=-1000, drop_ratio=0.3, smooth_window=5):
-        """
-        Nettoie la fin d'un essai en supprimant la chute brutale de force.
-    
-        Parameters:
-        - method: "slope", "drop", ou "mixed"
-        - last_n_points: nombre de points analysés en fin de courbe
-        - slope_threshold: seuil de dérivée (N/s)
-        - drop_ratio: ratio de chute par rapport à Fmax (ex: 0.3 = 30%)
-        - smooth_window: taille du lissage
-    
-        Returns:
-        - DataFrame nettoyé
-        """
-    
-        data = data.copy()
-    
-        # Lissage (optionnel mais recommandé)
-        if smooth_window > 1:
-            data['Force Smoothed'] = data['Force [N]'].rolling(window=smooth_window, center=True).mean()
-        else:
-            data['Force Smoothed'] = data['Force [N]']
-    
-        # Calcul dérivée
-        data['Force Change [N/s]'] = data['Force Smoothed'].diff() / data['Temps [s]'].diff()
-    
-        # Nettoyage
-        data.replace([np.inf, -np.inf], np.nan, inplace=True)
-        data.dropna(subset=['Force Change [N/s]'], inplace=True)
-    
-        # Zone analysée
-        recent_data = data.tail(last_n_points)
-    
-        cut_index = None
-    
-        # =========================
-        # Méthode pente
-        # =========================
-        if method in ["slope", "mixed"]:
-            drop_points = recent_data[recent_data['Force Change [N/s]'] < slope_threshold]
-            if not drop_points.empty:
-                cut_index = drop_points.index[0]
-    
-        # =========================
-        # Méthode chute en %
-        # =========================
-        if method in ["drop", "mixed"]:
-            max_force = data['Force [N]'].max()
-            threshold_force = drop_ratio * max_force
-    
-            drop_zone = recent_data[recent_data['Force [N]'] < threshold_force]
-    
-            if not drop_zone.empty:
-                drop_index = drop_zone.index[0]
-    
-                if cut_index is None:
-                    cut_index = drop_index
-                else:
-                    # On prend le plus tôt des deux
-                    cut_index = min(cut_index, drop_index)
-        # =========================
-        # Méthode extensomètre (plateau à 0)
-        # =========================
-        if method in ["extenso", "mixed"] and self.selected_channel == "Canal Extensomètre":
-
-            if 'Déplacement [mm]' in data.columns:
-                depl = data['Déplacement [mm]']
-        
-                near_zero_threshold = 0.1
-                variation_threshold = 0.05
-                window = 5
-        
-                # IGNORER LE DÉBUT
-                start_ratio = 0.2
-                start_index = int(len(depl) * start_ratio)
-        
-                depl_sub = depl.iloc[start_index:]
-        
-                # Conditions
-                cond1 = depl_sub.abs() < near_zero_threshold
-                cond2 = depl_sub.diff().abs() < variation_threshold
-        
-                cond1_roll = cond1.rolling(window=window).sum() == window
-                cond2_roll = cond2.rolling(window=window).sum() == window
-        
-                combined = cond1_roll & cond2_roll
-        
-                indices = combined[combined].index
-        
-                if len(indices) > 0:
-                    extenso_index = indices[0]
-        
-                    if cut_index is None:
-                        cut_index = extenso_index
-                    else:
-                        cut_index = min(cut_index-10, extenso_index-10)
-        
-                    print(f"Extensomètre perdu détecté à l'index {extenso_index}")
-    
-        # Coupe finale
-        if cut_index is not None:
-            data = data.loc[:cut_index]
-            
-        print(f"Nettoyage appliqué : coupure à l'index {cut_index}")
-        return data
     
     
     def export_preview(self, graph_type=None, directory='output/IMG'):
