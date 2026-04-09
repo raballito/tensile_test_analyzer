@@ -186,8 +186,6 @@ class MainWindow(customtkinter.CTk):
         self.checkbox_7 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Utilisation des [kN]")
         self.checkbox_7.grid(row=7, column=0, pady=20, padx=10, sticky="nw")
         
-        
-
         # Assignation des valeurs et comportements par défaut
         self.checkbox_1.select()
         self.checkbox_2.select()
