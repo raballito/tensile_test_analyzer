@@ -178,7 +178,7 @@ class FilterData:
                     else:
                         cut_index = min(cut_index-10, extenso_index-10)
                         
-                    message = f"Extensomètre perdu détecté à l'index {extenso_index}.\nCoupure appliquée à l'index {cut_index}."
+                    message = f"Perte du signal de l'extensomètre détecté à l'index {extenso_index}.\nCoupure appliquée dès l'index {cut_index}."
                     messagebox.showwarning("Avertissement", message)
                     print(message)
     

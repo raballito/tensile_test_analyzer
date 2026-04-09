@@ -171,6 +171,7 @@ class Sample:
         self.F_max = self.format_sign(data['Force [N]'].max(), self.round_val)
         self.t_max = self.format_sign(data['Temps [s]'].max(), self.round_val)
         self.Allong = self.format_sign(data['Déplacement [mm]'].max() - data['Déplacement [mm]'].iloc[1], self.round_val)
+        
         # Après mise à jour des valeurs
         self.stress_values = None
         self.deformation_values = None

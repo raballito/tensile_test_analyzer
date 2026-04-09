@@ -171,30 +171,36 @@ class MainWindow(customtkinter.CTk):
         # Options graphiques / exportations
         self.checkbox_slider_frame = customtkinter.CTkScrollableFrame(self, label_text="Options graphiques")
         self.checkbox_slider_frame.grid(row=1, column=3, padx=(20, 20), pady=(20, 0), sticky="nsew")
-        self.checkbox_1 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Nom du sample")
-        self.checkbox_1.grid(row=1, column=0, pady=(0, 0), padx=10, sticky="nw")
-        self.checkbox_2 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Légendes")
-        self.checkbox_2.grid(row=2, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_3 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Déformation en [%]")
-        self.checkbox_3.grid(row=3, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_4 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Droite limite élastique")
-        self.checkbox_4.grid(row=4, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_5 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Afficher tableau résultats")
-        self.checkbox_5.grid(row=5, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_6 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Filtrer les données")
-        self.checkbox_6.grid(row=6, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_7 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Ajout de la grille")
-        self.checkbox_7.grid(row=7, column=0, pady=(20, 0), padx=10, sticky="nw")
-        self.checkbox_8 = customtkinter.CTkCheckBox(master=self.checkbox_slider_frame, text="Utilisation des [kN]")
-        self.checkbox_8.grid(row=8, column=0, pady=20, padx=10, sticky="nw")
+        
+        
+        # Liste des textes et noms de variables
+        checkbox_texts = [
+            "Nom du sample",
+            "Légendes",
+            "Déformation en [%]",
+            "Droite limite élastique",
+            "Afficher tableau résultats",
+            "Filtrer les données",
+            "Ajout de la grille",
+            "Utilisation des [kN]"
+        ]
+        
+        self.checkbox_vars = []
+        for i, text in enumerate(checkbox_texts):
+            var = customtkinter.BooleanVar(value=False)
+            cb = customtkinter.CTkCheckBox(
+                master=self.checkbox_slider_frame,
+                text=text,
+                variable=var,
+                command=lambda v=var: self.refresh_selected_sample()  # callback
+            )
+            cb.grid(row=i+1, column=0, pady=(20 if i>0 else 0, 0), padx=10, sticky="nw")
+            self.checkbox_vars.append(var)
         
         # Assignation des valeurs et comportements par défaut
-        self.checkbox_1.select()
-        self.checkbox_2.select()
-        self.checkbox_3.select()
-        self.checkbox_4.select()
-        self.checkbox_5.select()
-        self.checkbox_6.select()
+        for var in self.checkbox_vars[:6]:  # Les 6 premières cases sont activées
+            var.set(True)
+        
         self.appearance_mode_optionemenu.set("Light")
         self.scaling_optionemenu.set("100%")
         self.option_chiffre_sign.set("3")
@@ -292,9 +298,6 @@ class MainWindow(customtkinter.CTk):
             else:
                 self.interface_functions.show_warning(file)
         
-    def normalize_path(self, path):
-        return os.path.normcase(os.path.abspath(path))
-
     def on_remove_button_event(self):
         selected_checkboxes = self.scrollable_label_button_frame.get_selected_checkboxes()
         
@@ -317,7 +320,16 @@ class MainWindow(customtkinter.CTk):
     
         if new_files:
             self.selected_files = new_files
-        
+            
+    def normalize_path(self, path):
+        return os.path.normcase(os.path.abspath(path))
+    
+    def refresh_selected_sample(self):
+        selected_sample = self.scrollable_label_button_frame.selected_sample
+        if selected_sample is not None:
+            # Appelle la fonction de preview qui va lire les variables
+            self.interface_functions.preview_file(selected_sample)
+
     def on_close(self):
         print("Fermeture de la fenêtre principale.")
         self.destroy()
