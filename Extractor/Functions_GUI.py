@@ -221,8 +221,9 @@ class InterfaceFunctions:
             'option_defo_percent': bool(self.master.checkbox_3.get()),
             'option_elastic_line': bool(self.master.checkbox_4.get()),
             'option_show_table': bool(self.master.checkbox_5.get()),
-            'option_grid': bool(self.master.checkbox_6.get()),
-            'option_kn': bool(self.master.checkbox_7.get())
+            'option_filter':bool(self.master.checkbox_6.get()),
+            'option_grid': bool(self.master.checkbox_7.get()),
+            'option_kn': bool(self.master.checkbox_8.get()) 
         }
     
     def change_appearance_mode_event(self, new_appearance_mode: str):

@@ -29,7 +29,6 @@ from Extractor.DataFilter import FilterData
 class Sample:    
     def __init__(self, master):
         self.master = master
-        self.filter_pipeline = FilterData(normalize=True, clean_end=True, method="mixed")
         self.file_name = None
         self.file_path = None
         self.test_bench = None
@@ -86,6 +85,8 @@ class Sample:
         self.show_rp02 = self.master.get_option_show_rp()
         self.show_legend = self.master.get_option_show_legend()
         self.show_grid = self.master.get_option_grid()
+        self.clean_end = self.master.get_option_filter()
+        self.filter_pipeline = FilterData(normalize=True, method="mixed")
         self.analyzed_sample = False
         self.configured_sample = False
         self.last_mode_chosen = 0
@@ -119,6 +120,7 @@ class Sample:
         print(f"Option Show Force and Stroke : {self.master.get_option_show_force_stroke()}")
         print(f"Option Show Rp Line: {self.master.get_option_show_rp()}")
         print(f"Option Show grid: {self.master.get_option_grid()}")
+        print(f"Option Filter: {self.master.get_option_filter()}")
         print(f"Analyzed Sample: {self.analyzed_sample}")
         print(f"Analyzed Result: Rm: {self.Rm} [MPa]")
         print(f"Analyzed Result: Re: {self.Re} [MPa]")
@@ -156,11 +158,10 @@ class Sample:
         # Correction facteur force
         data['Force [N]'] = data['Force [N]'].apply(lambda x: x * self.force_unit)
         
-        
-    
         # Ajout de la normalisation des signaux et filtration données de fin
         data.dropna(inplace=True)
-        data = self.filter_pipeline.process(data, selected_channel=self.selected_channel)
+        option_clean_end = self.master.get_option_filter()
+        data = self.filter_pipeline.process(data, option_clean_end=option_clean_end, selected_channel=self.selected_channel)
         data.dropna(inplace=True)
         
         # Récupérer les valeurs
@@ -180,9 +181,6 @@ class Sample:
         print(f"Importation des données spécifiques de {self.sample_name} terminée.\n")
         
         return self.time_values, self.force_values, self.displacement_values
-    
-    
-    
     
     def export_preview(self, graph_type=None, directory='output/IMG'):
         if graph_type == 'Force-Déplacement':

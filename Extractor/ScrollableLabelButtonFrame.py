@@ -198,29 +198,13 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             option_sample_name = True
         return option_sample_name
     
-    def get_option_scale_kN(self):
-        value_scale_kN = self.master.checkbox_7.get()
-        if value_scale_kN == 0:
-            option_scale_kN = False
-        elif value_scale_kN == 1:
-            option_scale_kN = True
-        return option_scale_kN
-    
-    def get_option_grid(self):
-        value_grid = self.master.checkbox_6.get()
-        if value_grid == 0:
-            option_grid = False
-        elif value_grid == 1:
-            option_grid = True
-        return option_grid
-    
-    def get_option_show_force_stroke(self):
-        value_show_force_stroke = self.master.checkbox_5.get()
-        if value_show_force_stroke == 0:
-            option_show_force_stroke = False
-        elif value_show_force_stroke == 1:
-            option_show_force_stroke = True
-        return option_show_force_stroke
+    def get_option_show_legend(self):
+        value_show_legend = self.master.checkbox_2.get()
+        if value_show_legend == 0:
+            option_show_legend = False
+        elif value_show_legend == 1:
+            option_show_legend = True
+        return option_show_legend
     
     def get_option_defo_percent(self):
         value_defo_percent = self.master.checkbox_3.get()
@@ -238,10 +222,34 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             option_value_show_rp = True
         return option_value_show_rp
     
-    def get_option_show_legend(self):
-        value_show_legend = self.master.checkbox_2.get()
-        if value_show_legend == 0:
-            option_show_legend = False
-        elif value_show_legend == 1:
-            option_show_legend = True
-        return option_show_legend
+    def get_option_show_force_stroke(self):
+        value_show_force_stroke = self.master.checkbox_5.get()
+        if value_show_force_stroke == 0:
+            option_show_force_stroke = False
+        elif value_show_force_stroke == 1:
+            option_show_force_stroke = True
+        return option_show_force_stroke
+    
+    def get_option_filter(self):
+        value_filter = self.master.checkbox_6.get()
+        if value_filter == 0:
+            option_filter = False
+        elif value_filter == 1:
+            option_filter = True
+        return option_filter
+    
+    def get_option_grid(self):
+        value_grid = self.master.checkbox_7.get()
+        if value_grid == 0:
+            option_grid = False
+        elif value_grid == 1:
+            option_grid = True
+        return option_grid
+    
+    def get_option_scale_kN(self):
+        value_scale_kN = self.master.checkbox_8.get()
+        if value_scale_kN == 0:
+            option_scale_kN = False
+        elif value_scale_kN == 1:
+            option_scale_kN = True
+        return option_scale_kN

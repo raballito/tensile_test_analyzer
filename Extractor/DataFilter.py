@@ -15,19 +15,16 @@ import numpy as np
 from tkinter import messagebox
 
 class FilterData:
-    
     def __init__(self,
                  normalize=True,
-                 clean_end=True,
                  method="mixed",
                  smooth_window=5):
 
         self.normalize = normalize
-        self.clean_end = clean_end
         self.method = method
         self.smooth_window = smooth_window
 
-    def process(self, data, selected_channel=None):
+    def process(self, data, option_clean_end=False, selected_channel=None):
         """
         Pipeline principal
         """
@@ -35,7 +32,7 @@ class FilterData:
         if self.normalize:
             data = self.normalize_signals(data)
 
-        if self.clean_end:
+        if option_clean_end:
             data = self.clean_end_of_test(
                 data,
                 selected_channel=selected_channel,
