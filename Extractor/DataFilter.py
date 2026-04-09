@@ -16,8 +16,34 @@ from tkinter import messagebox
 
 class FilterData:
     
-    def __init__(self):
-        pass
+    def __init__(self,
+                 normalize=True,
+                 clean_end=True,
+                 method="mixed",
+                 smooth_window=5):
+
+        self.normalize = normalize
+        self.clean_end = clean_end
+        self.method = method
+        self.smooth_window = smooth_window
+
+    def process(self, data, selected_channel=None):
+        """
+        Pipeline principal
+        """
+
+        if self.normalize:
+            data = self.normalize_signals(data)
+
+        if self.clean_end:
+            data = self.clean_end_of_test(
+                data,
+                selected_channel=selected_channel,
+                method=self.method,
+                smooth_window=self.smooth_window
+            )
+
+        return data
 
     
     def normalize_signals(self, data):

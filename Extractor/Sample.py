@@ -29,7 +29,7 @@ from Extractor.DataFilter import FilterData
 class Sample:    
     def __init__(self, master):
         self.master = master
-        self.FilterData = FilterData()
+        self.filter_pipeline = FilterData(normalize=True, clean_end=True, method="mixed")
         self.file_name = None
         self.file_path = None
         self.test_bench = None
@@ -158,12 +158,9 @@ class Sample:
         
         
     
-        # Ajout de la normalisation des signaux
+        # Ajout de la normalisation des signaux et filtration données de fin
         data.dropna(inplace=True)
-        data = self.FilterData.normalize_signals(data)
-        
-        # Supression de fin d'essais
-        data = self.FilterData.clean_end_of_test(data, selected_channel=self.selected_channel)
+        data = self.filter_pipeline.process(data, selected_channel=self.selected_channel)
         data.dropna(inplace=True)
         
         # Récupérer les valeurs
