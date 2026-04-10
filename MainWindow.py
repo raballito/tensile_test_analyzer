@@ -200,7 +200,6 @@ class MainWindow(customtkinter.CTk):
         # Assignation des valeurs et comportements par défaut
         for var in self.checkbox_vars[:6]:  # Les 6 premières cases sont activées
             var.set(True)
-        
         self.appearance_mode_optionemenu.set("Light")
         self.scaling_optionemenu.set("100%")
         self.option_chiffre_sign.set("3")

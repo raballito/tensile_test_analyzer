@@ -4,8 +4,8 @@ Data Filter
 - Supression of useless data
 - Transform negatives data into positives one
 
-Version: Beta 1.12
-Last Update: 31.03.26
+Version: Beta 1.13
+Last Update: 10.04.26
 
 @author: quentin.raball
 """
