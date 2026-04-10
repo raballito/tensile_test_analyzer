@@ -198,7 +198,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
                 "Allong [mm]": [sample.Allong for sample in sample_list],
                 "Re [MPa]": [sample.Re for sample in sample_list],
                 "Rm [MPa]": [sample.Rm for sample in sample_list],
-                "Déformation [-]": [sample.Defo for sample in sample_list],
+                "Déformation [-]": [sample.Defo/100 for sample in sample_list],
                 "E [GPa]": [sample.E for sample in sample_list]
             }
         elif include_analysis and self.option_defo_percent == False and self.option_kn:
@@ -209,7 +209,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
                 "Allong [mm]": [sample.Allong for sample in sample_list],
                 "Re [MPa]": [sample.Re for sample in sample_list],
                 "Rm [MPa]": [sample.Rm for sample in sample_list],
-                "Déformation [-]": [sample.Defo for sample in sample_list],
+                "Déformation [-]": [sample.Defo/100 for sample in sample_list],
                 "E [GPa]": [sample.E for sample in sample_list]
             }
         elif include_analysis and self.option_defo_percent and self.option_kn:
@@ -339,12 +339,12 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
             elif include_analysis and self.option_defo_percent == False and self.option_kn == False:
                 details_data = {
                     "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.D0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Valeur": [sample.D0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             elif include_analysis and self.option_defo_percent == False and self.option_kn:
                 details_data = {
                     "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [kN]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.D0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Valeur": [sample.D0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             else: 
                 details_data = {
@@ -365,12 +365,12 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
             elif include_analysis and self.option_defo_percent == False and self.option_kn == False:
                 details_data = {
                     "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             elif include_analysis and self.option_defo_percent == False and self.option_kn:
                 details_data = {
                     "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [kN]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             else:
                 details_data = {
@@ -504,9 +504,10 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
     def add_elastic_limit_line(self, data_plot, x_label, mod_young, coef_re):
         if self.option_defo_percent:
             E = mod_young*10
+            x_start = coef_re
         else:
             E = mod_young*1000
-        x_start = coef_re
+            x_start = coef_re/100
         y_start = 0
         x_end = data_plot[x_label].max()
         y_end = E * (x_end - x_start)

@@ -326,8 +326,12 @@ class MainWindow(customtkinter.CTk):
     def refresh_selected_sample(self):
         selected_sample = self.scrollable_label_button_frame.selected_sample
         if selected_sample is not None:
+            # Si la déformation a changé, on s'assure que les valeurs de déformation et le graphique sont mis à jour
+            selected_sample.deformation_values = selected_sample.DataManipulation.convert_deformation(selected_sample.original_deformation_values)
+                
             # Appelle la fonction de preview qui va lire les variables
             self.interface_functions.preview_file(selected_sample)
+            
 
     def on_close(self):
         print("Fermeture de la fenêtre principale.")

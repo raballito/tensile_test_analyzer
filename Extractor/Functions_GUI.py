@@ -445,16 +445,14 @@ class InterfaceFunctions:
         
         if option_percent:
             E = 10*float(sample.E)
-            defo = sample.deformation_values
             xlabel = "Déformation [%]"
             x_start = sample.coef_re
         else: 
             E=1000*float(sample.E)
-            defo = [value / 100 for value in sample.deformation_values]
             xlabel = "Déformation [-]"
             x_start = sample.coef_re / 100
-            
         
+        defo = sample.deformation_values       
         y_start = 0
         x_end = max(defo)
         y_end = E * (x_end - x_start)
@@ -548,7 +546,7 @@ class InterfaceFunctions:
             # Exportation des graphiques
             for sample in sample_list:
                 for graph_type in graphs_to_export:
-                    sample.export_preview(graph_type=graph_type, directory=directory)
+                    sample.export_graphs(graph_type=graph_type, directory=directory)
                 exported_sample.append(sample.sample_name)
                 
             message = f"Graphiques de {exported_sample} exportés sous {directory}."

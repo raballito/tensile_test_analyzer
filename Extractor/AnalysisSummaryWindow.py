@@ -80,10 +80,9 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         
         for sample in self.sample_list:
             max_stress = max(max_stress, max(sample.stress_values))
-            max_deformation = max(max_deformation, max(sample.deformation_values))
-            
             # Plot only positive values
             positive_stress_values = [max(0, stress) for stress in sample.stress_values]
+            max_deformation = max(max_deformation, max(sample.deformation_values))
             ax.plot(sample.deformation_values, positive_stress_values, label=self.get_label(sample))
         
         # Adjust the plot limits based on the maximum positive values
@@ -245,7 +244,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             # Ajouter la ligne pour le sample principal
             values = [
                 sample.file_name, sample.sample_name, sample.F_max, sample.Allong,
-                sample.Re, sample.Rm, sample.Defo, sample.E
+                sample.Re, sample.Rm, sample.Defo if self.option_defo_percent else sample.Defo/100, sample.E
             ]
             self.data.append(values)
             for col, value in enumerate(values):
@@ -375,7 +374,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             for sample in self.sample_list:
                 writer.writerow([
                     sample.file_name, sample.sample_name, sample.F_max, sample.Allong,
-                    sample.Re, sample.Rm, sample.Defo, sample.E
+                    sample.Re, sample.Rm, sample.Defo if self.option_defo_percent else sample.Defo/100, sample.E
                 ])
             
             # Écrire les lignes de moyennes et écart-types si disponibles

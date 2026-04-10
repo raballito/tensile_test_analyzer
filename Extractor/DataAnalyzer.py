@@ -19,12 +19,11 @@ class DataAnalyzer:
         self.sample = sample
         self.master = sample.master
         # Attributs de la classe qui seront utilisés pour l'analyse
-        self.defo_percent = None
         self.scale_kN = None
         self.tested_mode = None
         self.tested_geometry = None
         self.stress_values = None
-        self.deformation_values = None
+        self.original_deformation_values = None
         self.displacement_values = self.sample.displacement_values
         self.E = None
         self.Rm = None
@@ -39,16 +38,14 @@ class DataAnalyzer:
     # Fonction d'analyse. Conversion vers contrainte-déformation
     def analyze(self):
         print("Début de l'analyse. Veuillez patienter...\n")
-        self.defo_percent = self.sample.master.get_option_defo_percent()
         self.scale_kN = self.sample.master.get_option_scale_kN()
         self.choose_analysis_mode()
-        self.convert_deformation()
         self.calculate_youngs_modulus()
         self.calculate_interesting_values()
         self.apply_significant_figures()
         self.sample.analyzed_sample = True
     
-        return [self.sample.F_max, self.Rm, self.Re, self.E, self.Allong, self.Defo, self.elastic_retreat, self.stress_values, self.deformation_values]
+        return [self.sample.F_max, self.Rm, self.Re, self.E, self.Allong, self.Defo, self.elastic_retreat, self.stress_values, self.original_deformation_values]
     
     def choose_analysis_mode(self):
         disp_ini = self.sample.displacement_values[1]
@@ -88,7 +85,7 @@ class DataAnalyzer:
                 return
     
             self.stress_values = [force / self.S0 for force in self.sample.force_values]
-            self.deformation_values = [(disp - disp_ini) / self.sample.L0 * 100 for disp in self.sample.displacement_values]
+            self.original_deformation_values = [(disp - disp_ini) / self.sample.L0 * 100 for disp in self.sample.displacement_values]
     
         except ValueError:
             print("Veuillez entrer une option valide.")
@@ -99,11 +96,11 @@ class DataAnalyzer:
                 r0 = 0.5 * self.sample.D0
                 print("Traitement des données en mode flexion 3 points - Géométrie Ronde.")
                 self.stress_values = [(force * self.sample.L0) / (np.pi * r0**3) for force in self.sample.force_values]
-                self.deformation_values = [(disp - disp_ini) * 100 * (12 * r0 / (self.sample.L0**2)) for disp in self.sample.displacement_values]
+                self.original_deformation_values = [(disp - disp_ini) * 100 * (12 * r0 / (self.sample.L0**2)) for disp in self.sample.displacement_values]
             elif geometry_mode == "Section Rectangulaire":
                 print("Traitement des données en mode flexion 3 points - Géométrie Rectangulaire.")
                 self.stress_values = [(3 * force * self.sample.L0) / (2 * self.sample.W0 * self.sample.H0**2) for force in self.sample.force_values]
-                self.deformation_values = [(disp - disp_ini) * 100 * (6 * self.sample.H0 / (self.sample.L0**2)) for disp in self.sample.displacement_values]
+                self.original_deformation_values = [(disp - disp_ini) * 100 * (6 * self.sample.H0 / (self.sample.L0**2)) for disp in self.sample.displacement_values]
             else:
                 print("La géométrie choisie est incorrecte.")
     
@@ -115,11 +112,11 @@ class DataAnalyzer:
             if geometry_mode == "Section Ronde":
                 print("Traitement des données en mode flexion 4 points - Géométrie Ronde.")
                 self.stress_values = [(8*force * (self.sample.L0 - self.sample.L1)) / (np.pi * self.sample.D0**3) for force in self.sample.force_values]
-                self.deformation_values = [(disp - disp_ini) * 100 * (6 * self.sample.D0 * (self.sample.L0-self.sample.L1)/(self.sample.L0**3-3*self.sample.L0*self.sample.L1**2+2*self.sample.L1**3)) for disp in self.sample.displacement_values]
+                self.original_deformation_values = [(disp - disp_ini) * 100 * (6 * self.sample.D0 * (self.sample.L0-self.sample.L1)/(self.sample.L0**3-3*self.sample.L0*self.sample.L1**2+2*self.sample.L1**3)) for disp in self.sample.displacement_values]
             elif geometry_mode == "Section Rectangulaire":
                 print("Traitement des données en mode flexion 4 points - Géométrie Rectangulaire.")
                 self.stress_values = [(3 * force * (self.sample.L0-self.sample.L1)) / (2 * self.sample.W0 * self.sample.H0**2) for force in self.sample.force_values]
-                self.deformation_values = [(disp - disp_ini) * 100 * (6 * self.sample.H0 * (self.sample.L0-self.sample.L1)/(self.sample.L0**3-3*self.sample.L0*self.sample.L1**2+2*self.sample.L1**3)) for disp in self.sample.displacement_values]
+                self.original_deformation_values = [(disp - disp_ini) * 100 * (6 * self.sample.H0 * (self.sample.L0-self.sample.L1)/(self.sample.L0**3-3*self.sample.L0*self.sample.L1**2+2*self.sample.L1**3)) for disp in self.sample.displacement_values]
             else:
                 print("La géométrie choisie est incorrecte.")
     
@@ -141,7 +138,7 @@ class DataAnalyzer:
     
         # Conversion des valeurs de contrainte et déformation
         self.stress_values = [force / self.sample.S0 for force in self.sample.force_values]
-        self.deformation_values = [(disp - disp_ini) / self.sample.L0 * 100 for disp in self.sample.displacement_values]
+        self.original_deformation_values = [(disp - disp_ini) / self.sample.L0 * 100 for disp in self.sample.displacement_values]
         
         # Détecter les intersections des lignes horizontales
         indices_min, indices_max = self.find_intersections(self.sample.force_values)
@@ -194,7 +191,7 @@ class DataAnalyzer:
                 subsample = {
                     'force': self.sample.force_values[start_idx:end_idx],
                     'displacement': self.sample.displacement_values[start_idx:end_idx],
-                    'deformation': self.deformation_values[start_idx:end_idx],
+                    'deformation': self.original_deformation_values[start_idx:end_idx],
                     'stress': self.stress_values[start_idx:end_idx],
                 }
                 # Assurez-vous que le sous-échantillon n'est pas vide
@@ -220,14 +217,9 @@ class DataAnalyzer:
                 y = subsample['stress']
     
                 # On effectue la régression linéaire sur les valeurs du sous-échantillon
-    
                 coefficients = np.polyfit(x, y, 1)
-                if self.defo_percent:
-                    young_modulus = coefficients[0] / 10
-                    self.Y_Offset = coefficients[1]
-                else:
-                    young_modulus = coefficients[0] / 1000
-                    self.Y_Offset = coefficients[1] / 100
+                young_modulus = coefficients[0] / 10
+                self.Y_Offset = coefficients[1]
                 young_modulus = self.format_sign(young_modulus, self.sample.round_val)
                 young_modulus_values.append(young_modulus)
                 self.subsample_modulus.append(young_modulus)
@@ -235,7 +227,7 @@ class DataAnalyzer:
             # Calculer la moyenne des modules de Young pour chaque sous-échantillon
             self.E = np.mean(young_modulus_values)
             self.X_Offset = -coefficients[1] / coefficients[0]
-            self.deformation_values = [deformation - self.X_Offset for deformation in self.sample.deformation_values]
+            self.original_deformation_values = [deformation - self.X_Offset for deformation in self.sample.original_deformation_values]
             print("Module de Young calculé pour chaque sous-échantillon :")
             for idx, young_modulus in enumerate(young_modulus_values):
                 print(f"Sous-échantillon {idx + 1}: {young_modulus:.2f} [GPa]")
@@ -251,53 +243,32 @@ class DataAnalyzer:
                 end_idx = indices_max[0]
     
                 # On effectue la régression linéaire sur les sous-ensembles trouvés
-                x = self.deformation_values[start_idx:end_idx]
+                x = self.original_deformation_values[start_idx:end_idx]
                 y = self.stress_values[start_idx:end_idx]
     
                 self.coef_re_unformatted = self.sample.master.get_coef_re()
                 self.coef_re = float(self.coef_re_unformatted.strip('%'))
     
                 coefficients = np.polyfit(x, y, 1)
-                if self.defo_percent:
-                    self.E = coefficients[0] / 10
-                    self.Y_Offset = coefficients[1]
-                else:
-                    self.E = coefficients[0] / 1000
-                    self.Y_Offset = coefficients[1] / 100
-                    self.coef_re = self.coef_re / 100
-    
-                print(f'Module de Young: {self.E} [GPa]')
-                print("Y_Offset =", self.Y_Offset)
+                self.E = coefficients[0] / 10
+                self.Y_Offset = coefficients[1]
+                print(f"Y_Offset = {self.Y_Offset}")
                 self.X_Offset = -coefficients[1] / coefficients[0]
                 print("X_Offset =", self.X_Offset)
                 print("coef_re =", self.coef_re)
     
-                self.deformation_values = [deformation - self.X_Offset for deformation in self.deformation_values]
+                self.original_deformation_values = [deformation - self.X_Offset for deformation in self.original_deformation_values]
         
     def calculate_interesting_values(self):
-        if self.defo_percent:
-            y1 = (-self.coef_re * self.E * 10)
-        else:
-            y1 = (-self.coef_re * self.E * 1000)
-    
+        last_stress = self.stress_values[-1]
+        y1 = (-self.coef_re * self.E * 10)
+        self.elastic_retreat = last_stress / (self.E * 10)
+        Rp02_sim_values = [x * self.E * 10 + y1 for x in self.original_deformation_values]
+            
         def_ini = self.sample.displacement_values[1]
         self.Allong = max(self.sample.displacement_values) - def_ini
         self.F_max = max(self.sample.force_values) if not self.scale_kN else max(self.sample.force_values) / 1000
-    
-        last_stress = self.stress_values[-1]
-        if self.defo_percent:
-            self.elastic_retreat = last_stress / (self.E * 10)
-        else:
-            self.elastic_retreat = last_stress / (self.E * 1000)
-    
-        print("Elastic retreat:", self.elastic_retreat)
-    
-        self.Defo = max(self.deformation_values) - self.elastic_retreat
-    
-        if self.defo_percent:
-            Rp02_sim_values = [x * self.E * 10 + y1 for x in self.deformation_values]
-        else:
-            Rp02_sim_values = [x * self.E * 1000 + y1 for x in self.deformation_values]
+        self.Defo = max(self.original_deformation_values) - self.elastic_retreat            
     
         delta_values = [stress - rp02_sim for stress, rp02_sim in zip(self.stress_values, Rp02_sim_values)]
         self.idx0 = min(range(len(delta_values)), key=lambda i: abs(delta_values[i]))
@@ -316,9 +287,6 @@ class DataAnalyzer:
     
         self.Rm = max(self.stress_values)
         
-    def convert_deformation(self):
-        if not self.defo_percent:
-            self.deformation_values = [defo / 100 for defo in self.deformation_values]
             
     def format_sign(self, num, sig_figs):
         if num == None:
