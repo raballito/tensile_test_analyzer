@@ -99,7 +99,7 @@ class Sample:
     def analyze(self):
         analysis = DataAnalyzer(self).analyze()
         self.update_results(analysis)
-        self.display_results()
+        self.print_results()
         return analysis
     
     def update_results(self, analysis):
@@ -114,17 +114,17 @@ class Sample:
         self.elastic_retreat = analysis[6]
         self.stress_values = analysis[7]
         self.original_deformation_values = analysis[8]
-        print(f"Max original_defo_value : {max(self.original_deformation_values)}")
         self.deformation_values = data_manipulation.convert_deformation(self.original_deformation_values)
-        print(f"Max defo_value after manip : {max(self.deformation_values)}")
+
         
-    def display_results(self):
-        print("\nDonnées Individuelles Extraites :\n\nForce Max = ", self.F_max, " [N]\nRm = ", self.Rm, " [MPa]\nRp0.2 = ", self.Re, " [MPa]\nE = ", self.E, " [GPa]\nAllongement max = ", self.Allong, " [mm]\nDéformation Max = ", self.Defo, " [%]\nRetour élastique: ", self.elastic_retreat, " [%]\n")
+    def print_results(self):
+        print("\nDonnées Individuelles Extraites :\n\nForce Max = ", self.F_max, " [N]\nRm = ", self.Rm, " [MPa]\nRe = ", self.Re, " [MPa]\nE = ", self.E, " [GPa]\nAllongement max = ", self.Allong, " [mm]\nDéformation Max = ", self.Defo, " [%]\nRetour élastique: ", self.elastic_retreat, " [%]\n")
         
     def export_graphs(self, graph_type=None, directory='output/IMG'):
         # Crée une instance de DataExport et utilise la pour exporter les graphiques
         data_export = DataExport(self)
         self.defo_percent = self.master.get_option_defo_percent()
+        self.coef_re = float(self.master.get_coef_re().strip('%'))
         return data_export.export_preview(graph_type, directory)
     
     def format_sign(self, num, sig_figs):

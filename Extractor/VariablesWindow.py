@@ -173,7 +173,7 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
                 sample.W0, sample.H0, f"({sample.lin_range})", f"({len(sample.time_values)},3)", 
                 sample.F_max, sample.Allong, 
                 sample.Re, sample.Rm, 
-                sample.Defo, sample.E
+                sample.Defo if self.option_defo_percent else sample.Defo/100, sample.E
             ]
 
             for col, value in enumerate(values):
@@ -249,7 +249,7 @@ class VarToplevelWindow(customtkinter.CTkToplevel):
                     sample.W0, sample.H0, f"({sample.lin_range})", f"({len(sample.time_values)},3)", 
                     sample.F_max, sample.Allong, 
                     sample.Re, sample.Rm, 
-                    sample.Defo, sample.E
+                    sample.Defo if self.option_defo_percent else sample.Defo /100, sample.E
                 ])
                 
         message = f"Données exportées vers : {csv_filepath}"

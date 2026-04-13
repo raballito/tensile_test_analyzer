@@ -176,6 +176,7 @@ class DataExport:
     
     def add_elastic_limit_line(self, data_plot, x_label):
         print(f"Etat de defo_percent (Export) : {self.sample.defo_percent}")
+        print(f"Coef_re (Export) : {self.sample.coef_re}")
         if self.sample.defo_percent:
             E = self.E*10
             x_start = self.sample.coef_re

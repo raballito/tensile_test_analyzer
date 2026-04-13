@@ -81,8 +81,6 @@ class MainWindow(customtkinter.CTk):
         self.sidebar_button_2.grid(row=3, column=0, padx=20, pady=10)
         self.sidebar_button_3 = customtkinter.CTkButton(self.sidebar_frame, text="Changer de répertoire", command=self.on_change_directory_event)
         self.sidebar_button_3.grid(row=4, column=0, padx=20, pady=10)
-        #self.sidebar_button_4 = customtkinter.CTkButton(self.sidebar_frame, text="TestButton", command=lambda: self.on_test_button_clicked())
-        #self.sidebar_button_4.grid(row=5, column=0, padx=20, pady=10) # Bouton pour debug sample
         self.sidebar_button_5 = customtkinter.CTkButton(self.sidebar_frame, text="Aide", command=self.interface_functions.open_help_window_event)
         self.sidebar_button_5.grid(row=6, column=0, padx=20, pady=10)
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Mode d'apparence :", anchor="w")
@@ -157,13 +155,12 @@ class MainWindow(customtkinter.CTk):
         self.option_lim_elast = customtkinter.CTkOptionMenu(self.tabview2.tab("Options d'analyse"), dynamic_resizing=True,
                                                     values=["0.1%", "0.2%", "0.3%", "0.4%", "0.5%"])
         self.option_lim_elast.grid(row=3, column=0, padx=20)
-        
-        self.file_var_button = customtkinter.CTkButton(self.tabview2.tab("Options d'analyse"), text="Afficher données des fichiers",
+        """self.file_var_button = customtkinter.CTkButton(self.tabview2.tab("Options d'analyse"), text="Afficher données des fichiers",
                                               command=lambda: self.on_var_button_clicked())
-        self.file_var_button.grid(row=4, column=0, padx=20, pady=(40, 20))
+        self.file_var_button.grid(row=4, column=0, padx=20, pady=(40, 20))"""
         self.export_graphics_button = customtkinter.CTkButton(self.tabview2.tab("Options d'analyse"), text="Exportation des graphiques",
                                               command=lambda: self.on_export_graphics_button_clicked())
-        self.export_graphics_button.grid(row=5, column=0, padx=20, pady=(20, 20))
+        self.export_graphics_button.grid(row=5, column=0, padx=20, pady=(40, 20))
         self.export_excel_button = customtkinter.CTkButton(self.tabview2.tab("Options d'analyse"), text="Exportation sous Excel",
                                               command=lambda: self.on_export_excel_button_clicked())
         self.export_excel_button.grid(row=6, column=0, padx=20, pady=(20, 20))

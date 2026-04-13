@@ -446,11 +446,11 @@ class InterfaceFunctions:
         if option_percent:
             E = 10*float(sample.E)
             xlabel = "Déformation [%]"
-            x_start = sample.coef_re
+            x_start = float((self.master.option_lim_elast.get()).strip('%'))
         else: 
             E=1000*float(sample.E)
             xlabel = "Déformation [-]"
-            x_start = sample.coef_re / 100
+            x_start = float((self.master.option_lim_elast.get()/100).strip('%'))
         
         defo = sample.deformation_values       
         y_start = 0
