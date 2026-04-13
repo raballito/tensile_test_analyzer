@@ -84,24 +84,24 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         test_bench = TestBench.identify_test_bench(file_path)
     
         for available_sample_name, time_channel, force_channel, stroke_channel in zip(*sample_and_channel):
-            sample_struct = Sample(self)  # Crée l'échantillon avec un identifiant unique
+            sample = Sample(self)  # Crée l'échantillon avec un identifiant unique
             checkbox_var = customtkinter.IntVar()
             self.checkbox_variable_list.append(checkbox_var)
             # Assignation des valeurs
-            sample_struct.file_name = os.path.basename(file_path)
-            sample_struct.file_path = file_path
-            sample_struct.sample_name = available_sample_name
-            sample_struct.test_bench = test_bench
-            sample_struct.separator = test_bench_struct.separator
-            sample_struct.header_index = test_bench_struct.header_index
-            sample_struct.force_unit = test_bench_struct.force_unit
-            sample_struct.repeat_every = test_bench_struct.repeat_every
-            sample_struct.base_stroke_channel = stroke_channel % test_bench_struct.repeat_every
-            sample_struct.offset = stroke_channel - sample_struct.base_stroke_channel
-            sample_struct.time_channel = time_channel
-            sample_struct.force_channel = force_channel
-            sample_struct.stroke_channel = stroke_channel
-            imported = sample_struct.import_data()
+            sample.file_name = os.path.basename(file_path)
+            sample.file_path = file_path
+            sample.sample_name = available_sample_name
+            sample.test_bench = test_bench
+            sample.separator = test_bench_struct.separator
+            sample.header_index = test_bench_struct.header_index
+            sample.force_unit = test_bench_struct.force_unit
+            sample.repeat_every = test_bench_struct.repeat_every
+            sample.base_stroke_channel = stroke_channel % test_bench_struct.repeat_every
+            sample.offset = stroke_channel - sample.base_stroke_channel
+            sample.time_channel = time_channel
+            sample.force_channel = force_channel
+            sample.stroke_channel = stroke_channel
+            imported = sample.import_data()
             if imported is None:
                 print(f"Erreur d'importation du fichier {file_path_rel}.\nFichier ignoré.\n")
                 self.checkbox_variable_list.remove(checkbox_var)
@@ -111,14 +111,14 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             frame = customtkinter.CTkFrame(self)  # Nouveau cadre pour chaque ligne de fichier
             frame.configure(fg_color=("gray85", "gray25"))
             
-            switch = customtkinter.CTkCheckBox(frame, text=f"{sample_struct.sample_name}", variable=checkbox_var)
-            switch.sample_id = sample_struct.sample_id 
+            switch = customtkinter.CTkCheckBox(frame, text=f"{sample.sample_name}", variable=checkbox_var)
+            switch.sample_id = sample.sample_id 
             label = customtkinter.CTkLabel(frame, text=f"{file_path_rel}")
-            frame.bind("<Button-1>", lambda event, frame=frame, sample=sample_struct: self.highlight_row(event, frame, sample))
-            label.bind("<Button-1>", lambda event, frame=frame, sample=sample_struct: self.highlight_row(event, frame, sample))
-            button = customtkinter.CTkButton(frame, text="Propriétés", width=100, height=24, command=lambda sample=sample_struct, item=switch: self.interface_functions.config_button_frame_event(sample, self.master, item))
-            button.bind("<Button-1>", lambda event, frame=frame, sample=sample_struct: self.highlight_row(event, frame, sample))
-            switch.bind("<Button-1>", lambda event, frame=frame, sample=sample_struct: self.highlight_row(event, frame, sample))
+            frame.bind("<Button-1>", lambda event, frame=frame, sample=sample: self.highlight_row(event, frame, sample))
+            label.bind("<Button-1>", lambda event, frame=frame, sample=sample: self.highlight_row(event, frame, sample))
+            button = customtkinter.CTkButton(frame, text="Propriétés", width=100, height=24, command=lambda sample=sample, item=switch: self.interface_functions.config_button_frame_event(sample, self.master, item))
+            button.bind("<Button-1>", lambda event, frame=frame, sample=sample: self.highlight_row(event, frame, sample))
+            switch.bind("<Button-1>", lambda event, frame=frame, sample=sample: self.highlight_row(event, frame, sample))
             
             switch.grid(row=0, column=0, padx=10, pady=(10, 10), sticky="w")  
             label.grid(row=0, column=1, padx=10, pady=(10, 10), sticky="e")  
@@ -127,7 +127,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             frame.grid(row=len(self.switch_list), column=0, sticky="ew")  
             self.switch_list.append(switch)
             self.button_list.append(button)
-            self.sample_list.append(sample_struct)
+            self.sample_list.append(sample)
             self.frame_list.append(frame)
         return True
 

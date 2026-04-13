@@ -243,7 +243,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         for sample in self.sample_list:
             # Ajouter la ligne pour le sample principal
             values = [
-                sample.file_name, sample.sample_name, sample.F_max, sample.Allong,
+                sample.file_name, sample.sample_name, sample.F_max /1000 if self.option_kn else sample.F_max, sample.Allong,
                 sample.Re, sample.Rm, sample.Defo if self.option_defo_percent else sample.Defo/100, sample.E
             ]
             self.data.append(values)
@@ -373,7 +373,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             # Écrire les données
             for sample in self.sample_list:
                 writer.writerow([
-                    sample.file_name, sample.sample_name, sample.F_max, sample.Allong,
+                    sample.file_name, sample.sample_name, sample.F_max/1000 if self.option_kn else sample.F_max, sample.Allong,
                     sample.Re, sample.Rm, sample.Defo if self.option_defo_percent else sample.Defo/100, sample.E
                 ])
             

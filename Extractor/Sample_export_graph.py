@@ -194,34 +194,27 @@ class DataExport:
             plt.legend()
     
     def add_table_to_plot(self, data_plot, x_label, y_label, max_x_label, max_y_label):
-        if max_x_label == 'A_max':
-            max_x_value = self.Allong
-        elif max_x_label == 'ε_max':
+        if max_x_label == 'ε_max':
+            max_x_unit = '[%]' if self.sample.defo_percent else '[-]'
             max_x_value = self.Defo if self.sample.defo_percent else self.Defo/100
+        elif max_x_label == 'A_max':
+            max_x_unit = '[mm]'
+            max_x_value = self.Allong
         elif max_x_label == 't_max':
+            max_x_unit = '[s]'
             max_x_value = self.t_max
         
         if max_y_label == 'F_max':
-            max_y_value = self.F_max
+            max_y_unit = '[kN]' if self.master.get_option_scale_kN() else '[N]'
+            max_y_value = self.F_max /1000 if self.master.get_option_scale_kN() else self.F_max
         elif max_y_label == 'Rm':
+            max_y_unit = '[MPa]'
             max_y_value = self.Rm
         
         if self.round_val != 0:
             max_y_value = self.sample.format_sign(max_y_value, self.master.get_round_val())
             max_x_value = self.sample.format_sign(max_x_value, self.master.get_round_val())
-        
-        if max_x_label == 't_max':
-            max_x_unit = '[s]'
-        elif max_x_label == 'ε_max':
-            max_x_unit = '[%]' if self.sample.defo_percent else '[-]'
-        else:
-            max_x_unit = '[mm]'
-        
-        if max_y_label == 'F_max':
-            max_y_unit = '[kN]' if self.master.get_option_scale_kN() else '[N]'
-        elif max_y_label == 'Rm':
-            max_y_unit = '[MPa]'
-        
+            
         table_data = [[max_y_label, max_x_label],
                       [max_y_unit, max_x_unit],
                       [max_y_value, max_x_value]]
