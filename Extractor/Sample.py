@@ -61,7 +61,7 @@ class Sample:
         self.H0 = None
         self.lin_range = []
         self.F_max = None
-        self.Allong = None
+        self.d_max = None
         self.t_max = None
         self.elastic_retreat = None
         self.Re = None
@@ -75,10 +75,9 @@ class Sample:
         self.round_val = self.master.get_round_val()
         self.coef_re_unformatted = self.master.get_coef_re()
         self.coef_re = float(self.coef_re_unformatted.strip('%'))
-        self.end_filter = 0
         self.show_sample_name = self.master.get_option_sample_name()
         self.scale_kN = self.master.get_option_scale_kN()
-        self.show_Fmax_Allong_value = self.master.get_option_show_force_stroke()
+        self.show_table = self.master.get_option_show_table()
         self.defo_percent = self.master.get_option_defo_percent()
         self.show_rp02 = self.master.get_option_show_rp()
         self.show_legend = self.master.get_option_show_legend()
@@ -109,7 +108,7 @@ class Sample:
         self.Rm = analysis[1]
         self.Re = analysis[2]
         self.E = analysis[3]
-        self.Allong = analysis[4]
+        self.d_max = analysis[4]
         self.Defo = analysis[5]
         self.elastic_retreat = analysis[6]
         self.stress_values = analysis[7]
@@ -118,7 +117,7 @@ class Sample:
 
         
     def print_results(self):
-        print("\nDonnées Individuelles Extraites :\n\nForce Max = ", self.F_max, " [N]\nRm = ", self.Rm, " [MPa]\nRe = ", self.Re, " [MPa]\nE = ", self.E, " [GPa]\nAllongement max = ", self.Allong, " [mm]\nDéformation Max = ", self.Defo, " [%]\nRetour élastique: ", self.elastic_retreat, " [%]\n")
+        print("\nDonnées Individuelles Extraites :\n\nForce Max = ", self.F_max, " [N]\nRm = ", self.Rm, " [MPa]\nRe = ", self.Re, " [MPa]\nE = ", self.E, " [GPa]\nd_maxement max = ", self.d_max, " [mm]\nDéformation Max = ", self.Defo, " [%]\nRetour élastique: ", self.elastic_retreat, " [%]\n")
         
     def export_graphs(self, graph_type=None, directory='output/IMG'):
         # Crée une instance de DataExport et utilise la pour exporter les graphiques

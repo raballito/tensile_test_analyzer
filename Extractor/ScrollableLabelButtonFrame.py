@@ -222,13 +222,13 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             option_value_show_rp = True
         return option_value_show_rp
     
-    def get_option_show_force_stroke(self):
-        value_show_force_stroke = self.master.checkbox_vars[4].get()
-        if value_show_force_stroke == 0:
-            option_show_force_stroke = False
-        elif value_show_force_stroke == 1:
-            option_show_force_stroke = True
-        return option_show_force_stroke
+    def get_option_show_table(self):
+        value_show_table = self.master.checkbox_vars[4].get()
+        if value_show_table == 0:
+            option_show_table = False
+        elif value_show_table == 1:
+            option_show_table = True
+        return option_show_table
     
     def get_option_filter(self):
         value_filter = self.master.checkbox_vars[5].get()

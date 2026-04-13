@@ -19,7 +19,6 @@ class DataAnalyzer:
         self.sample = sample
         self.master = sample.master
         # Attributs de la classe qui seront utilisés pour l'analyse
-        self.scale_kN = None
         self.tested_mode = None
         self.tested_geometry = None
         self.stress_values = None
@@ -28,7 +27,7 @@ class DataAnalyzer:
         self.E = None
         self.Rm = None
         self.Re = None
-        self.Allong = None
+        self.d_max = None
         self.Defo = None
         self.elastic_retreat = None
         self.Y_Offset = None
@@ -38,14 +37,13 @@ class DataAnalyzer:
     # Fonction d'analyse. Conversion vers contrainte-déformation
     def analyze(self):
         print("Début de l'analyse. Veuillez patienter...\n")
-        self.scale_kN = self.sample.master.get_option_scale_kN()
         self.choose_analysis_mode()
         self.calculate_youngs_modulus()
         self.calculate_interesting_values()
         self.apply_significant_figures()
         self.sample.analyzed_sample = True
     
-        return [self.sample.F_max, self.Rm, self.Re, self.E, self.Allong, self.Defo, self.elastic_retreat, self.stress_values, self.original_deformation_values]
+        return [self.sample.F_max, self.Rm, self.Re, self.E, self.d_max, self.Defo, self.elastic_retreat, self.stress_values, self.original_deformation_values]
     
     def choose_analysis_mode(self):
         disp_ini = self.sample.displacement_values[1]
@@ -266,8 +264,8 @@ class DataAnalyzer:
         Rp02_sim_values = [x * self.E * 10 + y1 for x in self.original_deformation_values]
             
         def_ini = self.sample.displacement_values[1]
-        self.Allong = max(self.sample.displacement_values) - def_ini
-        self.F_max = max(self.sample.force_values) if not self.scale_kN else max(self.sample.force_values) / 1000
+        self.d_max = max(self.sample.displacement_values) - def_ini
+        self.F_max = max(self.sample.force_values)
         self.Defo = max(self.original_deformation_values) - self.elastic_retreat            
     
         delta_values = [stress - rp02_sim for stress, rp02_sim in zip(self.stress_values, Rp02_sim_values)]
@@ -283,7 +281,7 @@ class DataAnalyzer:
             self.Defo = 0
             self.Re = max(self.stress_values)
             self.sample.show_rp02 = False
-            self.elastic_retreat = self.Allong
+            self.elastic_retreat = self.d_max
     
         self.Rm = max(self.stress_values)
         
@@ -310,6 +308,6 @@ class DataAnalyzer:
             self.Rm = self.format_sign(self.Rm, self.round_val)
             self.Re = self.format_sign(self.Re, self.round_val)
             self.E = self.format_sign(self.E, self.round_val)
-            self.Allong = self.format_sign(self.Allong, self.round_val)
+            self.d_max = self.format_sign(self.d_max, self.round_val)
             self.Defo = self.format_sign(self.Defo, self.round_val)
             self.elastic_retreat = self.format_sign(self.elastic_retreat, self.round_val)

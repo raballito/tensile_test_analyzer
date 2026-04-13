@@ -212,22 +212,22 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         # Définir les en-têtes de colonnes selon les options
         if self.option_kn == False and self.option_defo_percent:
             headers = [
-                'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
+                'File Name', 'Sample Name', 'F_max [N]', 'd_max [mm]', 
                 'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
             ]
         elif self.option_kn and self.option_defo_percent: 
             headers = [
-                'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
+                'File Name', 'Sample Name', 'F_max [kN]', 'd_max [mm]', 
                 'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
             ]
         elif self.option_kn and self.option_defo_percent == False:
             headers = [
-                'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
+                'File Name', 'Sample Name', 'F_max [kN]', 'd_max [mm]', 
                 'Re [MPa]', 'Rm [MPa]', 'Déformation [-]', 'E [GPa]'
             ]
         else:
             headers = [
-                'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
+                'File Name', 'Sample Name', 'F_max [N]', 'd_max [mm]', 
                 'Re [MPa]', 'Rm [MPa]', 'Déformation [-]', 'E [GPa]'
             ]
     
@@ -243,7 +243,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
         for sample in self.sample_list:
             # Ajouter la ligne pour le sample principal
             values = [
-                sample.file_name, sample.sample_name, sample.F_max /1000 if self.option_kn else sample.F_max, sample.Allong,
+                sample.file_name, sample.sample_name, sample.F_max /1000 if self.option_kn else sample.F_max, sample.d_max,
                 sample.Re, sample.Rm, sample.Defo if self.option_defo_percent else sample.Defo/100, sample.E
             ]
             self.data.append(values)
@@ -350,22 +350,22 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             writer = csv.writer(csvfile)
             if self.option_kn == False and self.option_defo_percent:
                 headers = [
-                    'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
+                    'File Name', 'Sample Name', 'F_max [N]', 'd_max [mm]', 
                     'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
                 ]
             elif self.option_kn and self.option_defo_percent : 
                 headers = [
-                    'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
+                    'File Name', 'Sample Name', 'F_max [kN]', 'd_max [mm]', 
                     'Re [MPa]', 'Rm [MPa]', 'Déformation [%]', 'E [GPa]'
                 ]
             elif self.option_kn and self.option_defo_percent == False:
                 headers = [
-                    'File Name', 'Sample Name', 'F_max [kN]', 'Allong [mm]', 
+                    'File Name', 'Sample Name', 'F_max [kN]', 'd_max [mm]', 
                     'Re [MPa]', 'Rm [MPa]', 'Déformation [-]', 'E [GPa]'
                 ]
             else:
                 headers = [
-                    'File Name', 'Sample Name', 'F_max [N]', 'Allong [mm]', 
+                    'File Name', 'Sample Name', 'F_max [N]', 'd_max [mm]', 
                     'Re [MPa]', 'Rm [MPa]', 'Déformation [-]', 'E [GPa]'
                 ]
             writer.writerow(headers)
@@ -373,7 +373,7 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             # Écrire les données
             for sample in self.sample_list:
                 writer.writerow([
-                    sample.file_name, sample.sample_name, sample.F_max/1000 if self.option_kn else sample.F_max, sample.Allong,
+                    sample.file_name, sample.sample_name, sample.F_max/1000 if self.option_kn else sample.F_max, sample.d_max,
                     sample.Re, sample.Rm, sample.Defo if self.option_defo_percent else sample.Defo/100, sample.E
                 ])
             

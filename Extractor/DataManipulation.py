@@ -64,7 +64,7 @@ class DataManipulation:
         self.sample.displacement_values = data['Déplacement [mm]'].tolist()
         self.sample.F_max = self.sample.format_sign(data['Force [N]'].max(), self.sample.round_val)
         self.sample.t_max = self.sample.format_sign(data['Temps [s]'].max(), self.sample.round_val)
-        self.sample.Allong = self.sample.format_sign(data['Déplacement [mm]'].max() - data['Déplacement [mm]'].iloc[1], self.sample.round_val)
+        self.sample.d_max = self.sample.format_sign(data['Déplacement [mm]'].max() - data['Déplacement [mm]'].iloc[1], self.sample.round_val)
         
         # Calcul des limites de la plage linéaire
         def_min = self.sample.format_sign(float(self.sample.F_max) * 0.2, self.sample.round_val)

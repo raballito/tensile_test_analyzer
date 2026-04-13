@@ -184,7 +184,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
                 "File Name": [sample.file_name for sample in sample_list],
                 "Sample Name": [sample.sample_name for sample in sample_list],
                 "F_max [N]": [sample.F_max for sample in sample_list],
-                "Allong [mm]": [sample.Allong for sample in sample_list],
+                "d_max [mm]": [sample.d_max for sample in sample_list],
                 "Re [MPa]": [sample.Re for sample in sample_list],
                 "Rm [MPa]": [sample.Rm for sample in sample_list],
                 "Déformation [%]": [sample.Defo for sample in sample_list],
@@ -195,7 +195,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
                 "File Name": [sample.file_name for sample in sample_list],
                 "Sample Name": [sample.sample_name for sample in sample_list],
                 "F_max [N]": [sample.F_max for sample in sample_list],
-                "Allong [mm]": [sample.Allong for sample in sample_list],
+                "d_max [mm]": [sample.d_max for sample in sample_list],
                 "Re [MPa]": [sample.Re for sample in sample_list],
                 "Rm [MPa]": [sample.Rm for sample in sample_list],
                 "Déformation [-]": [sample.Defo/100 for sample in sample_list],
@@ -206,7 +206,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
                 "File Name": [sample.file_name for sample in sample_list],
                 "Sample Name": [sample.sample_name for sample in sample_list],
                 "F_max [kN]": [sample.F_max/1000 for sample in sample_list],
-                "Allong [mm]": [sample.Allong for sample in sample_list],
+                "d_max [mm]": [sample.d_max for sample in sample_list],
                 "Re [MPa]": [sample.Re for sample in sample_list],
                 "Rm [MPa]": [sample.Rm for sample in sample_list],
                 "Déformation [-]": [sample.Defo/100 for sample in sample_list],
@@ -217,7 +217,7 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
                 "File Name": [sample.file_name for sample in sample_list],
                 "Sample Name": [sample.sample_name for sample in sample_list],
                 "F_max [kN]": [sample.F_max/1000 for sample in sample_list],
-                "Allong [mm]": [sample.Allong for sample in sample_list],
+                "d_max [mm]": [sample.d_max for sample in sample_list],
                 "Re [MPa]": [sample.Re for sample in sample_list],
                 "Rm [MPa]": [sample.Rm for sample in sample_list],
                 "Déformation [%]": [sample.Defo for sample in sample_list],
@@ -328,23 +328,23 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         if sample.tested_geometry == "Section Ronde" and sample.tested_geometry is not None and include_analysis:
             if include_analysis and self.option_defo_percent and self.option_kn == False:
                 details_data = {
-                    "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.D0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [N]", "d_max [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.D0, sample.L0, sample.F_max, sample.d_max, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             elif include_analysis and self.option_defo_percent and self.option_kn:
                 details_data = {
-                    "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [kN]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.D0, sample.L0, sample.F_max/1000, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [kN]", "d_max [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.D0, sample.L0, sample.F_max/1000, sample.d_max, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             elif include_analysis and self.option_defo_percent == False and self.option_kn == False:
                 details_data = {
-                    "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.D0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [N]", "d_max [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.D0, sample.L0, sample.F_max, sample.d_max, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             elif include_analysis and self.option_defo_percent == False and self.option_kn:
                 details_data = {
-                    "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [kN]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.D0, sample.L0, sample.F_max/1000, sample.Allong, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Caractéristique": ["D0 [mm]", "L0 [mm]", "F_Max [kN]", "d_max [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.D0, sample.L0, sample.F_max/1000, sample.d_max, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             else: 
                 details_data = {
@@ -354,23 +354,23 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         elif sample.tested_geometry == "Section Rectangulaire" and sample.tested_geometry is not None and include_analysis :
             if include_analysis and self.option_defo_percent and self.option_kn == False:
                 details_data = {
-                    "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [N]", "d_max [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.d_max, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             elif include_analysis and self.option_defo_percent and self.option_kn:
                 details_data = {
-                    "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [kN]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max/1000, sample.Allong, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [kN]", "d_max [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [%]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max/1000, sample.d_max, sample.Re, sample.Rm, sample.Defo, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             elif include_analysis and self.option_defo_percent == False and self.option_kn == False:
                 details_data = {
-                    "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [N]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.Allong, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [N]", "d_max [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max, sample.d_max, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             elif include_analysis and self.option_defo_percent == False and self.option_kn:
                 details_data = {
-                    "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [kN]", "Allong [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
-                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max/1000, sample.Allong, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
+                    "Caractéristique": ["W0 [mm]", "H0 [mm]", "L0 [mm]", "F_Max [kN]", "d_max [mm]", "Re [MPa]", "Rm [MPa]", "Déformation [-]", "E [GPa]", "Reg F_min [N]", "Reg F_max [N]", "Mode de test", "Banc de Test"],
+                    "Valeur": [sample.W0, sample.H0, sample.L0, sample.F_max/1000, sample.d_max, sample.Re, sample.Rm, sample.Defo/100, sample.E, sample.lin_range[0], sample.lin_range[1], sample.tested_mode, sample.test_bench]
                 }
             else:
                 details_data = {

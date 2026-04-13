@@ -13,26 +13,9 @@ class DataExport:
         """
         Constructeur de la classe DataExport.
         :param sample: Instance de la classe Sample contenant les données à exporter.
+        Récupère les données nécessaires de l'instance Sample
         """
         self.sample = sample
-        # Récupérer les données nécessaires de l'instance Sample
-        self.displacement_values = self.sample.displacement_values
-        self.force_values = self.sample.force_values
-        self.time_values = self.sample.time_values
-        self.deformation_values = self.sample.deformation_values
-        self.stress_values = self.sample.stress_values
-        self.sample_name = self.sample.sample_name
-        self.file_path = self.sample.file_path
-        self.Allong = self.sample.Allong
-        self.Defo = self.sample.Defo
-        self.F_max = self.sample.F_max
-        self.Rm = self.sample.Rm 
-        self.Re = self.sample.Re
-        self.E = self.sample.E
-        self.t_max = self.sample.t_max
-        self.round_val = self.sample.round_val
-        
-        self.master = self.sample.master  # Si nécessaire pour les options supplémentaires
 
     def export_preview(self, graph_type=None, directory='output/IMG'):
         """
@@ -46,10 +29,10 @@ class DataExport:
                 directory, 
                 'Force-Déplacement', 
                 'Déplacement [mm]', 
-                'Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]',  
-                self.displacement_values, 
-                self.force_values, 
-                f"graphique_force_déplacement_{os.path.basename(self.file_path)} - {self.sample_name}.png",
+                'Force [kN]' if self.sample.master.get_option_scale_kN() else 'Force [N]',  
+                self.sample.displacement_values, 
+                self.sample.force_values, 
+                f"graphique_force_déplacement_{os.path.basename(self.sample.file_path)} - {self.sample.sample_name}.png",
                 'A_max', 'F_max'
             )
             return force_stroke_path
@@ -59,10 +42,10 @@ class DataExport:
                 directory, 
                 'Force-Temps', 
                 'Temps [s]', 
-                'Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]', 
-                self.time_values, 
-                self.force_values, 
-                f"graphique_force_temps_{os.path.basename(self.file_path)} - {self.sample_name}.png",
+                'Force [kN]' if self.sample.master.get_option_scale_kN() else 'Force [N]', 
+                self.sample.time_values, 
+                self.sample.force_values, 
+                f"graphique_force_temps_{os.path.basename(self.sample.file_path)} - {self.sample.sample_name}.png",
                 't_max', 'F_max'
             )
             return force_time_path
@@ -73,9 +56,9 @@ class DataExport:
                 'Contrainte-Déformation', 
                 'Déformation [%]', 
                 'Contrainte [MPa]', 
-                self.deformation_values, 
-                self.stress_values, 
-                f"graphique_contrainte_deformation_{os.path.basename(self.file_path)} - {self.sample_name}.png",
+                self.sample.deformation_values, 
+                self.sample.stress_values, 
+                f"graphique_contrainte_deformation_{os.path.basename(self.sample.file_path)} - {self.sample.sample_name}.png",
                 'ε_max', 'Rm'
             )
             return stress_deformation_path
@@ -86,9 +69,9 @@ class DataExport:
                 'Contrainte-Déplacement', 
                 'Déplacement [mm]', 
                 'Contrainte [MPa]', 
-                self.displacement_values, 
-                self.stress_values, 
-                f"graphique_contrainte_deplacement_{os.path.basename(self.file_path)} - {self.sample_name}.png",
+                self.sample.displacement_values, 
+                self.sample.stress_values, 
+                f"graphique_contrainte_deplacement_{os.path.basename(self.sample.file_path)} - {self.sample.sample_name}.png",
                 'A_max', 'Rm'
             )
             return stress_displacement_path
@@ -142,8 +125,8 @@ class DataExport:
     def update_plot_attributes(self, data_plot, x_label, y_label, max_x_label, max_y_label):
         data_plot.plot(x=x_label, y=y_label, kind='line')
         
-        self.show_sample_name = self.master.get_option_sample_name()
-        self.show_grid = self.master.get_option_grid()
+        self.show_sample_name = self.sample.master.get_option_sample_name()
+        self.show_grid = self.sample.master.get_option_grid()
         if self.show_grid:
             plt.grid(zorder=0, linestyle='--', alpha=0.5)
         title = self.get_plot_title()
@@ -153,7 +136,7 @@ class DataExport:
         plt.gca().set_ylim(0, 1.3 * data_plot[y_label].max())
         
         if y_label in ['Force [N]', 'Force [kN]']:
-            plt.ylabel('Force [kN]' if self.master.get_option_scale_kN() else 'Force [N]')
+            plt.ylabel('Force [kN]' if self.sample.master.get_option_scale_kN() else 'Force [N]')
         elif y_label == 'Contrainte [MPa]':
             plt.ylabel('Contrainte [MPa]')
             
@@ -162,14 +145,14 @@ class DataExport:
         elif x_label == 'Temps [s]':
             plt.xlabel('Temps [s]')
         elif x_label in ['Déformation [%]', 'Déformation [-]']:
-            plt.xlabel('Déformation [%]' if self.master.get_option_defo_percent() else 'Déformation [-]')
+            plt.xlabel('Déformation [%]' if self.sample.master.get_option_defo_percent() else 'Déformation [-]')
         
         plt.legend().remove()
         
-        if self.master.get_option_show_force_stroke():
+        if self.sample.master.get_option_show_table():
             self.add_table_to_plot(data_plot, x_label, y_label, max_x_label, max_y_label)
         
-        self.show_rp02 = self.master.get_option_show_rp()
+        self.show_rp02 = self.sample.master.get_option_show_rp()
         
         if self.show_rp02 and y_label == 'Contrainte [MPa]' and x_label == 'Déformation [%]' and float(self.sample.Defo) > float(self.sample.coef_re):
             self.add_elastic_limit_line(data_plot, x_label)
@@ -178,10 +161,10 @@ class DataExport:
         print(f"Etat de defo_percent (Export) : {self.sample.defo_percent}")
         print(f"Coef_re (Export) : {self.sample.coef_re}")
         if self.sample.defo_percent:
-            E = self.E*10
+            E = self.sample.E*10
             x_start = self.sample.coef_re
         else:
-            E = self.E*1000
+            E = self.sample.E*1000
             x_start = self.sample.coef_re /100
         
         y_start = 0
@@ -189,41 +172,41 @@ class DataExport:
         y_end = E * (x_end - x_start)
         
         plt.plot([x_start, x_end], [y_start, y_end], label='Limite élastique', linestyle='--', color='orange')
-        self.show_legend = self.master.get_option_show_legend()
+        self.show_legend = self.sample.master.get_option_show_legend()
         if self.show_legend :
             plt.legend()
     
     def add_table_to_plot(self, data_plot, x_label, y_label, max_x_label, max_y_label):
         if max_x_label == 'ε_max':
             max_x_unit = '[%]' if self.sample.defo_percent else '[-]'
-            max_x_value = self.Defo if self.sample.defo_percent else self.Defo/100
+            max_x_value = self.sample.Defo if self.sample.defo_percent else self.sample.Defo/100
         elif max_x_label == 'A_max':
             max_x_unit = '[mm]'
-            max_x_value = self.Allong
+            max_x_value = self.sample.d_max
         elif max_x_label == 't_max':
             max_x_unit = '[s]'
-            max_x_value = self.t_max
+            max_x_value = self.sample.t_max
         
         if max_y_label == 'F_max':
-            max_y_unit = '[kN]' if self.master.get_option_scale_kN() else '[N]'
-            max_y_value = self.F_max /1000 if self.master.get_option_scale_kN() else self.F_max
+            max_y_unit = '[kN]' if self.sample.master.get_option_scale_kN() else '[N]'
+            max_y_value = self.sample.F_max /1000 if self.sample.master.get_option_scale_kN() else self.sample.F_max
         elif max_y_label == 'Rm':
             max_y_unit = '[MPa]'
-            max_y_value = self.Rm
+            max_y_value = self.sample.Rm
         
-        if self.round_val != 0:
-            max_y_value = self.sample.format_sign(max_y_value, self.master.get_round_val())
-            max_x_value = self.sample.format_sign(max_x_value, self.master.get_round_val())
+        if self.sample.round_val != 0:
+            max_y_value = self.sample.format_sign(max_y_value, self.sample.master.get_round_val())
+            max_x_value = self.sample.format_sign(max_x_value, self.sample.master.get_round_val())
             
         table_data = [[max_y_label, max_x_label],
                       [max_y_unit, max_x_unit],
                       [max_y_value, max_x_value]]
         
         if x_label == 'Déformation [%]' and y_label == 'Contrainte [MPa]':
-            if self.Defo > self.sample.coef_re:
+            if self.sample.Defo > self.sample.coef_re:
                 table_data[0].append('Re')  # Ajoute le label "Re"
                 table_data[1].append('[MPa]')  # Ajoute l'unité "[MPa]"
-                table_data[2].append(self.Re)  # Ajoute la valeur de Re
+                table_data[2].append(self.sample.Re)  # Ajoute la valeur de Re
         
         table = plt.table(cellText=table_data, loc='lower right', colWidths=[0.15, 0.15, 0.15, 0.15])
         table.set_zorder(10)
@@ -233,6 +216,6 @@ class DataExport:
     
     def get_plot_title(self):
         if self.show_sample_name:
-            return f"{self.sample_name}"
+            return f"{self.sample.sample_name}"
         else:
             return ""       
