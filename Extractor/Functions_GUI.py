@@ -442,15 +442,15 @@ class InterfaceFunctions:
         option_grid = bool(options.get('option_grid', False))
         option_legend = bool(options.get('option_legend', True))
         stress = sample.stress_values
-        
+        coef_re = float(self.master.option_lim_elast.get().strip('%'))
         if option_percent:
             E = 10*float(sample.E)
             xlabel = "Déformation [%]"
-            x_start = float((self.master.option_lim_elast.get()).strip('%'))
+            x_start = coef_re
         else: 
             E=1000*float(sample.E)
             xlabel = "Déformation [-]"
-            x_start = float((self.master.option_lim_elast.get()/100).strip('%'))
+            x_start = coef_re / 100
         
         defo = sample.deformation_values       
         y_start = 0
