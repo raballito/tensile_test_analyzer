@@ -21,17 +21,19 @@ import uuid
 from Extractor.DataManipulation import DataManipulation
 from Extractor.DataFilter import FilterData
 from Extractor.DataAnalyzer import DataAnalyzer
-from Extractor.Sample_export_graph import DataExport
+from Extractor.DataExport import DataExport
 
 class Sample:    
     def __init__(self, master):
         self.master = master
+        # Files config
         self.file_name = None
         self.file_path = None
         self.test_bench = None
         self.number_of_test = None
         self.available_sample_names = None
         self.extensometer_choice_value = None
+        self.selected_channel = "Canal Traverse"
         self.sample_name = "Default"
         self.separator = ','
         self.header_index = 2
@@ -45,6 +47,7 @@ class Sample:
         self.repeat_every = None
         self.tested_mode = None
         self.tested_geometry = None
+        # Datas
         self.time_values = []
         self.force_values = []
         self.displacement_values = []
@@ -53,6 +56,7 @@ class Sample:
         self.deformation_values = []
         self.samples_and_channels = []
         self.subsamples = []
+        # Geometry
         self.L0 = None
         self.L1 = None
         self.S0 = None
@@ -60,6 +64,7 @@ class Sample:
         self.W0 = None
         self.H0 = None
         self.lin_range = []
+        # Analyzed Values
         self.F_max = None
         self.d_max = None
         self.t_max = None
@@ -71,7 +76,7 @@ class Sample:
         self.Y_Offset = None
         self.X_Offset = None
         self.idx0 = None
-        self.selected_channel = "Canal Traverse"
+        # Options values
         self.round_val = self.master.get_round_val()
         self.coef_re_unformatted = self.master.get_coef_re()
         self.coef_re = float(self.coef_re_unformatted.strip('%'))
@@ -103,7 +108,6 @@ class Sample:
     
     def update_results(self, analysis):
         """Mettre à jour les résultats dans Sample à partir des résultats de DataAnalyzer."""
-        data_manipulation = DataManipulation(self)
         self.F_max = analysis[0]
         self.Rm = analysis[1]
         self.Re = analysis[2]
@@ -113,7 +117,7 @@ class Sample:
         self.elastic_retreat = analysis[6]
         self.stress_values = analysis[7]
         self.original_deformation_values = analysis[8]
-        self.deformation_values = data_manipulation.convert_deformation(self.original_deformation_values)
+        self.deformation_values = self.DataManipulation.convert_deformation(self.original_deformation_values)
 
         
     def print_results(self):

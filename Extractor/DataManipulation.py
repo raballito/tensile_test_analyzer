@@ -16,9 +16,8 @@ Last Update: 31.03.26
 import pandas as pd
 
 class DataManipulation:
-    def __init__(self, sample_struct):
-        self.sample = sample_struct
-        self.deformation_values = []
+    def __init__(self, sample):
+        self.sample = sample
         
     
     def import_data(self):
