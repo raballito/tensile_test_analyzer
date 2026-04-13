@@ -35,32 +35,34 @@ class DataManipulation:
         if data_width < self.sample.repeat_every:
             return
     
-        force_column = self.sample.force_channel - 1
-        displacement_column = self.sample.stroke_channel - 1
-        time_column = self.sample.time_channel - 1
-        print(f"Taille actuelle du tableau de données brutes : {raw_data.shape}")
+        # Colonnes
+        time_col = self.sample.time_channel - 1
+        force_col = self.sample.force_channel - 1
+        disp_col = self.sample.stroke_channel - 1
     
-        # Extraction des données de force et de déplacement
-        time_data = pd.to_numeric(raw_data.iloc[:, time_column], errors='coerce')
-        force_data = pd.to_numeric(raw_data.iloc[:, force_column], errors='coerce')
-        displacement_data = pd.to_numeric(raw_data.iloc[:, displacement_column], errors='coerce')
+        time_data = pd.to_numeric(raw_data.iloc[:, time_col], errors='coerce')
+        force_data = pd.to_numeric(raw_data.iloc[:, force_col], errors='coerce')
+        disp_data = pd.to_numeric(raw_data.iloc[:, disp_col], errors='coerce')
         
+        print(f"Canal Extenso: {self.sample.ext_channel}")
+        
+        # Extenso
+        if self.sample.ext_channel is not None:
+            ext_col = self.sample.ext_channel - 1
+            ext_data = pd.to_numeric(raw_data.iloc[:, ext_col], errors='coerce')
+       
         # Créer le DataFrame avec les données
-        data = pd.DataFrame({'Temps [s]': time_data, 'Force [N]': force_data, 'Déplacement [mm]': displacement_data})
+        data = pd.DataFrame({'Temps [s]': time_data, 'Force [N]': force_data, 'Déplacement [mm]': disp_data, "Extenso [mm]": ext_data})
+        print(f"Taille actuelle du tableau de données brutes : {raw_data.shape}")
         
         # Correction facteur force
         data['Force [N]'] = data['Force [N]'].apply(lambda x: x * self.sample.force_unit)
         
-        # Ajout de la normalisation des signaux et filtration des données de fin
-        data.dropna(inplace=True)
-        option_clean_end = self.sample.master.get_option_filter()
-        data = self.sample.filter_pipeline.process(data, option_clean_end=option_clean_end, selected_channel=self.sample.selected_channel)
-        data.dropna(inplace=True)
-        
         # Récupérer les valeurs
-        self.sample.time_values = data['Temps [s]'].tolist()
-        self.sample.force_values = data['Force [N]'].tolist()
-        self.sample.displacement_values = data['Déplacement [mm]'].tolist()
+        self.sample.raw_time_values = data['Temps [s]'].tolist()
+        self.sample.raw_force_values = data['Force [N]'].tolist()
+        self.sample.raw_displacement_values = data['Déplacement [mm]'].tolist()
+        self.sample.raw_extenso_displacement_values = data['Extenso [mm]'].tolist()
         self.sample.F_max = self.sample.format_sign(data['Force [N]'].max(), self.sample.round_val)
         self.sample.t_max = self.sample.format_sign(data['Temps [s]'].max(), self.sample.round_val)
         self.sample.d_max = self.sample.format_sign(data['Déplacement [mm]'].max() - data['Déplacement [mm]'].iloc[1], self.sample.round_val)
@@ -73,13 +75,43 @@ class DataManipulation:
         print(f"Nouvelle taille du tableau post-importation : {data.shape}")
         print(f"Importation des données spécifiques de {self.sample.sample_name} terminée.\n")
         
-        return self.sample.time_values, self.sample.force_values, self.sample.displacement_values
+        return self.sample.raw_time_values, self.sample.raw_force_values, self.sample.raw_displacement_values, self.sample.raw_extenso_displacement_values
     
+    def process_data(self):
+        """Applique filtre + sélection canal"""
+        print("Application des filtres et sélection du canal")
+        sample = self.sample
+    
+        data = pd.DataFrame({
+            'Temps [s]': sample.raw_time_values,
+            'Force [N]': sample.raw_force_values,
+            'Déplacement [mm]': sample.raw_displacement_values,
+            'Extenso [mm]' : sample.raw_extenso_displacement_values
+        })
+    
+        data.dropna(inplace=True)
+    
+        option_clean_end = sample.master.get_option_filter()
+    
+        data = sample.filter_pipeline.process(
+            data,
+            option_clean_end=option_clean_end,
+            selected_channel=sample.selected_channel
+        )
+    
+        data.dropna(inplace=True)
+    
+        # Mise à jour des données utilisées
+        sample.time_values = data['Temps [s]'].tolist()
+        sample.force_values = data['Force [N]'].tolist()
+        sample.displacement_values = data['Déplacement [mm]'].tolist() if self.sample.selected_channel == "Canal Traverse" else data['Extenso [mm]'].tolist()
+        self.sample.analyzed_sample = False
+        
+        return sample.time_values, sample.force_values, sample.displacement_values
     
     def convert_deformation(self, original_defo_values):
         """ Conversion de la déformation en fonction de l'option choisie (pourcentage ou [-]) """
         defo_percent = self.sample.master.get_option_defo_percent()
-        print(f"Etat de la case défo_percent : {defo_percent}")
         if defo_percent:  # Si l'option pourcentage est sélectionnée
             return original_defo_values
         else:  # Sinon, on utilise les valeurs sans unités [-]

@@ -19,7 +19,7 @@ Last Update: 10.04.26
 # Importation des modules
 import uuid
 from Extractor.DataManipulation import DataManipulation
-from Extractor.DataFilter import FilterData
+from Extractor.DataProcess import ProcessData
 from Extractor.DataAnalyzer import DataAnalyzer
 from Extractor.DataExport import DataExport
 
@@ -43,19 +43,28 @@ class Sample:
         self.force_channel = 2
         self.base_stroke_channel = 3
         self.stroke_channel = 3
+        self.base_ext_channel = None
+        self.ext_channel = None
         self.force_unit = 1
         self.repeat_every = None
         self.tested_mode = None
         self.tested_geometry = None
+        self.samples_and_channels = []
+        self.subsamples = []
         # Datas
+        # Données brutes - Pour importation
+        self.raw_time_values = []
+        self.raw_force_values = []
+        self.raw_displacement_values = []
+        self.raw_extenso_displacement_values = []
+        # Données traitées (filtrage, canal, nettoyage)
         self.time_values = []
         self.force_values = []
         self.displacement_values = []
+        # Données analysées (contrainte/déformation, E, etc.)
         self.stress_values = []
         self.original_deformation_values = []
         self.deformation_values = []
-        self.samples_and_channels = []
-        self.subsamples = []
         # Geometry
         self.L0 = None
         self.L1 = None
@@ -88,7 +97,7 @@ class Sample:
         self.show_legend = self.master.get_option_show_legend()
         self.show_grid = self.master.get_option_grid()
         self.clean_end = self.master.get_option_filter()
-        self.filter_pipeline = FilterData(normalize=True, method="mixed")
+        self.filter_pipeline = ProcessData(normalize=True, method="mixed")
         self.DataManipulation = DataManipulation(self)
         self.analyzed_sample = False
         self.configured_sample = False
@@ -98,6 +107,9 @@ class Sample:
       
     def import_data(self):
         return self.DataManipulation.import_data()
+    
+    def process_data(self):
+        return self.DataManipulation.process_data()
     
     # Fonction d'analyse. Conversion vers contrainte-déformation
     def analyze(self):
@@ -121,7 +133,7 @@ class Sample:
 
         
     def print_results(self):
-        print("\nDonnées Individuelles Extraites :\n\nForce Max = ", self.F_max, " [N]\nRm = ", self.Rm, " [MPa]\nRe = ", self.Re, " [MPa]\nE = ", self.E, " [GPa]\nd_maxement max = ", self.d_max, " [mm]\nDéformation Max = ", self.Defo, " [%]\nRetour élastique: ", self.elastic_retreat, " [%]\n")
+        print("\nDonnées Individuelles Extraites :\n\nForce Max = ", self.F_max, " [N]\nRm = ", self.Rm, " [MPa]\nRe = ", self.Re, " [MPa]\nE = ", self.E, " [GPa]\nd_max = ", self.d_max, " [mm]\nDéformation Max = ", self.Defo, " [%]\nRetour élastique: ", self.elastic_retreat, " [%]\n")
         
     def export_graphs(self, graph_type=None, directory='output/IMG'):
         # Crée une instance de DataExport et utilise la pour exporter les graphiques

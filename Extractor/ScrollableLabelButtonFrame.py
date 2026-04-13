@@ -18,6 +18,7 @@ Last Update: 31.03.26
 import os
 import customtkinter
 from Extractor.Functions_GUI import InterfaceFunctions
+from Extractor.DataManipulation import DataManipulation
 from Extractor.Sample import Sample
 from Extractor.TestBench import TestBench
 
@@ -80,10 +81,10 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
             print(f"Erreur lors de la création du chemin relatif pour {file_path}. Utilisation du chemin complet.\nErreur: {e}")
             file_path_rel = file_path
-        # Identification du fichier
+        # Identification de la machine
         test_bench = TestBench.identify_test_bench(file_path)
     
-        for available_sample_name, time_channel, force_channel, stroke_channel in zip(*sample_and_channel):
+        for available_sample_name, time_channel, force_channel, stroke_channel, ext_channel in zip(*sample_and_channel):
             sample = Sample(self)  # Crée l'échantillon avec un identifiant unique
             checkbox_var = customtkinter.IntVar()
             self.checkbox_variable_list.append(checkbox_var)
@@ -101,6 +102,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             sample.time_channel = time_channel
             sample.force_channel = force_channel
             sample.stroke_channel = stroke_channel
+            sample.ext_channel = ext_channel
             imported = sample.import_data()
             if imported is None:
                 print(f"Erreur d'importation du fichier {file_path_rel}.\nFichier ignoré.\n")
@@ -129,6 +131,8 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             self.button_list.append(button)
             self.sample_list.append(sample)
             self.frame_list.append(frame)
+            data_manip = DataManipulation(sample)
+            data_manip.process_data()
         return True
 
     def remove_item(self, item):

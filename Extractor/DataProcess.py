@@ -14,7 +14,7 @@ Last Update: 10.04.26
 import numpy as np
 from tkinter import messagebox
 
-class FilterData:
+class ProcessData:
     def __init__(self,
                  normalize=True,
                  method="mixed",

@@ -22,6 +22,7 @@ import os
 import customtkinter
 from Extractor.Functions_GUI import InterfaceFunctions
 from Extractor.ScrollableLabelButtonFrame import ScrollableLabelButtonFrame
+from Extractor.DataManipulation import DataManipulation
 from PIL import Image
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
@@ -321,13 +322,17 @@ class MainWindow(customtkinter.CTk):
         return os.path.normcase(os.path.abspath(path))
     
     def refresh_selected_sample(self):
-        selected_sample = self.scrollable_label_button_frame.selected_sample
-        if selected_sample is not None:
-            # Si la déformation a changé, on s'assure que les valeurs de déformation et le graphique sont mis à jour
-            selected_sample.deformation_values = selected_sample.DataManipulation.convert_deformation(selected_sample.original_deformation_values)
-                
-            # Appelle la fonction de preview qui va lire les variables
-            self.interface_functions.preview_file(selected_sample)
+        sample = self.scrollable_label_button_frame.selected_sample
+    
+        if sample is not None:
+            data_manip = DataManipulation(sample)
+            data_manip.process_data()
+    
+            # IMPORTANT : invalider l'analyse
+            sample.analyzed_sample = False
+    
+            # Rafraîchir affichage
+            self.interface_functions.preview_file(sample)
             
 
     def on_close(self):

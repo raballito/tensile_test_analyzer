@@ -23,6 +23,7 @@ from Extractor.TestBench import TestBench
 from Extractor.ExportGraphsWindow import ExportGraphsWindow
 from Extractor.AnalysisSummaryWindow import AnalysisSummaryWindow
 from Extractor.ExportExcelWindow import ExportExcelWindow
+
 from tkinter import messagebox
 from tkinter import filedialog
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg

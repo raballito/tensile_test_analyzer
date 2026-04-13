@@ -425,37 +425,13 @@ class ConfigWindow(customtkinter.CTkToplevel):
         print(f"Canal obtenu dans get_canal(): {canal}")
         machine = self.sample.test_bench
         print(f"Machine obtenue dans get_canal(): {machine}")
-        if machine == "WB100kN_1":
-            if canal == "Canal Extensomètre":
-                if self.sample.stroke_channel != 4:
-                    self.sample.stroke_channel = 4
-                    self.sample.selected_channel = "Canal Extensomètre"
-            elif canal == "Canal Traverse":
-                if self.sample.stroke_channel != 10:
-                    self.sample.stroke_channel = 10
-                    self.sample.selected_channel = "Canal Traverse"
-                    
-        elif machine == "WB100kN_2":
-            if canal == "Canal Extensomètre":
-                if self.sample.stroke_channel != 4:
-                    self.sample.stroke_channel = 4
-                    self.sample.selected_channel = "Canal Extensomètre"
-            elif canal == "Canal Traverse":
-                if self.sample.stroke_channel != 5:
-                    self.sample.stroke_channel = 5
-                    self.sample.selected_channel = "Canal Traverse"
         
-        elif machine == "Shimadzu_2":
-            if canal == "Canal Extensomètre":
-                base_channel = 4
-                self.sample.selected_channel = "Canal Extensomètre"
-            elif canal == "Canal Traverse":
-                base_channel = 3
-                self.sample.selected_channel = "Canal Traverse"
-            
-            self.sample.stroke_channel = self.sample.offset + base_channel         
+        if canal == "Canal Extensomètre":
+            self.sample.selected_channel = "Canal Extensomètre"
+        elif canal == "Canal Traverse":
+            self.sample.selected_channel = "Canal Traverse"
         
-        self.sample.import_data()
+        self.sample.process_data()
         print(f"Canal enregistré: {self.sample.selected_channel}")
     
     def get_geometry(self, test_mode):
