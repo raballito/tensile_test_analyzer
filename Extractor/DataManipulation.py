@@ -109,7 +109,7 @@ class DataManipulation:
         t_max = self.sample.format_sign(data['Temps [s]'].max(), self.sample.round_val)
         d_max = self.sample.format_sign(data['Déplacement [mm]'].max() - data['Déplacement [mm]'].iloc[1], self.sample.round_val)
         
-        return [F_max, t_max, d_max]
+        return F_max, t_max, d_max
     
     
     
