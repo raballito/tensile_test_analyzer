@@ -110,7 +110,16 @@ class Sample:
         self.sample_id = uuid.uuid4()
       
     def import_data(self):
-        return self.DataManipulation.import_data()
+        data = self.DataManipulation.import_data()
+        # Récupérer les valeurs
+        self.raw_time_values = data['Temps [s]'].tolist()
+        self.raw_force_values = data['Force [N]'].tolist()
+        self.raw_displacement_values = data['Déplacement [mm]'].tolist()
+        self.raw_extenso_displacement_values = data['Extenso [mm]'].tolist()
+        [self.F_max, self.t_max, self.d_max] = self.DataManipulation.get_max_raw_values(data)
+        self.lin_range = self.get_lin_range()
+    
+        return self.raw_time_values, self.raw_force_values, self.raw_displacement_values, self.raw_extenso_displacement_values
     
     def process_data(self):
         return self.DataManipulation.process_data()
@@ -132,9 +141,7 @@ class Sample:
         self.Defo = analysis[5]
         self.elastic_retreat = analysis[6]
         self.stress_values = analysis[7]
-        self.original_deformation_values = analysis[8]
-        self.deformation_values = self.DataManipulation.convert_deformation(self.original_deformation_values)
-
+        self.deformation_values = analysis[8]
         
     def print_results(self):
         print("\nDonnées Individuelles Extraites :\n\nForce Max = ", self.F_max, " [N]\nRm = ", self.Rm, " [MPa]\nRe = ", self.Re, " [MPa]\nE = ", self.E, " [GPa]\nd_max = ", self.d_max, " [mm]\nDéformation Max = ", self.Defo, " [%]\nRetour élastique: ", self.elastic_retreat, " [%]\n")
@@ -160,3 +167,11 @@ class Sample:
         except ValueError:
             formatted_num = num
         return formatted_num
+    
+    def get_lin_range(self):
+        # Calcul des limites de la plage linéaire
+        def_min = self.format_sign(float(self.F_max) * 0.2, self.round_val)
+        def_max = self.format_sign(float(self.F_max) * 0.4, self.round_val)
+        lin_range = [def_min, def_max]
+        
+        return lin_range

@@ -273,8 +273,14 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
             if include_stress_values:
                 sample_df["Contrainte [MPa]"] = sample.stress_values
             if include_deformation_values:
-                defo_unit = "Déformation [%]" if self.option_defo_percent else "Déformation [-]"
-                sample_df[defo_unit] = sample.deformation_values 
+                if self.option_defo_percent:
+                    defo_unit = "Déformation [%]"
+                    defo_values = sample.deformation_values         
+                else :
+                    defo_unit = "Déformation [-]"    
+                    defo_values = [defo / 100 for defo in sample.deformation_values]
+                
+                sample_df[defo_unit] =  defo_values
         
         sample_df = self.reduce_data_size(sample_df)
         
@@ -428,13 +434,13 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
         max_stress = 0
         max_deformation = 0
         
-        for sample in sample_list:
-            max_stress = max(max_stress, max(sample.stress_values))
-            max_deformation = max(max_deformation, max(sample.deformation_values))
-            
+        for sample in sample_list:            
             # Plot only positive values
             positive_stress_values = [max(0, stress) for stress in sample.stress_values]
-            ax.plot(sample.deformation_values, positive_stress_values, label=self.get_label(sample))
+            max_stress = max(max_stress, max(sample.stress_values))
+            corrected_defo_values = sample.deformation_values if self.option_defo_percent else [defo / 100 for defo in sample.deformation_values]
+            max_deformation = max(max_deformation, max(corrected_defo_values))
+            ax.plot(corrected_defo_values, positive_stress_values, label=self.get_label(sample))
             
             if len(sample_list) == 1 and self.option_elastic_line and option_elastic_line and sample.Defo > 0:
                 data_plot = pd.DataFrame({'Déformation': sample.deformation_values, 'Contrainte': sample.stress_values})
@@ -457,8 +463,6 @@ class ExportExcelWindow(customtkinter.CTkToplevel):
     def plot_force_displacement(self, ax, sample_list):
         max_force = 0
         max_displacement = 0
-        
-        
         for sample in sample_list:
             force_values = sample.force_values
             displacement_values = sample.displacement_values

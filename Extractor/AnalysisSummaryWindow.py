@@ -82,8 +82,9 @@ class AnalysisSummaryWindow(ctk.CTkToplevel):
             max_stress = max(max_stress, max(sample.stress_values))
             # Plot only positive values
             positive_stress_values = [max(0, stress) for stress in sample.stress_values]
-            max_deformation = max(max_deformation, max(sample.deformation_values))
-            ax.plot(sample.deformation_values, positive_stress_values, label=self.get_label(sample))
+            corrected_defo_values = sample.deformation_values if self.option_defo_percent else [defo / 100 for defo in sample.deformation_values] 
+            max_deformation = max(max_deformation, max(corrected_defo_values))
+            ax.plot(corrected_defo_values, positive_stress_values, label=self.get_label(sample))
         
         # Adjust the plot limits based on the maximum positive values
         ax.set_xlim(0, 1.2 * max_deformation)

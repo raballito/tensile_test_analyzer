@@ -53,20 +53,13 @@ class DataManipulation:
         })
         data.dropna(inplace=True)
         print(f"Taille actuelle du tableau de données brutes : {raw_data.shape}")
-        
         # Correction facteur force
         data['Force [N]'] = data['Force [N]'].apply(lambda x: x * self.sample.force_unit)
-        
-        # Récupérer les valeurs
-        self.sample.raw_time_values = data['Temps [s]'].tolist()
-        self.sample.raw_force_values = data['Force [N]'].tolist()
-        self.sample.raw_displacement_values = data['Déplacement [mm]'].tolist()
-        self.sample.raw_extenso_displacement_values = data['Extenso [mm]'].tolist()
 
         print(f"Nouvelle taille du tableau post-importation : {data.shape}")
         print(f"Importation des données spécifiques de {self.sample.sample_name} terminée.\n")
         
-        return self.sample.raw_time_values, self.sample.raw_force_values, self.sample.raw_displacement_values, self.sample.raw_extenso_displacement_values
+        return data
     
     def process_data(self):
         """Applique filtre + sélection canal"""
@@ -93,14 +86,13 @@ class DataManipulation:
         data = sample.filter_pipeline.process(data, option_clean_end=option_clean_end, selected_channel=sample.selected_channel)
         data.dropna(inplace=True)
         
-        self.update_datas(data, sample)
-            
-        [self.sample.F_max, self.sample.t_max, self.sample.d_max] = self.get_raw_values(data)
-        self.sample.lin_range = self.lin_range(self.sample)
+        self.update_disp_channel(data, sample)
+        [self.sample.F_max, self.sample.t_max, self.sample.d_max] = self.get_max_raw_values(data)
+        
         
         return sample.time_values, sample.force_values, sample.displacement_values
     
-    def update_datas(self, data, sample):
+    def update_disp_channel(self, data, sample):
         # Mise à jour des données utilisées
         sample.time_values = data['Temps [s]'].tolist()
         sample.force_values = data['Force [N]'].tolist()
@@ -109,8 +101,9 @@ class DataManipulation:
             # Invalider les résultats si le canal a changé
             sample.analyzed_sample = False
             sample.last_used_channel = sample.selected_channel
+        return data
     
-    def get_raw_values(self, data):
+    def get_max_raw_values(self, data):
         # Détermination des premières valeurs max
         F_max = self.sample.format_sign(data['Force [N]'].max(), self.sample.round_val)
         t_max = self.sample.format_sign(data['Temps [s]'].max(), self.sample.round_val)
@@ -118,19 +111,5 @@ class DataManipulation:
         
         return [F_max, t_max, d_max]
     
-    def lin_range(self, sample):
-        
-        # Calcul des limites de la plage linéaire
-        def_min = sample.format_sign(float(sample.F_max) * 0.2, sample.round_val)
-        def_max = sample.format_sign(float(sample.F_max) * 0.4, sample.round_val)
-        lin_range = [def_min, def_max]
-        
-        return lin_range
-        
-    def convert_deformation(self, original_defo_values):
-        """ Conversion de la déformation en fonction de l'option choisie (pourcentage ou [-]) """
-        defo_percent = self.sample.master.get_option_defo_percent()
-        if defo_percent:  # Si l'option pourcentage est sélectionnée
-            return original_defo_values
-        else:  # Sinon, on utilise les valeurs sans unités [-]
-            return [defo / 100 for defo in original_defo_values]
+    
+    

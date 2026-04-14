@@ -54,7 +54,7 @@ class DataExport:
             stress_deformation_path = self.export_graph(
                 directory, 
                 'Contrainte-Déformation', 
-                'Déformation [%]', 
+                'Déformation [%]' if self.sample.master.get_option_defo_percent() else 'Déformation [-]', 
                 'Contrainte [MPa]', 
                 self.sample.deformation_values, 
                 self.sample.stress_values, 
@@ -101,7 +101,12 @@ class DataExport:
         print(f"Génération du graphique {y_label} - {x_label}.\n")
     
         plt.figure()
-    
+        
+        if x_label == 'Déformation [-]':
+            x_values = [val / 100 for val in x_values] 
+        else:
+            force_values_plot = y_values
+            
         if y_label == 'Force [kN]':
             force_values_plot = [val / 1000 for val in y_values] 
         else:
