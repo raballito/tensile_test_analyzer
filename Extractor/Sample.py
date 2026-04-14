@@ -115,21 +115,11 @@ class Sample:
         if data is None:
             print("Erreur : Impossible d'importer les données. Le fichier est illisible ou mal structuré.")
             return None
-        # Récupérer les valeurs
-        try:
-            self.raw_time_values = data['Temps [s]'].tolist()
-            self.raw_force_values = data['Force [N]'].tolist()
-            self.raw_displacement_values = data['Déplacement [mm]'].tolist()
-            self.raw_extenso_displacement_values = data['Extenso [mm]'].tolist()
-        except KeyError as e:
-            print(f"Erreur : Clé manquante dans les données importées ({e}).")
-            return None
-        # Récupérer les valeurs maximales
-        try:
-            self.F_max, self.t_max, self.d_max = self.DataManipulation.get_max_raw_values(data)
-        except Exception as e:
-            print(f"Erreur lors de la récupération des valeurs maximales : {e}")
-            return None
+        self.raw_time_values = data['Temps [s]'].tolist()
+        self.raw_force_values = data['Force [N]'].tolist()
+        self.raw_displacement_values = data['Déplacement [mm]'].tolist()
+        self.raw_extenso_displacement_values = data['Extenso [mm]'].tolist()
+        self.F_max, self.t_max, self.d_max = self.DataManipulation.get_max_raw_values(data)
         self.lin_range = self.get_lin_range()
     
         return self.raw_time_values, self.raw_force_values, self.raw_displacement_values, self.raw_extenso_displacement_values
