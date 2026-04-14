@@ -145,9 +145,8 @@ class ProcessData:
         # Méthode extensomètre (plateau à 0)
         # =========================
         if method in ["extenso", "mixed"] and selected_channel == "Canal Extensomètre":
-    
-            if 'Déplacement [mm]' in data.columns:
-                depl = data['Déplacement [mm]']
+            if 'Extenso [mm]' in data.columns:
+                depl = data['Extenso [mm]']
         
                 near_zero_threshold = 0.1
                 variation_threshold = 0.05

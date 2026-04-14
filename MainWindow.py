@@ -304,10 +304,7 @@ class MainWindow(customtkinter.CTk):
         # supprimer de selected_files
         paths_to_remove = [os.path.abspath(sample.file_path) for sample in samples_to_remove]
         
-        self.selected_files = [
-            f for f in self.selected_files
-            if os.path.abspath(f) not in paths_to_remove
-        ]
+        self.selected_files = [f for f in self.selected_files if os.path.abspath(f) not in paths_to_remove]
         
         # suppression UI
         self.interface_functions.remove_button_event(selected_checkboxes)
@@ -327,13 +324,8 @@ class MainWindow(customtkinter.CTk):
         if sample is not None:
             data_manip = DataManipulation(sample)
             data_manip.process_data()
-    
-            # IMPORTANT : invalider l'analyse
-            sample.analyzed_sample = False
-    
             # Rafraîchir affichage
             self.interface_functions.preview_file(sample)
-            
 
     def on_close(self):
         print("Fermeture de la fenêtre principale.")

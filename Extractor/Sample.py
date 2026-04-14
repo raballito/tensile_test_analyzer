@@ -35,6 +35,9 @@ class Sample:
         self.extensometer_choice_value = None
         self.selected_channel = "Canal Traverse"
         self.sample_name = "Default"
+        self.samples_and_channels = []
+        self.subsamples = []
+        # Données pour lectures de fichiers
         self.separator = ','
         self.header_index = 2
         self.base_time_channel = 1
@@ -47,10 +50,6 @@ class Sample:
         self.ext_channel = None
         self.force_unit = 1
         self.repeat_every = None
-        self.tested_mode = None
-        self.tested_geometry = None
-        self.samples_and_channels = []
-        self.subsamples = []
         # Datas
         # Données brutes - Pour importation
         self.raw_time_values = []
@@ -85,7 +84,9 @@ class Sample:
         self.Y_Offset = None
         self.X_Offset = None
         self.idx0 = None
-        # Options values
+        # Valeurs des options
+        self.tested_mode = None
+        self.tested_geometry = None
         self.round_val = self.master.get_round_val()
         self.coef_re_unformatted = self.master.get_coef_re()
         self.coef_re = float(self.coef_re_unformatted.strip('%'))
@@ -101,6 +102,9 @@ class Sample:
         self.DataManipulation = DataManipulation(self)
         self.analyzed_sample = False
         self.configured_sample = False
+        # Mémoire des états des options
+        self.last_used_channel = self.selected_channel
+        self.last_filter_state = self.clean_end
         self.last_mode_chosen = 0
         self.last_geometry_chosen = "Section Ronde"
         self.sample_id = uuid.uuid4()

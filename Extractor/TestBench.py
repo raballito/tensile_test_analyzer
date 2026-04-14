@@ -20,10 +20,44 @@ Last Update: 31.03.26
 import os
 import pandas as pd
 
+class TestBenchConfig:
+    def __init__(self, separator, header_index, force_channel, stroke_channel, ext_channel, time_channel, force_unit, repeat_every):
+        self.separator = separator
+        self.header_index = header_index
+        self.force_channel = force_channel
+        self.stroke_channel = stroke_channel
+        self.ext_channel = ext_channel
+        self.time_channel = time_channel
+        self.force_unit = force_unit
+        self.repeat_every = repeat_every
+        self.samples_and_channels = None  # Cela sera défini après lecture du fichier
+
+    def configure_channels(self, available_sample_names, repeat_every):
+        list_time_channel = [self.time_channel + repeat_every * idx for idx, _ in enumerate(available_sample_names)]
+        list_force_channel = [self.force_channel + repeat_every * idx for idx, _ in enumerate(available_sample_names)]
+        list_stroke_channel = [self.stroke_channel + repeat_every * idx for idx, _ in enumerate(available_sample_names)]
+        list_ext_channel = [self.ext_channel + repeat_every * idx for idx, _ in enumerate(available_sample_names)] if self.ext_channel else [None] * len(available_sample_names)
+        
+        return [available_sample_names, list_time_channel, list_force_channel, list_stroke_channel, list_ext_channel]
+
+
 class TestBench:
-    
-    @staticmethod
-    def identify_test_bench(file_path):
+    def __init__(self, file_path):
+        # separator, header_index, force_channel, stroke_channel, ext_channel, time_channel, force_unit, repeat_every
+        self.configurations = {
+            "Shimadzu_1": TestBenchConfig(',', 2, 2, 3, None, 1, 1, 3),
+            "Shimadzu_2": TestBenchConfig(',', 2, 2, 3, 4, 1, 1, 4),
+            "WB100kN_1": TestBenchConfig(';', 1, 3, 10, 4, 2, 1000, 10),
+            "WB100kN_2" : TestBenchConfig(';', 1, 3, 5, 4, 2, 1000, 5),
+            "WB400kN_1" : TestBenchConfig(',', 1, 3, 2, None, 1, 1000, 3),
+            "WB400kN_2" : TestBenchConfig(',', 1, 3, 2, None, 1, 1, 3),
+            "Unknown" : TestBenchConfig(',', 1, 3, 2, None, 1, 1, 3),
+            # Ajoute d'autres machines ici si nécessaire
+        }
+        self.file_path = file_path
+        self.test_bench = None
+
+    def identify_test_bench(self, file_path):
         potential_separators = [',', ';', '\t']  # Ajoutez d'autres séparateurs si nécessaire
         best_separator = None
         best_parts_count = 0
@@ -41,184 +75,42 @@ class TestBench:
         first_lines = [[item.strip('"') for item in line.split(separator)] for line in first_lines]
         if 'Temps' in first_lines[1] or 'Force' in first_lines[1] or 'Stroke' in first_lines[1] or 'Course_Traverse' in first_lines[1]:
             if 'Ext.1' in first_lines[1]:
-                test_bench = 'Shimadzu_2'
+                self.test_bench = 'Shimadzu_2'
             else: 
-                test_bench = 'Shimadzu_1'
+                self.test_bench = 'Shimadzu_1'
             
         elif 'Déplacement [ mm ]' in first_lines[0] or 'Force [ kN ]' in first_lines[0]:
             if 'Force [ kN ]' in first_lines[0]:
-                test_bench = 'WB400kN_1'
+                self.test_bench = 'WB400kN_1'
             elif 'Force [ N ]' in first_lines[0]:
-                test_bench = 'WB400kN_2'
+                self.test_bench = 'WB400kN_2'
                 
         elif 'C_1_Temps[s]' in first_lines[0] or 'C_1_Force[kN]' in first_lines[0] or 'C_1_Déform1[mm]' in first_lines[0]:
             if 'C_1_Valeur de commande[%]' in first_lines[0] or 'C_1_Valeur de consigne[]' in first_lines[0]:
-                test_bench = 'WB100kN_1'
+                self.test_bench = 'WB100kN_1'
             else: 
-                test_bench = 'WB100kN_2' 
+                self.test_bench = 'WB100kN_2' 
         else:
-            test_bench = "Unknown"        
-        return test_bench
-    
-    def __init__(self, file_path):
-        self.file_path = file_path
-        self.FileName = None
-        self.test_bench = None
-        self.number_of_test = None
-        self.available_sample_names = None
-        self.extensometer_choice_value = "Course Traverse"
-        self.sample_name = None
-        self.separator = ','
-        self.header_index = 2
-        self.force_channel = 2
-        self.stroke_channel = 3
-        self.time_channel = 1
-        self.ext_channel = None
-        self.force_unit = 1
-        self.repeat_every = 3
-        self.samples_and_channels = []
-        
-         
-    #Fonction d'identification du banc de test
+            self.test_bench = "Unknown"        
+        return self.test_bench
+
     def identify_file(self, file_path):
         test_bench = self.identify_test_bench(file_path)
+        test_bench_config = self.configurations.get(test_bench)
         file_name = os.path.splitext(os.path.basename(file_path))[0]
-        print(f"Nom de fichiers: {file_name}")
-        
-        # Identifier la machine de traction en fonction des informations et configure les valeurs pour importation.
-        if test_bench=="Shimadzu_1": #sans extensomètre
-            self.separator = ',' 
-            self.header_index = 2
-            self.force_channel = 2
-            self.stroke_channel = 3
-            self.ext_channel = None
-            self.time_channel = 1
-            self.force_unit = 1 #Unité canal force en N
-            self.repeat_every = 3
-            with open(file_path, 'r', encoding='latin-1') as file: 
-                first_line = file.readline().strip()
-                self.available_sample_names = list(filter(None, first_line.split(self.separator)))
-                self.available_sample_names = [name.strip('\"') for name in self.available_sample_names if name.strip('\"')]
-                list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_ext_channel = [self.ext_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(first_line[1]) // self.repeat_every
-                self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel, list_ext_channel]
-                
-        elif test_bench=="Shimadzu_2": #avec extensomètre
-            self.separator = ','
-            self.header_index = 2
-            self.force_channel = 2
-            self.stroke_channel = 3
-            self.time_channel = 1
-            self.ext_channel = 4
-            self.force_unit = 1 #Unité canal force en N
-            self.repeat_every = 4
-            with open(file_path, 'r', encoding='latin-1') as file: 
-                first_line = file.readline().strip()
-                self.available_sample_names = list(filter(None, first_line.split(self.separator)))
-                self.available_sample_names = [name.strip('\"') for name in self.available_sample_names if name.strip('\"')]
-                list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_ext_channel = [self.ext_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(self.available_sample_names)
-                self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel, list_ext_channel]
-        
-        # W+B 100kN
-        elif test_bench == 'WB100kN_1': #Version avec canaux virtuel
-            self.separator = ';'
-            self.header_index = 1
-            self.force_channel = 3
-            self.time_channel = 2
-            self.stroke_channel = 10
-            self.ext_channel = 4
-            self.force_unit = 1000 #Unité canal force en kN
-            self.repeat_every = 10
-            with open(file_path, 'r', encoding='latin-1') as file: 
-                first_line = file.readline().strip()
-                self.available_sample_names = [file_name]
-                list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_ext_channel = [self.ext_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(self.available_sample_names)
-                self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel, list_ext_channel]
-            
-        elif test_bench == 'WB100kN_2': #Version sans les virtual channel
-            self.separator = ';'
-            self.header_index = 1
-            self.force_channel = 3
-            self.time_channel = 2
-            self.stroke_channel = 5
-            self.ext_channel = 4
-            self.force_unit = 1000 #Unité canal force en kN
-            self.repeat_every = 5
-            with open(file_path, 'r', encoding='latin-1') as file: 
-                first_line = file.readline().strip()
-                self.available_sample_names = [file_name]
-                list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_ext_channel = [self.ext_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(self.available_sample_names)
-                self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel, list_ext_channel]
-                
-        # Wolpert 400 kN        
-        elif test_bench == 'WB400kN_1':
-            self.separator = ','
-            self.header_index = 1
-            self.force_channel = 3
-            self.stroke_channel = 2
-            self.time_channel = 1
-            self.ext_channel = None
-            self.force_unit = 1000 #Unités du canal force en kN
-            self.repeat_every = 3
-            with open(file_path, 'r', encoding='latin-1') as file: 
-                first_line = file.readline().strip()
-                self.available_sample_names = [file_name]
-                list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_ext_channel = [self.ext_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(self.available_sample_names)
-                self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel, list_ext_channel]
-        
-        elif test_bench == 'WB400kN_2':
-            self.separator = ','
-            self.header_index = 1
-            self.force_channel = 3
-            self.stroke_channel = 2
-            self.time_channel = 1
-            self.ext_channel = None
-            self.force_unit = 1 #Unités du canal force en kN
-            self.repeat_every = 3
-            with open(file_path, 'r', encoding='latin-1') as file: 
-                first_line = file.readline().strip()
-                self.available_sample_names = [file_name]
-                list_time_channel = [self.time_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_force_channel = [self.force_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_stroke_channel = [self.stroke_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                list_ext_channel = [self.ext_channel + self.repeat_every * idx for idx, _ in enumerate(self.available_sample_names)]
-                self.number_of_test = len(self.available_sample_names)
-                self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel, list_ext_channel]
-                
-                
-        else:
-           self.separator = ';'
-           self.header_index = 1
-           self.force_channel = 3
-           self.stroke_channel = 2
-           self.time_channel = 1
-           self.ext_channel = None
-           self.force_unit = 1000 #Unités du canal force en kN
-           self.repeat_every = 3
-           self.available_sample_names = [file_name]
-           self.number_of_test = 1
-           self.samples_and_channels = [self.available_sample_names, list_time_channel, list_force_channel, list_stroke_channel, list_ext_channel]
+        print(f"Identification du fichier. Veuillez patienter.\nNom de la machine utilisée : {test_bench}.\nNom du fichier : {file_name}")
+        if not test_bench_config:
+            raise ValueError(f"Machine {test_bench} inconnue")
 
-        self.default_sample_names = self.available_sample_names.copy()
+        with open(file_path, 'r', encoding='latin-1') as file:
+            first_line = file.readline().strip()
+            # Pour certaines machines (comme Shimadzu), récupérer les noms d'échantillons depuis la première ligne
+            if test_bench == "Shimadzu_1" or test_bench == "Shimadzu_2":
+                available_sample_names = [name.strip('\"') for name in first_line.split(test_bench_config.separator) if name.strip('\"')]
+            else:
+                # Pour d'autres machines (comme WB100kN), utiliser le nom du fichier comme nom d'échantillon
+                available_sample_names = [file_name]
         
-        #print("Sample and channels:", self.samples_and_channels)
-        return self.samples_and_channels
+        test_bench_config.samples_and_channels = test_bench_config.configure_channels(available_sample_names, test_bench_config.repeat_every)
+        
+        return test_bench_config.samples_and_channels

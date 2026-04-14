@@ -73,6 +73,7 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
         if self.is_file_already_loaded(file_path):
             self.interface_functions.show_warning(file_path)
             return False
+        # Identification du banc de test et récupération des informations
         test_bench_struct = TestBench(self)  # Créer une instance de TestBench pour chaque échantillon
         sample_and_channel = test_bench_struct.identify_file(file_path)
         try:
@@ -81,9 +82,11 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             # Si une erreur se produit lors de la création du chemin relatif, utilisez le chemin complet
             print(f"Erreur lors de la création du chemin relatif pour {file_path}. Utilisation du chemin complet.\nErreur: {e}")
             file_path_rel = file_path
-        # Identification de la machine
-        test_bench = TestBench.identify_test_bench(file_path)
-    
+        # Récupération de la configuration du banc de test
+        test_bench = test_bench_struct.identify_test_bench(file_path)
+        test_bench_config = test_bench_struct.configurations.get(test_bench)
+        if not test_bench_config:
+            raise ValueError(f"Machine {test_bench} inconnue")    
         for available_sample_name, time_channel, force_channel, stroke_channel, ext_channel in zip(*sample_and_channel):
             sample = Sample(self)  # Crée l'échantillon avec un identifiant unique
             checkbox_var = customtkinter.IntVar()
@@ -92,12 +95,13 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             sample.file_name = os.path.basename(file_path)
             sample.file_path = file_path
             sample.sample_name = available_sample_name
-            sample.test_bench = test_bench
-            sample.separator = test_bench_struct.separator
-            sample.header_index = test_bench_struct.header_index
-            sample.force_unit = test_bench_struct.force_unit
-            sample.repeat_every = test_bench_struct.repeat_every
-            sample.base_stroke_channel = stroke_channel % test_bench_struct.repeat_every
+            sample.test_bench = test_bench_struct.test_bench
+            # Assigner les valeurs depuis la configuration du banc de test
+            sample.separator = test_bench_config.separator
+            sample.header_index = test_bench_config.header_index
+            sample.force_unit = test_bench_config.force_unit
+            sample.repeat_every = test_bench_config.repeat_every
+            sample.base_stroke_channel = stroke_channel % test_bench_config.repeat_every
             sample.offset = stroke_channel - sample.base_stroke_channel
             sample.time_channel = time_channel
             sample.force_channel = force_channel

@@ -448,12 +448,13 @@ class InterfaceFunctions:
             E = 10*float(sample.E)
             xlabel = "Déformation [%]"
             x_start = coef_re
+            defo = sample.deformation_values 
         else: 
             E=1000*float(sample.E)
             xlabel = "Déformation [-]"
             x_start = coef_re / 100
+            defo = [value / 100 for value in sample.deformation_values]
         
-        defo = sample.deformation_values       
         y_start = 0
         x_end = max(defo)
         y_end = E * (x_end - x_start)

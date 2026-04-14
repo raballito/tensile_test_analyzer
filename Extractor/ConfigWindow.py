@@ -253,7 +253,8 @@ class ConfigWindow(customtkinter.CTkToplevel):
             short_path = file_path
         self.label_file_path.configure(short_path)
         self.update_l1_visibility()
-        self.update_menus(self.sample.test_bench, self.radio_var.get())
+        
+        self.update_menus(test_bench, self.radio_var.get())
         
         if self.sample.last_mode_chosen == 0:
             self.radio_button_1.invoke()
@@ -268,12 +269,14 @@ class ConfigWindow(customtkinter.CTkToplevel):
     def update_menus(self, test_bench, test_mode):
         if test_bench == "Shimadzu_1" or test_bench == "Shimadzu_2":
             if test_bench == "Shimadzu_1":
+                self.option_machine.configure(state="disabled")
                 self.option_canal.set("Canal Traverse")
                 self.option_machine.set("Shimadzu 20kN")
                 self.radio_button_4.configure(state="disabled")
                 self.option_canal.configure(state="disabled")
             elif test_bench == "Shimadzu_2":
                 if test_mode == 3:
+                    self.option_machine.configure(state="disabled")
                     self.option_machine.configure(state="disabled")
                     self.option_machine.set("Shimadzu 20kN")
                     self.option_canal.set("Canal Extensomètre")
@@ -295,6 +298,7 @@ class ConfigWindow(customtkinter.CTkToplevel):
                 self.option_canal.configure(state="enabled")
                 
         elif test_bench == "WB400kN_1" or test_bench == "WB400kN_2":
+                self.option_machine.configure(state="disabled")
                 self.option_machine.set("Wolpert 400kN")
                 self.option_canal.set("Canal Traverse")
                 self.radio_button_4.configure(state="disabled")
@@ -423,14 +427,10 @@ class ConfigWindow(customtkinter.CTkToplevel):
     def get_canal(self):
         canal = self.option_canal.get()
         print(f"Canal obtenu dans get_canal(): {canal}")
-        machine = self.sample.test_bench
-        print(f"Machine obtenue dans get_canal(): {machine}")
-        
         if canal == "Canal Extensomètre":
             self.sample.selected_channel = "Canal Extensomètre"
         elif canal == "Canal Traverse":
             self.sample.selected_channel = "Canal Traverse"
-        
         self.sample.process_data()
         print(f"Canal enregistré: {self.sample.selected_channel}")
     
