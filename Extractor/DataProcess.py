@@ -153,7 +153,7 @@ class ProcessData:
                 window = 5
         
                 # IGNORER LE DÉBUT
-                start_ratio = 0.2
+                start_ratio = 0.3
                 start_index = int(len(depl) * start_ratio)
         
                 depl_sub = depl.iloc[start_index:]

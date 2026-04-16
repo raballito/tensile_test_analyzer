@@ -65,31 +65,24 @@ class DataManipulation:
         """Applique filtre + sélection canal"""
         print("Application des filtres et sélection du canal")
         sample = self.sample
-    
         # Récupère l'état actuel du filtre
         option_clean_end = sample.master.get_option_filter()
-        
         # Si l'option filtre a changé, invalider les résultats
         if option_clean_end != sample.last_filter_state:
             print("Changement de l'état du filtre, invalidation des résultats.")
             sample.analyzed_sample = False  # Invalider les résultats existants
             sample.last_filter_state = option_clean_end  # Mettre à jour l'état du filtre
-    
         # Charger les données brutes
         data = pd.DataFrame({
             'Temps [s]': sample.raw_time_values,
             'Force [N]': sample.raw_force_values,
             'Déplacement [mm]': sample.raw_displacement_values,
             'Extenso [mm]': sample.raw_extenso_displacement_values})
-        
         # Appliquer le pipeline de filtrage
         data = sample.filter_pipeline.process(data, option_clean_end=option_clean_end, selected_channel=sample.selected_channel)
         data.dropna(inplace=True)
-        
         self.update_disp_channel(data, sample)
-        [self.sample.F_max, self.sample.t_max, self.sample.d_max] = self.get_max_raw_values(data)
-        
-        
+
         return sample.time_values, sample.force_values, sample.displacement_values
     
     def update_disp_channel(self, data, sample):
@@ -103,8 +96,12 @@ class DataManipulation:
             sample.last_used_channel = sample.selected_channel
         return data
     
-    def get_max_raw_values(self, data):
+    def get_max_values(self, force_values, time_values, displacement_values):
         # Détermination des premières valeurs max
+        data = pd.DataFrame({
+            'Temps [s]': time_values,
+            'Force [N]': force_values,
+            'Déplacement [mm]': displacement_values})
         F_max = self.sample.format_sign(data['Force [N]'].max(), self.sample.round_val)
         t_max = self.sample.format_sign(data['Temps [s]'].max(), self.sample.round_val)
         d_max = self.sample.format_sign(data['Déplacement [mm]'].max() - data['Déplacement [mm]'].iloc[1], self.sample.round_val)

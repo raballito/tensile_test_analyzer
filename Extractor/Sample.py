@@ -119,13 +119,15 @@ class Sample:
         self.raw_force_values = data['Force [N]'].tolist()
         self.raw_displacement_values = data['Déplacement [mm]'].tolist()
         self.raw_extenso_displacement_values = data['Extenso [mm]'].tolist()
-        self.F_max, self.t_max, self.d_max = self.DataManipulation.get_max_raw_values(data)
-        self.lin_range = self.get_lin_range()
-    
-        return self.raw_time_values, self.raw_force_values, self.raw_displacement_values, self.raw_extenso_displacement_values
+        self.time_values, self.force_values, self.displacement_values = self.process_data()
+        t_max, F_max, d_max = self.DataManipulation.get_max_values(self.time_values, self.force_values, self.displacement_values)
+        self.lin_range = self.get_lin_range(F_max)
+        return self.time_values, self.force_values, self.displacement_values
     
     def process_data(self):
-        return self.DataManipulation.process_data()
+        self.time_values, self.force_values, self.displacement_values = self.DataManipulation.process_data()
+        self.t_max, self.F_max, self.d_max = self.DataManipulation.get_max_values(self.time_values, self.force_values, self.displacement_values)
+        return self.time_values, self.force_values, self.displacement_values
     
     # Fonction d'analyse. Conversion vers contrainte-déformation
     def analyze(self):
@@ -171,10 +173,9 @@ class Sample:
             formatted_num = num
         return formatted_num
     
-    def get_lin_range(self):
+    def get_lin_range(self, force):
         # Calcul des limites de la plage linéaire
-        def_min = self.format_sign(float(self.F_max) * 0.2, self.round_val)
-        def_max = self.format_sign(float(self.F_max) * 0.4, self.round_val)
+        def_min = self.format_sign(float(force) * 0.2, self.round_val)
+        def_max = self.format_sign(float(force) * 0.4, self.round_val)
         lin_range = [def_min, def_max]
-        
         return lin_range

@@ -135,8 +135,8 @@ class ScrollableLabelButtonFrame(customtkinter.CTkScrollableFrame):
             self.button_list.append(button)
             self.sample_list.append(sample)
             self.frame_list.append(frame)
-            data_manip = DataManipulation(sample)
-            data_manip.process_data()
+            #data_manip = DataManipulation(sample)
+            #sample.process_data()
         return True
 
     def remove_item(self, item):
